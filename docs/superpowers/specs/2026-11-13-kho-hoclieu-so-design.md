@@ -152,6 +152,7 @@ HMO.dangKy({
   thoiLuong,                          // tổng giây
   ve(t),                              // vẽ trạng thái tại t_anim = t; hàm thuần, gọi lại bao nhiêu lần cũng ra cùng hình
   datNhan(muc),                       // 'day-du' | 'toi-gian' (màn dọc) | 'tat'
+  khiDoi(id, giaTri),                 // người xem đổi một điều khiển riêng của cảnh
   khoiTao(sanKhau), huy()
 });
 ```
@@ -159,6 +160,18 @@ HMO.dangKy({
 Khung giữ **đồng hồ duy nhất** (`t_anim += dt × tốc_độ`), gọi `ve(t)`, xử lý phát/dừng, tua, đổi cảnh, tự dừng cuối cảnh, phím tắt, chạm, vuốt, `visibilitychange`, `prefers-reduced-motion`. Animation không tự gọi `requestAnimationFrame` và không tự bắt phím. Vì `ve(t)` là hàm thuần nên tua lui và test "khung hình đứng yên" đều đáng tin.
 
 Animation có tương tác riêng (ví dụ xoay camera 3D, kéo thanh trượt tham số) được giữ trạng thái đó ngoài `t`, nhưng phải tự vẽ lại qua `HMO.yeuCauVe()`.
+
+**Điều khiển riêng của cảnh (bổ sung sau review Bước 1, quyết định của Fable).** Thanh trượt và ô bật/tắt không được vẽ trên sân khấu: ở màn dọc sân khấu co còn 27% nên không chạm được (`luc-tao-trieu` có 20 ô bật/tắt và 6 thanh trượt; `khuc-xa-song`, `bien-dang-song-vo`, `hat-nuoc-quay-vong` cũng có thanh trượt). Mỗi cảnh khai báo thêm:
+
+```js
+dieuKhien: [
+  { id, loai: 'truot', nhan, min, max, buoc, giaTri, donVi },
+  { id, loai: 'bat-tat', nhan, giaTri },
+  { id, loai: 'chon', nhan, luaChon: [{ giaTri, nhan }], giaTri }
+]
+```
+
+Khung dựng chúng thành phần tử HTML chuẩn (cao ≥ 44 px, dùng được bằng bàn phím) trong khung điều khiển, gọi `khiDoi(id, giaTri)` của animation rồi vẽ lại. Ở chế độ Trình chiếu chúng nằm trong thanh điều khiển tự ẩn.
 
 **Build.** `tools/build.mjs` dùng esbuild cho mọi loại: gộp JS, biên dịch JSX, nhúng CSS và font subset dạng base64. T3 dùng thêm three.js ghim phiên bản trong `package.json`. Đầu ra luôn là một `index.html`. (Đề bài nêu Vite + vite-plugin-singlefile cho T3; ở đây dùng một công cụ build duy nhất cho cả 2D và 3D để đỡ hai đường ống — đây là quyết định của Fable, người build được đổi lại Vite nếu esbuild không đáp ứng.)
 
