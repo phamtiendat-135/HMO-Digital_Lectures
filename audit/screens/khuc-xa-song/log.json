@@ -5,17 +5,20 @@
     "laptop": {
       "consoleErrors": [],
       "pageErrors": [],
-      "blocked": []
+      "blocked": [],
+      "manHinhCho": true
     },
     "doc": {
       "consoleErrors": [],
       "pageErrors": [],
-      "blocked": []
+      "blocked": [],
+      "manHinhCho": true
     },
     "ngang": {
       "consoleErrors": [],
       "pageErrors": [],
-      "blocked": []
+      "blocked": [],
+      "manHinhCho": true
     }
   }
 }

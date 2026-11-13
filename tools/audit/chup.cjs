@@ -48,6 +48,13 @@ const GIAY = [0, 5, 15];
       await page.goto(pathToFileURL(path.join(GOC, '_nguon', file)).href, { waitUntil: 'load' });
       await page.waitForFunction(() => !document.querySelector('#__bundler_thumbnail'), null, { timeout: 20000 })
         .catch(() => muc.pageErrors.push('Thumbnail của bundle không biến mất sau 20 s'));
+      // Một số file có màn hình chờ: bấm "Bắt đầu" để giây 0 là lúc animation thật sự chạy.
+      const batDau = page.locator('#start, button:has-text("Bắt đầu")').first();
+      if (await batDau.isVisible().catch(() => false)) {
+        muc.manHinhCho = true;
+        await page.screenshot({ path: path.join(thuMuc, `${ten}-cho.jpg`), type: 'jpeg', quality: 70 });
+        await batDau.click({ timeout: 3000 }).catch(() => batDau.evaluate((el) => el.click()).catch(() => {}));
+      }
       const t0 = Date.now();
       for (const g of GIAY) {
         const cho = g * 1000 - (Date.now() - t0);
