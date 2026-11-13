@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sóng thần do động đất đới hút chìm — HDHDC</title>
+<style>
+:root{--navy:#0A2E5C;--ocean:#1B4E8F;--sky:#60C0F0;--orange:#F07800;--ink:#0F1E3A;--slate:#546E8F;--red:#D7263D}
+html,body{margin:0;height:100%;background:#06101f;overflow:hidden;font-family:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;user-select:none;-webkit-user-select:none}
+body.hidecur,body.hidecur *{cursor:none!important}
+#stage{position:absolute;left:0;top:0;width:1440px;height:1080px;transform-origin:0 0;background:#fff;overflow:hidden}
+#cv{position:absolute;left:0;top:0;width:1440px;height:1008px;display:block}
+#bar{position:absolute;left:0;top:1008px;width:1440px;height:72px;background:var(--navy);display:flex;align-items:center;gap:8px;padding:0 12px;box-sizing:border-box;transition:opacity .35s;color:#fff}
+#bar.hidden{opacity:0;pointer-events:none}
+#bar button{font:600 17px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;color:#fff;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.28);border-radius:10px;height:46px;min-width:46px;padding:0 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+#bar button:hover{background:rgba(255,255,255,.18)}
+#bar button:focus-visible{outline:3px solid var(--sky);outline-offset:1px}
+#bar button svg{width:22px;height:22px;fill:#fff}
+#bar .sep{width:1px;height:40px;background:rgba(255,255,255,.22);margin:0 2px}
+#speeds{display:flex;gap:4px}
+#speeds button{min-width:54px;padding:0 6px}
+#speeds button.on{background:var(--orange);border-color:var(--orange)}
+.tog.on{background:#fff!important;color:var(--navy)!important;border-color:#fff!important}
+.tog .dot{width:12px;height:12px;border-radius:50%;border:2px solid currentColor;box-sizing:border-box}
+.tog.on .dot{background:var(--orange);border-color:var(--orange)}
+#tl{flex:1;position:relative;height:46px;display:flex;align-items:center;cursor:pointer;min-width:200px}
+#tlTrack{position:relative;width:100%;height:8px;background:rgba(255,255,255,.22);border-radius:4px}
+#tlFill{position:absolute;left:0;top:0;height:100%;background:var(--sky);border-radius:4px}
+#tlHead{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#fff;border:3px solid var(--orange);box-sizing:border-box}
+.mk{position:absolute;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--navy);border:2px solid rgba(255,255,255,.75);box-sizing:border-box;font:700 12px "Segoe UI",Arial,sans-serif;color:#fff;display:flex;align-items:center;justify-content:center}
+.mk:hover,.mk.cur{background:var(--orange);border-color:var(--orange)}
+#tip{position:absolute;bottom:52px;transform:translateX(-50%);background:#fff;color:var(--ink);font:600 18px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;padding:6px 12px;border-radius:8px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#intro{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,#1B4E8F 0%,#0A2E5C 60%,#061c3a 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;z-index:5;transition:opacity .6s}
+#intro.gone{opacity:0;pointer-events:none}
+#intro .k{font:600 26px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;letter-spacing:.08em;color:var(--sky);text-transform:uppercase}
+#intro h1{font:800 66px/1.15 "Be Vietnam Pro","Segoe UI",Arial,sans-serif;margin:22px 80px 10px}
+#intro .s{font:400 32px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;opacity:.9}
+#intro .stripe{width:160px;height:6px;background:var(--orange);margin:34px 0}
+#start{font:700 40px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;background:var(--orange);color:#fff;border:0;border-radius:18px;padding:22px 64px;cursor:pointer;box-shadow:0 10px 30px rgba(240,120,0,.35);display:flex;align-items:center;gap:18px}
+#start svg{width:34px;height:34px;fill:#fff}
+#start:focus-visible{outline:4px solid #fff;outline-offset:4px}
+#intro .hint{margin-top:34px;font:400 22px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;opacity:.75;max-width:1100px;line-height:1.5}
+#intro .org{position:absolute;bottom:34px;font:400 22px "Be Vietnam Pro","Segoe UI",Arial,sans-serif;opacity:.7}
+#load{margin-top:18px;font:400 22px "Segoe UI",Arial,sans-serif;opacity:.7}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="cv" aria-label="Hoạt hình sóng thần" role="img"></canvas>
+  <div id="bar">
+    <button id="bPrev" title="Cảnh trước (← / PageUp)" aria-label="Cảnh trước"><svg viewBox="0 0 24 24"><path d="M6 5h2.5v14H6zM20 5v14L9.5 12z"/></svg></button>
+    <button id="bPlay" title="Phát / Dừng (Space, B, .)" aria-label="Phát hoặc dừng"><svg viewBox="0 0 24 24" id="icoPlay"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+    <button id="bNext" title="Cảnh sau (→ / PageDown)" aria-label="Cảnh sau"><svg viewBox="0 0 24 24"><path d="M15.5 5H18v14h-2.5zM4 5v14l10.5-7z"/></svg></button>
+    <button id="bRestart" title="Chạy lại từ đầu" aria-label="Chạy lại"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-7.6 5.5l2.3.8A5.6 5.6 0 1 0 12 6.4V9L7.5 5.2 12 1.5z"/></svg></button>
+    <div class="sep"></div>
+    <div id="speeds">
+      <button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button data-s="1" class="on">1×</button><button data-s="2">2×</button><button data-s="4">4×</button>
+    </div>
+    <div class="sep"></div>
+    <div id="tl"><div id="tlTrack"><div id="tlFill"></div><div id="tlHead"></div></div><div id="tip"></div></div>
+    <div class="sep"></div>
+    <button class="tog on" id="tLabels" title="Bật/tắt nhãn (L)"><span class="dot"></span>Nhãn</button>
+    <button class="tog on" id="tTable" title="Bật/tắt bảng số liệu"><span class="dot"></span>Bảng số liệu</button>
+    <button class="tog on" id="tStop" title="Tự dừng cuối mỗi cảnh"><span class="dot"></span>Dừng sau mỗi cảnh</button>
+    <button id="bFull" title="Toàn màn hình (F)" aria-label="Toàn màn hình"><svg viewBox="0 0 24 24"><path d="M4 4h6v2.4H6.4V10H4zM14 4h6v6h-2.4V6.4H14zM4 14h2.4v3.6H10V20H4zM17.6 14H20v6h-6v-2.4h3.6z"/></svg></button>
+  </div>
+  <div id="intro">
+    <div class="k">Hải dương học đại cương · Chương Sóng biển</div>
+    <h1>Sóng thần do động đất<br>tại đới hút chìm</h1>
+    <div class="s">Nguyên nhân · Hình thành · Lan truyền · Leo bờ · Biển Đông</div>
+    <div class="stripe"></div>
+    <button id="start"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>Bắt đầu</button>
+    <div id="load">Đang tính trước nghiệm số…</div>
+    <div class="hint">Space: phát/dừng · ←/→ hoặc PageUp/PageDown: đổi cảnh · ↑/↓: tốc độ · 1–8: nhảy cảnh · F: toàn màn hình · L: nhãn</div>
+    <div class="org">Khoa Khí tượng Thủy văn và Hải dương học · Trường ĐH Khoa học Tự nhiên, ĐHQG Hà Nội</div>
+  </div>
+</div>
+<script>
+'use strict';
+/* =========================================================================
+   CORE
+   ========================================================================= */
+const W=1440,H=1008,TOP=86,SRC_Y=952;
+const C={navy:'#0A2E5C',ocean:'#1B4E8F',sky:'#60C0F0',orange:'#F07800',ink:'#0F1E3A',slate:'#546E8F',red:'#D7263D'};
+const FONT='"Be Vietnam Pro","Segoe UI",Arial,sans-serif';
+const F=(sz,w,it)=>`${it?'italic ':''}${w||400} ${sz}px ${FONT}`;
+const SCENES=[
+ {t0:0,  t1:20, title:'Điều gì tạo ra sóng thần?'},
+ {t0:20, t1:35, title:'Đới hút chìm: nơi hai mảng gặp nhau'},
+ {t0:35, t1:55, title:'Hàng trăm năm dồn nén'},
+ {t0:55, t1:75, title:'Đứt gãy: mép mảng bật lên'},
+ {t0:75, t1:90, title:'Một gò nước tách thành hai sóng'},
+ {t0:90, t1:125,title:'Càng vào nông càng chậm, càng cao'},
+ {t0:125,t1:145,title:'Nước rút, rồi sóng ập vào'},
+ {t0:145,t1:172,title:'Biển Đông có nguy cơ không?'},
+];
+const T_END=172;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const lerp=(a,b,u)=>a+(b-a)*u;
+const ease=u=>{u=clamp(u,0,1);return u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;};
+const prog=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const ep=(t,a,b)=>ease(prog(t,a,b));
+const backOut=u=>{u=clamp(u,0,1);const c1=1.9,c3=c1+1;return 1+c3*Math.pow(u-1,3)+c1*Math.pow(u-1,2);};
+const fadeA=(t,t0,t1,d=0.4)=>(t<t0||t>t1)?0:Math.min(1,(t-t0)/d,(t1-t)/d);
+const sceneIdx=t=>{for(let i=SCENES.length-1;i>=0;i--) if(t>=SCENES[i].t0) return i; return 0;};
+const vn=(x,d=0)=>{const s=x.toFixed(d).split('.');s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return s.join(',');};
+
+/* ---------- canvas + rich text helpers ---------- */
+const cv=document.getElementById('cv');const ctx=cv.getContext('2d');
+let SCALE=1,DPR=1;
+// text with *bold* segments
+function tokens(text){const out=[];let bold=false;for(const part of text.split('*')){if(part.length){for(const w of part.split(/(\s+)/)){if(w==='')continue;out.push({w,b:bold,sp:/^\s+$/.test(w)});}}bold=!bold;}return out;}
+function layout(c,text,maxW,sz,wt){
+ const tk=tokens(text);const lines=[];let line=[],lw=0;
+ // group glued tokens (no space between) into words so punctuation never wraps alone
+ const words=[];let cur=null;
+ for(const t of tk){c.font=F(sz,t.b?800:wt);const w=c.measureText(t.w).width;const o={...t,wd:w};
+  if(t.sp){words.push({sp:true,toks:[o],w});cur=null;}else{if(!cur){cur={sp:false,toks:[],w:0};words.push(cur);}cur.toks.push(o);cur.w+=w;}}
+ for(const wd of words){
+  if(wd.sp){if(line.length){line.push(...wd.toks);lw+=wd.w;}continue;}
+  if(lw+wd.w>maxW&&line.length){while(line.length&&line[line.length-1].sp){lw-=line.pop().wd;}lines.push({toks:line,w:lw});line=[];lw=0;}
+  line.push(...wd.toks);lw+=wd.w;}
+ while(line.length&&line[line.length-1].sp){lw-=line.pop().wd;}
+ if(line.length)lines.push({toks:line,w:lw});
+ return {lines,w:Math.max(0,...lines.map(l=>l.w))};
+}
+function drawLines(c,L,x,y,sz,wt,color,lh,align,boldColor){
+ c.textBaseline='alphabetic';
+ L.lines.forEach((ln,i)=>{let xx=align==='center'?x-ln.w/2:align==='right'?x-ln.w:x;const yy=y+sz*0.9+i*lh;
+  for(const t of ln.toks){if(!t.sp){c.font=F(sz,t.b?800:wt);c.fillStyle=t.b&&boldColor?boldColor:color;c.fillText(t.w,xx,yy);}xx+=t.wd;}});
+}
+function rrect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+// caption box: 36px, white, border, leader line to anchor
+function caption(c,o,a){
+ if(a<=0.001)return;const sz=o.sz||36,lh=Math.round(sz*1.24),pad=18;
+ const L=layout(c,o.text,(o.w||640)-pad*2,sz,o.wt||500);
+ const bw=Math.min(o.w||640,L.w+pad*2+2),bh=L.lines.length*lh+pad*2-(lh-sz)+4;
+ let bx=o.x,by=o.y;if(o.alignRight)bx=o.x-bw;
+ c.save();c.globalAlpha*=a;
+ const warn=o.tone==='warn';
+ if(o.anchor){const [ax,ay]=o.anchor;const cx=clamp(ax,bx+16,bx+bw-16),cy=ay<by?by:ay>by+bh?by+bh:by+bh/2;
+  c.strokeStyle=warn?C.red:C.ink;c.lineWidth=2.2;c.beginPath();c.moveTo(cx,cy);c.lineTo(ax,ay);c.stroke();
+  c.fillStyle=warn?C.red:C.ink;c.beginPath();c.arc(ax,ay,5.5,0,7);c.fill();c.strokeStyle='#fff';c.lineWidth=2;c.stroke();}
+ c.shadowColor='rgba(10,30,60,.22)';c.shadowBlur=18;c.shadowOffsetY=5;
+ rrect(c,bx,by,bw,bh,14);c.fillStyle=warn?'#FFF4F5':'#fff';c.fill();c.shadowColor='transparent';
+ c.lineWidth=warn?3:1.5;c.strokeStyle=warn?C.red:'#B9C8DB';c.stroke();
+ drawLines(c,L,bx+pad,by+pad,sz,o.wt||500,warn?'#8E0F1F':C.ink,lh,'left',warn?C.red:C.orange);
+ c.restore();
+ return {x:bx,y:by,w:bw,h:bh};
+}
+// on-figure label: 30px pill
+function label(c,text,x,y,a,o={}){
+ if(a<=0.001||!SHOW_LABELS)return;const sz=o.sz||30,lh=Math.round(sz*1.2),px=12,py=6;
+ const L=layout(c,text,o.w||560,sz,o.wt||600);const bw=L.w+px*2,bh=L.lines.length*lh-(lh-sz)+py*2+6;
+ let bx=o.align==='right'?x-bw:o.align==='left'?x:x-bw/2,by=o.valign==='bottom'?y-bh:o.valign==='middle'?y-bh/2:y;
+ c.save();c.globalAlpha*=a;
+ if(o.anchor){c.strokeStyle=o.lc||'rgba(15,30,58,.85)';c.lineWidth=2;c.beginPath();const ax=o.anchor[0],ay=o.anchor[1];
+  const sx=clamp(ax,bx+10,bx+bw-10),sy=ay>by+bh?by+bh:ay<by?by:by+bh/2;c.moveTo(sx,sy);c.lineTo(ax,ay);c.stroke();
+  c.fillStyle=o.lc||C.ink;c.beginPath();c.arc(ax,ay,4.5,0,7);c.fill();}
+ rrect(c,bx,by,bw,bh,10);c.fillStyle=o.bg||'rgba(255,255,255,.92)';c.fill();
+ if(o.border){c.strokeStyle=o.border;c.lineWidth=2;c.stroke();}
+ drawLines(c,L,bx+px,by+py+2,sz,o.wt||600,o.color||C.ink,lh,'left',C.orange);
+ c.restore();
+}
+function arrow(c,x1,y1,x2,y2,col,lw,head){head=head||lw*3.2;const a=Math.atan2(y2-y1,x2-x1);
+ c.strokeStyle=col;c.fillStyle=col;c.lineWidth=lw;c.lineCap='round';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2-Math.cos(a)*head*.8,y2-Math.sin(a)*head*.8);c.stroke();
+ c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-Math.cos(a-0.42)*head,y2-Math.sin(a-0.42)*head);c.lineTo(x2-Math.cos(a+0.42)*head,y2-Math.sin(a+0.42)*head);c.closePath();c.fill();}
+
+/* ---------- textures ---------- */
+function makeNoise(){const n=document.createElement('canvas');n.width=n.height=192;const g=n.getContext('2d');const id=g.createImageData(192,192);
+ let s=12345;const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+ for(let i=0;i<id.data.length;i+=4){const v=rnd();const d=v<0.5?0:255;id.data[i]=id.data[i+1]=id.data[i+2]=d;id.data[i+3]=Math.floor(rnd()*rnd()*46);}
+ g.putImageData(id,0,0);return n;}
+function makeStripes(){const n=document.createElement('canvas');n.width=n.height=16;const g=n.getContext('2d');g.fillStyle='rgba(255,255,255,.85)';g.fillRect(0,0,16,16);
+ g.strokeStyle=C.red;g.lineWidth=5;g.beginPath();g.moveTo(-4,20);g.lineTo(20,-4);g.moveTo(-12,12);g.lineTo(12,-12);g.moveTo(4,28);g.lineTo(28,4);g.stroke();return n;}
+let NOISE,STRIPES;
+
+/* =========================================================================
+   PHYSICS: linear 1D shallow-water, staggered grid, precomputed
+   ========================================================================= */
+const G_=9.81;
+function bathy(x){ // depth in m (positive), 0 on land
+ if(x<=-50) return 5500; if(x<=0) return 5500+(x+50)/50*2000;
+ if(x<=150) return 7500-(x/150)*7300; if(x<=180) return 200-(x-150)/30*200; return 0;}
+function landElev(x){ // m above MSL for x>180
+ return (x-180)*10+350*Math.exp(-(((x-200)/7)**2));}
+const eta0=x=>5*Math.exp(-(((x-50)/25)**2))-2*Math.exp(-(((x-155)/30)**2));
+const SIM={X0:-300,N:479,dt:1,dx:1000,T:2400,every:5};
+const PX=[-245,125,160]; // particle columns (km)
+function runSim(){
+ const N=SIM.N,dt=SIM.dt,dx=SIM.dx;
+ const eta=new Float64Array(N),u=new Float64Array(N+1),hf=new Float64Array(N+1),xc=new Float64Array(N);
+ for(let i=0;i<N;i++){xc[i]=SIM.X0+i+0.5;eta[i]=eta0(xc[i]);}
+ for(let j=0;j<=N;j++)hf[j]=Math.max(bathy(SIM.X0+j),5);
+ const nS=SIM.T/SIM.every+1;const snapE=new Float32Array(nS*N),snapU=new Float32Array(nS*N);
+ const st=new Float32Array(SIM.T+1);const xi=PX.map(()=>new Float32Array(SIM.T+1));const xiAcc=PX.map(()=>0);
+ const pIdx=PX.map(x=>Math.round(x-SIM.X0-0.5));
+ for(let n=0;n<=SIM.T;n++){
+  st[n]=eta[N-1];
+  if(n%SIM.every===0){const k=n/SIM.every;for(let i=0;i<N;i++){snapE[k*N+i]=eta[i];snapU[k*N+i]=0.5*(u[i]+u[i+1]);}}
+  pIdx.forEach((pi,m)=>{xi[m][n]=xiAcc[m];});
+  if(n===SIM.T)break;
+  for(let j=1;j<N;j++)u[j]-=G_*dt/dx*(eta[j]-eta[j-1]);
+  u[0]=-Math.sqrt(G_/hf[0])*eta[0];            // Sommerfeld radiation (left)
+  u[N]=Math.sqrt(G_/hf[N])*eta[N-1];           // open toward shore (h=10 m)
+  for(let i=0;i<N;i++)eta[i]-=dt/dx*(hf[i+1]*u[i+1]-hf[i]*u[i]);
+  pIdx.forEach((pi,m)=>{xiAcc[m]+=0.5*(u[pi]+u[pi+1])*dt;});
+ }
+ const xiMax=xi.map(a=>{let m=1e-6;for(const v of a)m=Math.max(m,Math.abs(v));return m;});
+ const rMax=new Float32Array(SIM.T+1);let m=-1e9;for(let n=0;n<=SIM.T;n++){m=Math.max(m,2.5*st[n]);rMax[n]=m;}
+ return {snapE,snapU,st,xi,xiMax,rMax,N};
+}
+let S=null;const ETA=new Float32Array(SIM.N);let ETA_T=-1;
+function simEtaAt(ts){ // fills ETA for sim time ts
+ if(ts===ETA_T)return ETA;ETA_T=ts;const N=SIM.N;const f=clamp(ts,0,SIM.T)/SIM.every;const k=Math.min(Math.floor(f),SIM.T/SIM.every-1);const a=f-k;
+ const o0=k*N,o1=(k+1)*N;for(let i=0;i<N;i++)ETA[i]=S.snapE[o0+i]*(1-a)+S.snapE[o1+i]*a;return ETA;}
+function etaX(x){ // from ETA array
+ const f=x-SIM.X0-0.5;if(f<=0)return ETA[0];if(f>=SIM.N-1)return ETA[SIM.N-1];const i=Math.floor(f),a=f-i;return ETA[i]*(1-a)+ETA[i+1]*a;}
+function series(arr,ts){const f=clamp(ts,0,SIM.T);const i=Math.min(Math.floor(f),SIM.T-1),a=f-i;return arr[i]*(1-a)+arr[i+1]*a;}
+
+/* time mappings */
+function simT(t){ if(t<75)return 0; if(t<90)return (t-75)*10; if(t<125)return 150+(t-90)*25; return Math.min(SIM.T,1025+(t-125)*50);}
+function realInfo(t){
+ const i=sceneIdx(t);
+ if(i<=1) return null;
+ if(i===2){const y=Math.round(clamp((t-35)*15,0,300));return {main:'Thời gian thực: Năm '+y,sub:'1 giây hoạt hình = 15 năm',id:'y'};}
+ if(i===3){const s=clamp((t-55)*7.5,0,150);return {main:'Thời gian thực: '+fmtS(s),sub:'1 giây hoạt hình = 7,5 giây thực',id:'s7'};}
+ if(i<=6){const s=150+simT(t);const sub=i===4?'1 giây hoạt hình = 10 giây thực':i===5?'1 giây hoạt hình = 25 giây thực':'1 giây hoạt hình = 50 giây thực';return {main:'Thời gian thực: '+fmtS(s),sub,id:'m'+i};}
+ const T=mapT(t);return {main:'Thời gian thực: '+fmtS(T),sub:'1 giây hoạt hình = 40 phút thực · kịch bản rãnh Manila',id:'h'};
+}
+function fmtS(s){s=Math.max(0,Math.floor(s));if(s<60)return '+'+s+' s';if(s<3600){const m=Math.floor(s/60),r=s%60;return '+'+m+' phút '+String(r).padStart(2,'0')+' s';}
+ const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return '+'+h+' giờ '+String(m).padStart(2,'0')+' phút';}
+const mapT=t=>clamp((t-147)*2400,0,31200);
+
+/* =========================================================================
+   MAP (scene 8): schematic coastlines + eikonal travel-time field
+   ========================================================================= */
+const LAND=[
+ [[101,26],[118,26],[117.6,23.9],[117.0,23.5],[116.4,22.9],[115.4,22.7],[114.2,22.25],[113.5,22.15],[112.8,21.9],[112.0,21.7],[111.0,21.45],[110.4,21.2],[110.45,20.6],[110.2,20.25],[109.85,20.6],[109.7,21.45],[109.1,21.55],[108.4,21.6],[108.0,21.5],[107.4,21.2],[107.0,20.95],[106.7,20.7],[106.5,20.25],[106.1,19.95],[105.85,19.5],[105.75,18.9],[106.05,18.35],[106.45,17.85],[106.75,17.35],[107.2,16.85],[107.65,16.45],[108.2,16.05],[108.55,15.55],[108.85,15.15],[109.0,14.6],[109.1,14.15],[109.22,13.77],[109.32,13.08],[109.25,12.65],[109.2,12.25],[109.2,11.9],[109.05,11.5],[108.75,11.15],[108.3,10.9],[107.75,10.65],[107.15,10.35],[106.75,10.1],[106.55,9.75],[106.15,9.35],[105.55,8.9],[104.85,8.6],[104.8,9.15],[104.85,9.65],[105.05,10.05],[104.5,10.4],[103.95,10.5],[103.55,10.6],[103.0,11.35],[102.85,11.8],[102.4,12.15],[101,12.5]],
+ [[101,6.4],[102.2,6.2],[102.6,6.0],[103.1,5.4],[103.45,4.4],[103.4,3.4],[103.5,2.6],[101,2.6]],
+ [[108.65,19.15],[109.2,19.85],[109.7,20.05],[110.6,20.1],[111.0,19.6],[110.55,18.75],[109.75,18.2],[109.1,18.4],[108.65,18.7]],
+ [[121.0,25.2],[121.9,25.05],[121.65,24.0],[121.35,23.1],[120.85,21.95],[120.3,22.5],[120.15,23.2],[120.25,23.9],[120.7,24.6]],
+ [[120.6,18.5],[120.4,17.6],[120.35,16.6],[120.3,16.1],[119.9,16.35],[119.8,15.85],[119.95,15.2],[120.25,14.65],[120.6,14.55],[120.95,14.6],[120.6,14.15],[120.9,13.75],[121.5,13.75],[122.0,13.5],[122.7,13.1],[123.3,12.95],[124.1,12.55],[124.2,13.05],[123.85,13.75],[123.3,13.95],[122.6,14.25],[122.0,14.6],[121.65,15.1],[121.55,15.9],[122.15,16.7],[122.35,17.4],[122.25,18.45],[121.25,18.6]],
+ [[120.35,13.5],[121.15,13.45],[121.55,12.65],[121.15,12.2],[120.75,12.5]],
+ [[121.9,11.85],[122.7,11.95],[123.2,11.1],[122.6,10.5],[122.0,10.6]],
+ [[122.4,10.6],[123.25,10.95],[123.6,10.4],[123.2,9.2],[122.5,9.8]],
+ [[123.4,11.2],[124.05,11.1],[123.95,10.0],[123.5,9.6],[123.4,10.3]],
+ [[124.3,12.6],[125.4,12.6],[126,11.6],[126,10.8],[125.3,10.2],[124.8,10.1],[124.4,11.0],[124.6,11.5]],
+ [[121.9,6.9],[122.5,7.6],[123.5,8.6],[124.3,8.6],[124.8,9.0],[125.5,9.8],[126,9.6],[126,5.6],[124.5,6.0],[123.6,6.6],[122.4,6.9]],
+ [[119.55,11.4],[119.75,10.6],[119.1,9.9],[118.3,9.1],[117.6,8.45],[117.2,8.35],[117.35,8.75],[118.0,9.45],[118.8,10.3],[119.2,10.9],[119.3,11.35]],
+ [[117.05,7.0],[117.7,6.45],[118.6,5.85],[119.3,5.15],[118.4,4.45],[118.0,4.0],[117.9,2.0],[109.0,1.5],[109.0,1.9],[109.6,2.1],[111.2,2.5],[113.0,3.2],[114.0,4.4],[115.2,5.0],[115.85,5.75],[116.4,6.5],[116.8,7.0]],
+];
+const TRENCH=[[119.55,13.7],[119.3,14.5],[119.15,15.4],[119.2,16.4],[119.4,17.4],[119.7,18.4],[120.05,19.4],[120.35,20.4],[120.55,21.2]];
+const PARACEL=[[111.2,16.52],[111.6,16.45],[111.75,16.82],[112.33,16.97],[112.25,16.3],[111.55,15.8],[112.62,16.58],[111.98,16.05],[111.38,16.05],[112.75,16.95],[112.0,16.55],[111.75,16.25]];
+const SPRATLY=[[114.36,10.38],[114.0,10.9],[115.0,10.2],[114.6,9.7],[113.8,9.4],[112.9,8.65],[114.3,11.05],[115.55,9.3],[116.1,10.1],[113.0,9.9],[114.9,8.8],[116.4,8.6],[111.9,8.6],[115.4,11.2],[113.6,10.5],[114.2,8.2],[112.4,9.25],[115.8,9.85]];
+const MAP={x0:40,y0:96,w:960,h:848,lon0:102.5,lat1:23.3,sx:43.636,sy:44.9};
+const MX=lon=>MAP.x0+(lon-MAP.lon0)*MAP.sx, MY=lat=>MAP.y0+(MAP.lat1-lat)*MAP.sy;
+const GR={lon0:101,lat0:2,d:0.1,nx:251,ny:231};
+const STATIONS=[
+ {name:'Tuy Hòa',lon:109.32,lat:13.08,t:7560,txt:'Tuy Hòa — sóng tới sau *2 giờ 06 phút*'},
+ {name:'Nha Trang',lon:109.2,lat:12.25,t:8880,txt:'Nha Trang — sóng tới sau *2 giờ 28 phút*'},
+ {name:'Quy Nhơn',lon:109.22,lat:13.77,t:9120,txt:'Quy Nhơn — sóng tới sau *2 giờ 32 phút*'},
+ {name:'Quảng Ngãi',lon:108.85,lat:15.15,t:null,txt:'Quảng Ngãi — độ cao sóng lớn nhất *~18 m*'},
+ {name:'Hải Phòng',lon:106.7,lat:20.86,t:30900,txt:'Hải Phòng — *3,5 m*, sau *8 giờ 35 phút*'},
+];
+let MP=null;
+function buildMap(){
+ const NX=GR.nx,NY=GR.ny,NN=NX*NY;
+ const pip=(x,y,p)=>{let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const xi=p[i][0],yi=p[i][1],xj=p[j][0],yj=p[j][1];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c;}return c;};
+ const land=new Uint8Array(NN);
+ for(let j=0;j<NY;j++)for(let i=0;i<NX;i++){const lon=GR.lon0+i*GR.d,lat=GR.lat0+j*GR.d;for(const p of LAND){if(pip(lon,lat,p)){land[j*NX+i]=1;break;}}}
+ class Heap{constructor(){this.a=[];this.k=[];}push(n,key){const a=this.a,k=this.k;a.push(n);k.push(key);let i=a.length-1;while(i>0){const p=(i-1)>>1;if(k[p]<=k[i])break;[a[p],a[i]]=[a[i],a[p]];[k[p],k[i]]=[k[i],k[p]];i=p;}}
+  pop(){const a=this.a,k=this.k;const top=a[0],tk=k[0];const la=a.pop(),lk=k.pop();if(a.length){a[0]=la;k[0]=lk;let i=0;for(;;){const l=2*i+1,r=l+1;let m=i;if(l<a.length&&k[l]<k[m])m=l;if(r<a.length&&k[r]<k[m])m=r;if(m===i)break;[a[m],a[i]]=[a[i],a[m]];[k[m],k[i]]=[k[i],k[m]];i=m;}}return [top,tk];}}
+ const KM=111.2,NB=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1],[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]];
+ const stepKm=(j,di,dj)=>{const lat=GR.lat0+j*GR.d;return Math.hypot(di*GR.d*KM*Math.cos(lat*Math.PI/180),dj*GR.d*KM);};
+ const dl=new Float32Array(NN).fill(1e9);{const h=new Heap();for(let n=0;n<NN;n++)if(land[n]){dl[n]=0;h.push(n,0);}
+  while(h.a.length){const [n,d]=h.pop();if(d>dl[n])continue;const i=n%NX,j=(n/NX)|0;for(const [di,dj] of NB){const ii=i+di,jj=j+dj;if(ii<0||jj<0||ii>=NX||jj>=NY)continue;const m=jj*NX+ii;const nd=d+stepKm(j,di,dj);if(nd<dl[m]){dl[m]=nd;h.push(m,nd);}}}}
+ const dep=new Float32Array(NN),cc=new Float32Array(NN);
+ for(let n=0;n<NN;n++){if(land[n])continue;const lon=GR.lon0+(n%NX)*GR.d,lat=GR.lat0+((n/NX)|0)*GR.d;let h=Math.min(4300,15+8.5*dl[n]);
+  if(lat>17.2&&lon<110&&lon>105)h=Math.min(h,40);
+  if(lat>19.2&&lon>110&&lon<117.5)h=Math.min(h,60+6*dl[n]);
+  if((lat<10.8&&lon<109)||(lat<7.2&&lon<113.5)||(lat<9.2&&lon<110.5))h=Math.min(h,60);
+  dep[n]=Math.max(h,20);cc[n]=Math.sqrt(9.81*dep[n]);}
+ const arr=new Float32Array(NN).fill(1e9);{const h=new Heap();
+  for(let s=0;s<TRENCH.length-1;s++)for(let f=0;f<=1;f+=0.05){const lon=lerp(TRENCH[s][0],TRENCH[s+1][0],f),lat=lerp(TRENCH[s][1],TRENCH[s+1][1],f);const n=Math.round((lat-GR.lat0)/GR.d)*NX+Math.round((lon-GR.lon0)/GR.d);if(!land[n]){arr[n]=0;h.push(n,0);}}
+  while(h.a.length){const [n,t]=h.pop();if(t>arr[n])continue;const i=n%NX,j=(n/NX)|0;for(const [di,dj] of NB){const ii=i+di,jj=j+dj;if(ii<0||jj<0||ii>=NX||jj>=NY)continue;const m=jj*NX+ii;if(land[m])continue;const nt=t+stepKm(j,di,dj)*1000/(0.5*(cc[n]+cc[m]));if(nt<arr[m]){arr[m]=nt;h.push(m,nt);}}}}
+ // extend into land for clean contours (land is drawn on top)
+ const ext=Float32Array.from(arr);{const q=[];for(let n=0;n<NN;n++)if(ext[n]<1e8)q.push(n);let qi=0;while(qi<q.length){const n=q[qi++];const i=n%NX,j=(n/NX)|0;for(const [di,dj] of NB.slice(0,4)){const ii=i+di,jj=j+dj;if(ii<0||jj<0||ii>=NX||jj>=NY)continue;const m=jj*NX+ii;if(ext[m]>1e8){ext[m]=ext[n]+60;q.push(m);}}}}
+ // marching squares
+ const PXg=i=>MX(GR.lon0+i*GR.d),PYg=j=>MY(GR.lat0+j*GR.d);
+ const TAB=[[],[[3,0]],[[0,1]],[[3,1]],[[1,2]],[[3,0],[1,2]],[[0,2]],[[3,2]],[[2,3]],[[0,2]],[[0,1],[2,3]],[[1,2]],[[1,3]],[[0,1]],[[3,0]],[]];
+ const i0=Math.floor((102-GR.lon0)/GR.d),i1=Math.ceil((125-GR.lon0)/GR.d),j0=Math.floor((4-GR.lat0)/GR.d),j1=Math.ceil((23.6-GR.lat0)/GR.d);
+ function ms(L){const seg=[];for(let j=j0;j<j1;j++)for(let i=i0;i<i1;i++){const v0=ext[j*NX+i],v1=ext[j*NX+i+1],v2=ext[(j+1)*NX+i+1],v3=ext[(j+1)*NX+i];
+   const code=(v0>L?1:0)|(v1>L?2:0)|(v2>L?4:0)|(v3>L?8:0);if(code===0||code===15)continue;if(land[j*NX+i]&&land[j*NX+i+1]&&land[(j+1)*NX+i]&&land[(j+1)*NX+i+1])continue;
+   const P=e=>{let a,b,va,vb;if(e===0){a=[i,j];b=[i+1,j];va=v0;vb=v1;}else if(e===1){a=[i+1,j];b=[i+1,j+1];va=v1;vb=v2;}else if(e===2){a=[i+1,j+1];b=[i,j+1];va=v2;vb=v3;}else{a=[i,j+1];b=[i,j];va=v3;vb=v0;}
+    const u=(L-va)/(vb-va);return [PXg(a[0]+(b[0]-a[0])*u),PYg(a[1]+(b[1]-a[1])*u)];};
+   for(const [e1,e2] of TAB[code]){const p=P(e1),q=P(e2);seg.push(p[0],p[1],q[0],q[1]);}}return seg;}
+ const levels=[];for(let k=1;k<=17;k++)levels.push({T:k*1800,seg:ms(k*1800)});
+ // images: depth shading + tint buffer
+ const imgD=document.createElement('canvas');imgD.width=NX;imgD.height=NY;const gd=imgD.getContext('2d');const id=gd.createImageData(NX,NY);
+ for(let j=0;j<NY;j++)for(let i=0;i<NX;i++){const n=j*NX+i,o=((NY-1-j)*NX+i)*4;const d=land[n]?0:clamp(Math.log(dep[n]/20)/Math.log(4300/20),0,1);
+  id.data[o]=Math.round(lerp(214,120,d));id.data[o+1]=Math.round(lerp(238,176,d));id.data[o+2]=Math.round(lerp(250,226,d));id.data[o+3]=255;}
+ gd.putImageData(id,0,0);
+ const imgT=document.createElement('canvas');imgT.width=NX;imgT.height=NY;
+ const near=(lon,lat)=>{let best=1e9,bt=null;for(let j=0;j<NY;j++)for(let i=0;i<NX;i++){const n=j*NX+i;if(land[n]||arr[n]>1e8)continue;const d=Math.hypot((GR.lon0+i*GR.d-lon)*Math.cos(lat*0.01745),GR.lat0+j*GR.d-lat);if(d<best&&d<0.4){best=d;bt=arr[n];}}return bt;};
+ STATIONS.forEach(s=>{if(s.t===null)s.t=near(s.lon,s.lat)||8400;});
+ return {arr,ext,land,levels,ms,imgD,imgT,tintData:imgT.getContext('2d').createImageData(NX,NY),lastT:-1};
+}
+
+/* =========================================================================
+   SCENE 1 — causes
+   ========================================================================= */
+function gauss(x,c,s){return Math.exp(-(((x-c)/s)**2));}
+function miniSea(c,x,y,w,h,y0,surf){ // surf(xx)-> offset px (positive up)
+ const g=c.createLinearGradient(0,y0-10,0,y+h);g.addColorStop(0,C.sky);g.addColorStop(.55,C.ocean);g.addColorStop(1,C.navy);
+ c.fillStyle=g;c.beginPath();c.moveTo(x,y+h);for(let xx=x;xx<=x+w+0.1;xx+=3)c.lineTo(xx,y0-surf(xx));c.lineTo(x+w,y+h);c.closePath();c.fill();
+ c.strokeStyle='#fff';c.lineWidth=2;c.beginPath();for(let xx=x;xx<=x+w+0.1;xx+=3){const yy=y0-surf(xx);xx===x?c.moveTo(xx,yy):c.lineTo(xx,yy);}c.stroke();}
+function drawMini(c,k,x,y,w,h,ph){
+ c.save();rrect(c,x,y,w,h,12);c.clip();
+ const sg=c.createLinearGradient(0,y,0,y+h);sg.addColorStop(0,'#E9F6FD');sg.addColorStop(1,'#FFFFFF');c.fillStyle=sg;c.fillRect(x,y,w,h);
+ const y0=y+h*0.42,s=w/240;
+ if(k===0){ // earthquake
+  const up=14*s*ep(ph,0.12,0.24)*(1-ep(ph,0.9,1));const sp=ep(ph,0.3,0.9);const A=up;
+  const xm=x+w*0.64;
+  const surf=xx=>{if(ph<0.3)return A*gauss(xx,xm,26*s);const d=sp*w*0.48;return A*0.62*(gauss(xx,xm-d,24*s)+gauss(xx,xm+d,24*s))*(1-0.3*sp);};
+  miniSea(c,x,y,w,h,y0,surf);
+  const yb=y+h*0.8;c.fillStyle='#4E615B';c.beginPath();c.moveTo(x,yb);c.lineTo(x+w*0.5,yb);c.lineTo(x+w*0.5,y+h);c.lineTo(x,y+h);c.fill();
+  c.fillStyle='#C9A36A';c.beginPath();c.moveTo(x+w*0.47,yb+8*s-up);c.quadraticCurveTo(x+w*0.65,yb-up-4*s,x+w,yb-up*0.4);c.lineTo(x+w,y+h);c.lineTo(x+w*0.47,y+h);c.closePath();c.fill();
+  c.strokeStyle=C.orange;c.lineWidth=3*s;c.beginPath();c.moveTo(x+w*0.47,yb+8*s-up);c.lineTo(x+w*0.56,y+h);c.stroke();
+  if(up>2){c.globalAlpha=clamp(up/(14*s),0,1)*(1-sp);arrow(c,x+w*0.66,yb+6*s,x+w*0.66,yb-up-10*s,C.orange,3*s);c.globalAlpha=1;}
+ } else if(k===1){ // landslide
+  const sl=ep(ph,0.08,0.46);const bump=ep(ph,0.3,0.45)*(1-ep(ph,0.85,1));const bx=lerp(x+w*0.6,x+w*0.02,ep(ph,0.32,0.98));
+  miniSea(c,x,y,w,h,y0,xx=>11*s*bump*gauss(xx,bx,22*s));
+  c.fillStyle='#A88452';c.beginPath();c.moveTo(x+w*0.38,y+h);c.lineTo(x+w*0.78,y+h*0.16);c.lineTo(x+w,y+h*0.16);c.lineTo(x+w,y+h);c.closePath();c.fill();
+  c.fillStyle='#7BA05B';c.fillRect(x+w*0.78,y+h*0.13,w*0.22,h*0.04);
+  const px=lerp(x+w*0.8,x+w*0.5,sl),py=lerp(y+h*0.19,y+h*0.78,sl);
+  c.save();c.translate(px,py);c.rotate(-1.13);c.fillStyle='#6E4E2A';rrect(c,-18*s,-12*s,36*s,18*s,4*s);c.fill();c.restore();
+ } else if(k===2){ // volcano
+  const col=ep(ph,0.28,0.5);const rings=ep(ph,0.42,0.98);const A=10*s*ep(ph,0.4,0.5)*(1-ep(ph,0.88,1));
+  miniSea(c,x,y,w,h,y0,xx=>A*(gauss(xx,x+w*0.5-rings*w*0.46-30*s,16*s)+gauss(xx,x+w*0.5+rings*w*0.46+30*s,16*s)));
+  const pk=lerp(y+h*0.12,y+h*0.32,col);
+  c.fillStyle='#5B4A43';c.beginPath();c.moveTo(x+w*0.18,y+h);c.lineTo(x+w*0.43,pk);c.lineTo(x+w*0.57,pk);c.lineTo(x+w*0.82,y+h);c.closePath();c.fill();
+  c.fillStyle='rgba(120,110,105,.75)';for(let i=0;i<6;i++){const pp=ph*1.6-i*0.12;if(pp<0||pp>0.9)continue;c.beginPath();c.arc(x+w*0.5+Math.sin(i*1.7)*14*s,pk-pp*h*0.9,(10+pp*26)*s,0,7);c.fill();}
+  if(col>0&&col<1||ph<0.62){const dv=ep(ph,0.28,0.55);c.fillStyle='rgba(240,120,0,.85)';c.beginPath();c.moveTo(x+w*0.44,pk);c.lineTo(x+w*0.47,pk);c.lineTo(lerp(x+w*0.43,x+w*0.26,dv),lerp(pk,y0+6*s,dv));c.lineTo(lerp(x+w*0.4,x+w*0.22,dv),lerp(pk,y0+4*s,dv));c.closePath();c.fill();}
+ } else if(k===3){ // meteorite
+  const hit=0.3;const fl=prog(ph,0,hit);const r=ep(ph,0.34,0.98);const A=12*s*ep(ph,0.3,0.4)*(1-ep(ph,0.85,1));const xi=x+w*0.45;
+  miniSea(c,x,y,w,h,y0,xx=>ph<hit?0:A*(gauss(xx,xi-r*w*0.5-14*s,15*s)+gauss(xx,xi+r*w*0.5+14*s,15*s))-A*1.4*gauss(xx,xi,12*s)*(1-r));
+  c.fillStyle='#3E4A55';c.fillRect(x,y+h*0.86,w,h*0.14);
+  if(ph<hit){const mx=lerp(x+w*1.05,xi,fl),my=lerp(y-10,y0,fl);const g=c.createLinearGradient(mx,my,mx+60*s,my-60*s);g.addColorStop(0,'rgba(240,120,0,.95)');g.addColorStop(1,'rgba(240,120,0,0)');
+   c.strokeStyle=g;c.lineWidth=9*s;c.lineCap='round';c.beginPath();c.moveTo(mx,my);c.lineTo(mx+60*s,my-60*s);c.stroke();c.fillStyle='#3a2a20';c.beginPath();c.arc(mx,my,7*s,0,7);c.fill();}
+  else if(ph<0.55){const sp=prog(ph,hit,0.55);c.fillStyle='rgba(255,255,255,.9)';for(let i=-3;i<=3;i++){if(!i)continue;const a=i*0.32;c.beginPath();c.arc(xi+Math.sin(a)*sp*40*s,y0-Math.cos(a)*sp*48*s*(1-sp*0.6),4*s*(1-sp),0,7);c.fill();}}
+ } else { // meteotsunami
+  const xp=x+w*(0.04+0.86*ph);const A=s*(2+10*ph);
+  miniSea(c,x,y,w,h,y0,xx=>A*gauss(xx,xp-6*s,20*s));
+  c.strokeStyle=C.slate;c.lineWidth=3*s;c.setLineDash([7*s,6*s]);c.beginPath();c.moveTo(xp,y+8*s);c.lineTo(xp,y0-6*s);c.stroke();c.setLineDash([]);
+  c.fillStyle='#fff';c.strokeStyle='#9DB0C6';c.lineWidth=2;c.beginPath();c.arc(xp-16*s,y+22*s,13*s,0,7);c.arc(xp,y+16*s,16*s,0,7);c.arc(xp+16*s,y+24*s,11*s,0,7);c.fill();
+  for(let i=0;i<3;i++)arrow(c,xp-46*s,y+46*s+i*14*s,xp-14*s,y+46*s+i*14*s,'#7C93AF',2*s);
+  c.fillStyle='#3E4A55';c.fillRect(x,y+h*0.86,w,h*0.14);
+ }
+ c.restore();
+}
+const CARDS=[
+ {name:'Động đất đáy biển',stat:'83%',sub:'thêm 6% do động đất gây trượt lở',ex:['Sumatra – Andaman 26/12/2004, Mw 9,1','Tōhoku 11/3/2011, Mw 9,0']},
+ {name:'Trượt lở đất',stat:'≈ 2–3%',sub:'dưới nước, hoặc vách núi đổ xuống biển',ex:['Vịnh Lituya (Alaska) 9/7/1958: sóng leo 524 m']},
+ {name:'Núi lửa phun trào',stat:'≈ 6%',sub:'sụp miệng núi lửa, nham vụn đổ xuống biển',ex:['Krakatau 1883','Hunga Tonga–Hunga Ha’apai 15/1/2022']},
+ {name:'Thiên thạch va chạm',stat:'Rất hiếm',sub:'chưa ghi nhận trong lịch sử loài người',ex:['Chicxulub, 66 triệu năm trước']},
+ {name:'Sóng thần khí tượng',stat:'Hiếm',sub:'bước nhảy khí áp vài hPa đi cùng tốc độ sóng → cộng hưởng; biên độ thường nhỏ hơn',ex:[]},
+];
+const BARS=[['Động đất',83,C.orange],['Núi lửa',6,C.ocean],['Động đất gây trượt lở',6,'#E9A15A'],['Không rõ',3,'#9AA9BC'],['Trượt lở',2,C.sky]];
+function cardRect(i){const m=20,g=12,cw=(W-2*m-4*g)/5;return {x:m+i*(cw+g),y:98,w:cw,h:648};}
+function drawScene1(c,t){
+ c.fillStyle='#F4F8FC';c.fillRect(0,TOP,W,SRC_Y-TOP);
+ const z=ep(t,18.6,20);
+ for(const i of [1,2,3,4,0]){
+  const a=ep(t,0.4+i*0.8,1.2+i*0.8);if(a<=0)continue;
+  let R=cardRect(i);let alpha=a;if(i>0)alpha*=1-z;else if(z>0){R={x:lerp(R.x,0,z),y:lerp(R.y,TOP,z),w:lerp(R.w,W,z),h:lerp(R.h,SRC_Y-TOP,z)};}
+  if(alpha<=0.002)continue;
+  c.save();c.globalAlpha=alpha;c.translate(0,(1-a)*30);
+  c.shadowColor='rgba(10,46,92,.14)';c.shadowBlur=20;c.shadowOffsetY=6;rrect(c,R.x,R.y,R.w,R.h,lerp(18,0,z));c.fillStyle='#fff';c.fill();c.shadowColor='transparent';
+  c.strokeStyle=i===0?C.orange:'#D3DEEA';c.lineWidth=i===0?3:1.5;c.stroke();
+  const pad=lerp(10,0,z);const ah=lerp(132,SRC_Y-TOP,z);
+  drawMini(c,i,R.x+pad,R.y+pad,R.w-2*pad,ah,((t+i*0.7)%4)/4);
+  const ta=1-clamp(z*3,0,1);
+  if(ta>0){c.globalAlpha=alpha*ta;let yy=R.y+pad+ah+12;const tw=R.w-20,x=R.x+10;
+   c.fillStyle=C.orange;c.font=F(26,800);c.fillText('①②③④⑤'[i],x,yy+24);
+   let L=layout(c,CARDS[i].name,tw-36,30,800);drawLines(c,L,x+36,yy-2,30,800,C.ink,36);yy+=L.lines.length*36+8;
+   c.font=F(38,800);c.fillStyle=C.orange;c.fillText(CARDS[i].stat,x,yy+36);yy+=50;
+   L=layout(c,CARDS[i].sub,tw,30,400);drawLines(c,L,x,yy,30,400,C.slate,35);yy+=L.lines.length*35+10;
+   for(const e of CARDS[i].ex){L=layout(c,e,tw,30,600);drawLines(c,L,x,yy,30,600,C.ink,35);yy+=L.lines.length*35+6;}
+  }
+  c.restore();
+ }
+ // bar chart
+ const ba=ep(t,7.6,8.6)*(1-0.78*ep(t,13.2,13.8))*(1-z);
+ if(ba>0){c.save();c.globalAlpha=ba;const x0=20,y0=760,bwT=W-40;
+  c.font=F(30,800);c.fillStyle=C.ink;c.fillText('Tỉ lệ nguyên nhân sóng thần',x0,y0+28);c.font=F(24,400,true);c.fillStyle=C.slate;c.fillText('Nguồn: NOAA NCEI',x0+430,y0+27);
+  const gw=ease(prog(t,8.4,11));let xx=x0;const by=y0+44;const cx=[];
+  BARS.forEach((b,i)=>{const w=bwT*b[1]/100*gw;c.fillStyle=b[2];c.fillRect(xx,by,w,50);c.fillStyle='#fff';c.fillRect(xx+w-1,by,2,50);cx.push(xx+w/2);xx+=w;});
+  if(gw>0.98){c.font=F(32,800);c.fillStyle='#fff';c.fillText('Động đất 83%',x0+16,by+37);
+   const lx=[420,630,1030,1230];
+   BARS.slice(1).forEach((b,i)=>{const tx=b[0]+' '+b[1]+'%';c.font=F(30,600);const tw=c.measureText(tx).width;const lxx=i===3?W-20-tw:lx[i];
+    c.strokeStyle=C.slate;c.lineWidth=2;c.beginPath();c.moveTo(cx[i+1],by+50);c.lineTo(cx[i+1],by+60+i*0);c.lineTo(lxx+tw/2,by+66);c.stroke();
+    c.fillStyle=C.ink;c.fillText(tx,lxx,by+96);});}
+  c.restore();}
+ caption(c,{text:'*Điểm chung:* một khối nước lớn bị dịch chuyển *ĐỘT NGỘT*…',x:120,y:770,w:1200},fadeA(t,13.4,16.8));
+ caption(c,{text:'…trọng lực kéo mặt nước về cân bằng → sinh ra *sóng rất dài*.',x:120,y:770,w:1200},fadeA(t,16.6,19.0));
+}
+
+/* =========================================================================
+   SECTION (scenes 2–7): one continuous camera over one cross-section
+   ========================================================================= */
+let SHOW_LABELS=true,SHOW_TABLE=true;
+const VIEWS={
+ G:{xl:-120,xr:220,ys:230,kz:11.67,kw:11.67},
+ G2:{xl:-100,xr:220,ys:262,kz:16.7,kw:16.7},
+ O:{xl:-300,xr:220,ys:386,kz:69.2,kw:13.85},
+ B:{xl:18.9,xr:184.4,ys:420,kz:140,kw:13.85},
+ Cc:{xl:178.9,xr:183.6,ys:680,kz:6000,kw:6},
+};
+const CAMK=[[0,'G'],[64,'G'],[66.5,'G2'],[75,'G2'],[77,'O'],[106,'O'],[108.5,'B'],[125,'B'],[127.6,'Cc'],[999,'Cc']];
+function camAt(t){
+ let i=0;while(i<CAMK.length-2&&t>=CAMK[i+1][0])i++;
+ const [ta,a]=CAMK[i],[tb,b]=CAMK[i+1];const A=VIEWS[a],B=VIEWS[b];
+ if(a===b)return {...A};
+ const u=ease(prog(t,ta,tb));const wa=A.xr-A.xl,wb=B.xr-B.xl,ca=(A.xl+A.xr)/2,cb=(B.xl+B.xr)/2;
+ const wd=Math.exp(lerp(Math.log(wa),Math.log(wb),u));const g=Math.abs(wa-wb)>1e-6?(wa-wd)/(wa-wb):u;const cx=lerp(ca,cb,g);
+ return {xl:cx-wd/2,xr:cx+wd/2,ys:lerp(A.ys,B.ys,u),kz:Math.exp(lerp(Math.log(A.kz),Math.log(B.kz),u)),kw:Math.exp(lerp(Math.log(A.kw),Math.log(B.kw),u))};
+}
+const wInter=x=>-5*gauss(x,50,25)+1.2*gauss(x,115,22);
+const slabZ=x=>x<=0?bathy(x)/1000:7.5+0.268*x+0.0012*x*x;
+const slabS=x=>x<=0?0:0.268+0.0024*x;
+const HYPO=70;
+const TABLE=[[5500,'máy bay phản lực'],[4000,''],[1000,'tàu cao tốc'],[200,''],[50,'ô tô trên quốc lộ'],[10,'≈ Usain Bolt chạy 100 m (37,6 km/h) — *không ai chạy thoát*']];
+
+function drawSection(c,t){
+ const cm=camAt(t);const kx=W/(cm.xr-cm.xl);
+ const X=x=>(x-cm.xl)*kx,Xi=px=>cm.xl+px/kx;
+ const Yd=z=>cm.ys+z*cm.kz,Ye=m=>cm.ys-m*cm.kz/1000,Yw=e=>cm.ys-e*cm.kw;
+ const geo=t<75;
+ const p3=t<35?0:ep(t,36,53);
+ const r=clamp((t-55)*7.5,0,150);
+ const U=t<55?0:ease(prog(r,10,75));
+ const wdm=x=>geo?wInter(x)*p3*(1-U):0;
+ const ground=x=>x<180?-bathy(x)+wdm(x)*1000:landElev(x);
+ const ts=simT(t);if(!geo)simEtaAt(ts);
+ let xb=180,etaSt=0,bore=0;
+ if(!geo){etaSt=series(S.st,ts);xb=Math.max(178.6,180+2.5*etaSt/10);const rate=(series(S.st,ts+2)-series(S.st,ts-2))/4;bore=clamp(rate*120,0,6);}
+ const gb=ground(xb),e178=geo?0:etaX(178.5);
+ const surf=x=>{if(geo)return eta0(x)*U;if(x<=178.5)return etaX(x);
+  let z=lerp(e178,gb,(x-178.5)/(xb-178.5));if(bore>0.3){const d=xb-x;if(d<0.2)z=Math.max(z,ground(x)+bore*(1-0.4*d/0.2));}return z;};
+ const span=cm.xr-cm.xl,x0=cm.xl-span*0.03,x1=cm.xr+span*0.03,NS=380;
+ const sx=[];for(let i=0;i<=NS;i++)sx.push(x0+(x1-x0)*i/NS);
+ if(xb>x0&&xb<x1){sx.push(xb);sx.sort((a,b)=>a-b);}
+ const gy=sx.map(x=>Ye(ground(x)));
+ const wi=[];sx.forEach((x,i)=>{if(x<=xb)wi.push(i);});
+ const wy=wi.map(i=>{const x=sx[i];let y=Yw(surf(x));const dpx=gy[i]-y;if(dpx>5)y+=1.3*Math.sin(X(x)*0.11+t*1.6)*Math.sin(X(x)*0.031-t*0.6);return Math.min(y,gy[i]);});
+ const OX=20,OY=-26;
+ // sky
+ const sk=c.createLinearGradient(0,TOP,0,cm.ys);sk.addColorStop(0,'#E4F3FC');sk.addColorStop(1,'#FFFFFF');c.fillStyle=sk;c.fillRect(0,TOP,W,SRC_Y-TOP);
+ // land top face
+ c.beginPath();let first=true;const li=[];sx.forEach((x,i)=>{if(x>=xb)li.push(i);});
+ if(li.length>1){li.forEach(i=>{first?c.moveTo(X(sx[i]),gy[i]):c.lineTo(X(sx[i]),gy[i]);first=false;});for(let k=li.length-1;k>=0;k--)c.lineTo(X(sx[li[k]])+OX,gy[li[k]]+OY);c.closePath();c.fillStyle='#D5E4B8';c.fill();}
+ // sea top face
+ if(wi.length>1){c.beginPath();wi.forEach((i,k)=>{k?c.lineTo(X(sx[i]),wy[k]):c.moveTo(X(sx[i]),wy[k]);});for(let k=wi.length-1;k>=0;k--)c.lineTo(X(sx[wi[k]])+OX,wy[k]+OY);c.closePath();
+  const tg=c.createLinearGradient(0,cm.ys+OY-40,0,cm.ys+10);tg.addColorStop(0,'#D9F1FC');tg.addColorStop(1,'#A6DDF6');c.fillStyle=tg;c.fill();
+  c.strokeStyle='rgba(255,255,255,.9)';c.lineWidth=1.5;c.beginPath();wi.forEach((i,k)=>{k?c.lineTo(X(sx[i])+OX,wy[k]+OY):c.moveTo(X(sx[i])+OX,wy[k]+OY);});c.stroke();}
+ // earth (clipped below ground)
+ c.save();c.beginPath();c.moveTo(X(sx[0]),SRC_Y+50);sx.forEach((x,i)=>c.lineTo(X(x),gy[i]));c.lineTo(X(sx[sx.length-1]),SRC_Y+50);c.closePath();c.clip();
+ const ag=c.createLinearGradient(0,Yd(0),0,Yd(60));ag.addColorStop(0,'#EE9445');ag.addColorStop(1,'#8E2A1F');c.fillStyle=ag;c.fillRect(0,TOP,W,SRC_Y-TOP+50);
+ const poly=(top,bot,xs)=>{c.beginPath();xs.forEach((x,i)=>i?c.lineTo(X(x),top(x)):c.moveTo(X(x),top(x)));for(let i=xs.length-1;i>=0;i--)c.lineTo(X(xs[i]),bot(xs[i]));c.closePath();};
+ const th=x=>Math.sqrt(1+slabS(x)**2);
+ poly(x=>Yd(slabZ(x)),x=>Yd(slabZ(x)+28*th(x)),sx);c.fillStyle='#3E4C52';c.fill();
+ poly(x=>Yd(slabZ(x)),x=>Yd(slabZ(x)+7*th(x)),sx);c.fillStyle='#55695F';c.fill();
+ const cx=sx.filter(x=>x>=0);if(cx.length&&cx[0]>0)cx.unshift(0);
+ if(cx.length>1){poly(x=>Ye(ground(x)),x=>Yd(Math.min(slabZ(x),35)),cx);const cg=c.createLinearGradient(0,Ye(0),0,Yd(35));cg.addColorStop(0,'#DDBD83');cg.addColorStop(1,'#A47C47');c.fillStyle=cg;c.fill();}
+ c.globalAlpha=0.6;c.fillStyle=c.createPattern(NOISE,'repeat');c.fillRect(0,TOP,W,SRC_Y-TOP+50);c.globalAlpha=1;
+ c.restore();
+ // geology overlays
+ const gA=1-ep(t,74,76.5);
+ if(gA>0&&t>=20){
+  c.save();c.globalAlpha=gA;
+  // locked zone
+  const lzA=ep(t,28.4,29.4)*(t<55?1:1-ep(r,40,110)*0.6);
+  if(lzA>0){c.globalAlpha=gA*lzA;const xs=[];for(let x=9;x<=87;x+=1.5)xs.push(x);const hw=Math.max(5,1.1*cm.kz);
+   poly(x=>Yd(slabZ(x))-hw,x=>Yd(slabZ(x))+hw,xs);c.fillStyle=c.createPattern(STRIPES,'repeat');c.fill();c.strokeStyle=C.red;c.lineWidth=2;c.stroke();c.globalAlpha=gA;}
+  // plate-motion chevrons
+  const chA=ep(t,21,22.5);if(chA>0){c.globalAlpha=gA*chA*0.8;c.strokeStyle='#fff';c.lineWidth=3;const sp=24,off=((t*3.2)%sp);
+   for(let x=-200+off;x<110;x+=sp){if(x<x0||x>x1)continue;const z=slabZ(x)+3.5*th(x);const px=X(x),py=Yd(z);const ang=Math.atan2(slabS(x)*cm.kz,kx);
+    c.save();c.translate(px,py);c.rotate(ang);c.beginPath();c.moveTo(-6,-7);c.lineTo(3,0);c.lineTo(-6,7);c.stroke();c.restore();}c.globalAlpha=gA;}
+  // main motion arrow
+  const maA=ep(t,24,25);if(maA>0){c.globalAlpha=gA*maA;const ya=Yd(slabZ(-75)+3.5);c.setLineDash([16,10]);c.lineDashOffset=-t*30;arrow(c,X(-112),ya,X(-40),ya,C.orange,9,30);c.setLineDash([]);c.globalAlpha=gA;}
+  // strain markers
+  const mkA=ep(t,36,37.5)*(1-ep(t,70,72));
+  if(mkA>0){const D=t<55?10*p3:10*(1-backOut(prog(r,12,80)));c.globalAlpha=gA*mkA;c.strokeStyle='rgba(70,45,20,.7)';c.lineWidth=2.5;c.setLineDash([7,5]);
+   for(const xk of [28,48,68,88,108]){const zt=-ground(xk)/1000,zb=Math.min(slabZ(xk),35)-0.6;c.beginPath();for(let k=0;k<=14;k++){const f=k/14,z=lerp(zt,zb,f),x=xk+D*f*f;k?c.lineTo(X(x),Yd(z)):c.moveTo(X(x),Yd(z));}c.stroke();}c.setLineDash([]);c.globalAlpha=gA;}
+  // hypocentre + rupture
+  if(t>=54.5){const hx=X(HYPO),hy=Yd(slabZ(HYPO));
+   const xu=Math.max(0,HYPO-2.5*r*0.93),xd=Math.min(87,HYPO+2.5*r*0.9);const rg=1-0.75*prog(r,90,150);
+   if(t>=55){c.save();c.shadowColor=C.orange;c.shadowBlur=22;c.strokeStyle=`rgba(255,170,60,${rg})`;c.lineWidth=7;c.beginPath();for(let x=xu;x<=xd;x+=1)x===xu?c.moveTo(X(x),Yd(slabZ(x))):c.lineTo(X(x),Yd(slabZ(x)));c.stroke();
+    if(r<40){c.fillStyle='#FFF2C8';[xu,xd].forEach(x=>{c.beginPath();c.arc(X(x),Yd(slabZ(x)),7,0,7);c.fill();});}c.restore();}
+   const sa=ep(t,54.5,55.3);c.globalAlpha=gA*sa;c.fillStyle=C.orange;c.strokeStyle='#fff';c.lineWidth=2.5;c.beginPath();for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,rr=k%2?7:17;c.lineTo(hx+Math.cos(a)*rr,hy+Math.sin(a)*rr);}c.closePath();c.fill();c.stroke();c.globalAlpha=gA;
+  }
+  c.restore();
+ }
+ // seismic waves
+ if(t>=55&&t<76){c.save();c.beginPath();c.rect(0,cm.ys,W,SRC_Y-cm.ys);c.clip();const hx=X(HYPO),hy=Yd(slabZ(HYPO));
+  for(let re=0;re<=120;re+=15){const age=r-re;if(age<=0)continue;[[7,'#CDEFFF',2.5],[4,'#FFD27A',2.5]].forEach(([v,col,lw])=>{const R=v*age;if(R>520)return;c.globalAlpha=0.85*(1-R/520)*(1-ep(t,74,75.5));c.strokeStyle=col;c.lineWidth=lw;c.beginPath();c.ellipse(hx,hy,R*kx,R*cm.kz,0,0,7);c.stroke();});}
+  c.restore();}
+ // houses & trees
+ const shake=(t>=55&&t<75)?(r<16?0:r<29?1.6:3.2)*(1-prog(r,130,150)):0;
+ const wdepth=x=>x<=xb&&!geo?Math.max(0,surf(x)-ground(x)):0;
+ drawVillage(c,X,Xi,Ye,ground,kx,shake,t,wdepth,cm);
+ // water front face
+ if(wi.length>1){c.beginPath();wi.forEach((i,k)=>{k?c.lineTo(X(sx[i]),wy[k]):c.moveTo(X(sx[i]),wy[k]);});for(let k=wi.length-1;k>=0;k--)c.lineTo(X(sx[wi[k]]),gy[wi[k]]);c.closePath();
+  const wg=c.createLinearGradient(0,Math.min(cm.ys,TOP+300),0,Yd(7.5));wg.addColorStop(0,C.sky);wg.addColorStop(0.45,C.ocean);wg.addColorStop(1,C.navy);
+  c.globalAlpha=cm.kz>1500?0.84:1;c.fillStyle=wg;c.fill();c.globalAlpha=1;
+  c.strokeStyle='rgba(255,255,255,.95)';c.lineWidth=2.2;c.beginPath();wi.forEach((i,k)=>{k?c.lineTo(X(sx[i]),wy[k]):c.moveTo(X(sx[i]),wy[k]);});c.stroke();
+  if(bore>0.6&&xb>x0&&xb<x1){const fx=X(xb),fy=Yw(surf(xb-0.01));c.fillStyle='rgba(255,255,255,.9)';for(let k=0;k<9;k++){const a=k/9;c.beginPath();c.arc(fx-a*40-6*Math.sin(t*7+k),fy+a*10-4,Math.max(2,(1-a)*bore*1.6),0,7);c.fill();}}}
+ // geology water arrows (scene 4)
+ if(t>=63&&t<77){const a=ep(t,63,64.5)*(1-ep(t,75,77));c.save();c.globalAlpha=a;
+  for(const x of [22,38,54,70]){const yt=Yw(eta0(x)*U),yb=Ye(ground(x));const off=((t*40)%30);c.setLineDash([12,8]);c.lineDashOffset=-off;arrow(c,X(x),yb-4,X(x),yt-6,C.orange,5,18);c.setLineDash([]);}
+  for(const x of [140,156,170]){const yb=Ye(ground(x));const yt=Math.min(Yw(eta0(x)*U),yb-2);c.setLineDash([12,8]);c.lineDashOffset=-((t*40)%30);arrow(c,X(x),yt-46,X(x),yb,'#2a6fd1',5,18);c.setLineDash([]);}
+  c.restore();}
+ // particles (scene 6)
+ const pA=ep(t,90.5,91.5)*(1-ep(t,124,125));
+ if(pA>0&&S){c.save();c.globalAlpha=pA;PX.forEach((x,m)=>{if(x<x0||x>x1)return;const ds=14*series(S.xi[m],ts)/S.xiMax[m];const yb=Ye(ground(x)),yt=Yw(surf(x));if(yb-yt<16)return;
+  for(let cI=0;cI<4;cI++)for(let rI=0;rI<6;rI++){const f=(rI+0.5)/6;const px=X(x)+(cI-1.5)*13+ds,py=lerp(yb-4,yt+6,f);c.fillStyle='#fff';c.beginPath();c.arc(px,py,4.6,0,7);c.fill();c.strokeStyle='rgba(10,46,92,.5)';c.lineWidth=1;c.stroke();}});c.restore();}
+ // boat offshore
+ const bA=ep(t,90,91)*(1-ep(t,106,107.5));
+ if(bA>0)drawBoat(c,X(-150),Yw(surf(-150)),Math.atan2(Yw(surf(-148))-Yw(surf(-152)),4*kx),1.7,bA);
+ // close-up props (scene 7)
+ const cuA=ep(t,126.6,127.6);
+ if(cuA>0){c.save();c.globalAlpha=cuA;
+  for(const [fx,ph] of [[179.66,0],[179.78,1.7],[179.9,3.1]]){if(xb<fx-0.015){const fy=Ye(ground(fx))-6;c.save();c.translate(X(fx),fy);c.rotate(0.5*Math.sin(t*9+ph));drawFish(c);c.restore();}}
+  const bx=179.72,bg=ground(bx),bs=surf(bx);const floating=xb>bx+0.02&&bs-bg>0.8;drawBoat(c,X(bx),floating?Yw(bs):Ye(bg)-2,floating?0:0.38,2.1,1);
+  // reference lines
+  c.setLineDash([10,8]);c.strokeStyle='rgba(15,30,58,.55)';c.lineWidth=2;c.beginPath();c.moveTo(0,Ye(0));c.lineTo(W,Ye(0));c.stroke();c.setLineDash([]);
+  c.restore();
+  label(c,'Mực nước tĩnh',24,Ye(0)+12,cuA,{align:'left'});
+  label(c,'Đường bờ ban đầu',X(180),Ye(0)+70,cuA*(1-ep(t,141.5,142.3)),{anchor:[X(180),Ye(0)]});
+  // measures
+  const mA=ep(t,141.6,142.6);
+  if(mA>0){const Rm=S.rMax[Math.floor(clamp(ts,0,SIM.T))];const xm=180+Rm/10;c.save();c.globalAlpha=mA;
+   arrow(c,X(xm)+30,Ye(0),X(xm)+30,Ye(Rm),C.red,4,18);arrow(c,X(xm)+30,Ye(Rm),X(xm)+30,Ye(0),C.red,4,18);
+   c.setLineDash([6,6]);c.strokeStyle=C.red;c.lineWidth=2;c.beginPath();c.moveTo(X(xm)-10,Ye(Rm));c.lineTo(X(xm)+44,Ye(Rm));c.stroke();c.setLineDash([]);
+   const hy=Ye(0)+46;arrow(c,X(180),hy,X(xm),hy,C.navy,4,18);arrow(c,X(xm),hy,X(180),hy,C.navy,4,18);
+   c.restore();
+   label(c,'Độ cao sóng leo R ≈ '+vn(Rm)+' m',Math.min(X(xm)+40,W-16),Ye(Rm)-14,mA,{align:'right',valign:'bottom',color:C.red,w:480});
+   label(c,'Khoảng cách ngập ≈ '+vn((xm-180),1)+' km',(X(180)+X(xm))/2,hy+12,mA,{color:C.navy});}
+ }
+ // station marker
+ const stA=ep(t,78,79)*(1-ep(t,124.5,125.5));
+ if(stA>0){const sxp=X(178.5),syp=Yw(surf(178.5));c.save();c.globalAlpha=stA;c.fillStyle=C.orange;c.strokeStyle='#fff';c.lineWidth=2;c.beginPath();c.moveTo(sxp,syp-4);c.lineTo(sxp-9,syp-22);c.lineTo(sxp+9,syp-22);c.closePath();c.fill();c.stroke();c.restore();
+  label(c,'Trạm ven bờ',sxp+10,syp-30,stA,{align:'right',valign:'bottom'});}
+ // labels — geology
+ const L1=x=>ep(t,x,x+0.8)*(1-ep(t,55.6,56.4));
+ if(t<57){
+  label(c,'Rãnh đại dương',X(0)-40,cm.ys+10,L1(21)*(1-ep(t,35.4,36.4)),{align:'right',anchor:[X(0),Yd(7.7)]});
+  label(c,'*Mảng đại dương*\nvỏ bazan ~7 km · 3,0 g/cm³'.replace('\n',' '),X(-116),Yd(19),L1(22),{align:'left',w:400});
+  label(c,'*Mảng lục địa* vỏ ~35 km · 2,7 g/cm³',X(94),Yd(14),L1(23),{align:'left',w:420});
+  label(c,'Quyển mềm',X(150),Yd(48),L1(24),{align:'left'});
+  label(c,'Đường bờ',X(183),cm.ys+22,ep(t,25,25.8)*(1-ep(t,35,36)),{align:'left',anchor:[X(180),cm.ys]});
+ }
+ if(t>=54.6&&t<75)label(c,'Tâm chấn',X(HYPO)+22,Yd(slabZ(HYPO))+16,ep(t,54.8,55.6)*(1-ep(t,66.8,67.6)),{align:'left'});
+ if(t>=55&&t<64)label(c,'Vết vỡ lan 2–3 km/s; toàn bộ đứt gãy kéo dài ~2–3 phút',X(-60),Yd(30),fadeA(t,55.6,63.4),{align:'left',w:420,color:'#8a3b00'});
+ if(t>=55.5&&t<60.5){const a=fadeA(t,56,60.4);const hx=X(HYPO),hy=Yd(slabZ(HYPO));const ag=r-15;if(ag>0){label(c,'P',hx+7*ag*kx*0.8,hy+7*ag*cm.kz*0.6,a,{valign:'middle',bg:'#CDEFFF'});label(c,'S',hx+4*ag*kx*0.8,hy+4*ag*cm.kz*0.6,a,{valign:'middle',bg:'#FFD27A'});}}
+ // labels — waves
+ if(t>=83&&t<125&&S){const E=ETA;let im=0,vm=-1e9,it=0,vt=1e9,ic=0,vc=-1e9;
+  for(let i=0;i<SIM.N;i++){const x=SIM.X0+i+0.5;if(x<45&&E[i]>vm){vm=E[i];im=i;}if(x>60&&x<178&&E[i]<vt){vt=E[i];it=i;}if(x>40&&E[i]>vc){vc=E[i];ic=i;}}
+  const xl=SIM.X0+im+0.5,xt=SIM.X0+it+0.5,xc=SIM.X0+ic+0.5;
+  const la=fadeA(t,83.5,106.4);
+  if(la>0){const txt=xl<-55?'Sóng ra khơi: *232 m/s ≈ 836 km/h*':'Sóng ra khơi — *đỉnh* đi trước';
+   label(c,txt,X(xl)+40,cm.ys+44,la,{align:'right',anchor:[X(xl),Yw(vm)]});
+   label(c,'Sóng vào bờ — *HÕM* đi trước (do vùng sụt nằm phía bờ)',Math.min(X(xt)-30,W-524),200,la*(t<101?1:1-ep(t,101,102)),{align:'left',w:500,anchor:[X(xt),Yw(vt)]});}
+  const lc=fadeA(t,109,125.4);if(lc>0)label(c,'Đỉnh sóng vào bờ',Math.min(X(xc)-60,W-330),cm.ys+50,lc,{align:'left',anchor:[X(xc),Yw(vc)]});
+  if(t>=106&&SHOW_TABLE)drawTable(c,24,96,bathy(xc),fadeA(t,108.6,125.6));
+  caption(c,{text:'Đỉnh sóng *chậm lại và dồn cao* khi vào vùng nước nông.',x:880,y:194,w:536,anchor:[X(xc),Yw(vc)-6]},fadeA(t,110,124.6));
+ }
+ // widgets: stress bar, ruler
+ const sbA=ep(t,36.5,37.5)*(1-ep(t,69,70.5));
+ if(sbA>0){const st=t<55?p3:1-ep(r,6,70);drawStress(c,1376,262,40,300,st,sbA,t);}
+ const ruA=ep(t,36.5,37.5)*(1-ep(t,63.5,65));
+ if(ruA>0){const st=t<55?p3:(1-backOut(prog(r,6,45)));drawRuler(c,24,96,410,190,st,ruA);}
+ // calc box
+ const cbA=fadeA(t,66,75.4);
+ if(cbA>0)caption(c,{text:'Chỉ riêng một dải 200 km × 50 km nâng trung bình 2 m = *20 km³ nước* ≈ 2 lần dung tích hồ Hòa Bình.',x:24,y:98,w:470,sz:32,wt:500},cbA);
+ // captions (absolute time)
+ const P=(x,y)=>[x,y];
+ caption(c,{text:'*≈ 8 cm/năm* — gấp đôi tốc độ mọc móng tay',x:24,y:98,w:520,anchor:P(X(-76),Yd(slabZ(-76)+3.5)-10)},fadeA(t,24.6,35.4));
+ caption(c,{text:'*VÙNG KHÓA:* hai mảng dính chặt, không trượt được',x:600,y:98,w:620,anchor:P(X(48),Yd(slabZ(48))-8)},fadeA(t,28.8,35.4));
+ caption(c,{text:'Mảng đại dương kéo mép mảng lục địa *cong xuống*',x:448,y:98,w:490,anchor:P(X(50),Ye(ground(50)))},fadeA(t,37,44.4));
+ caption(c,{text:'8 cm/năm × 300 năm = *24 m* độ trượt bị “nợ” lại',x:448,y:98,w:490,anchor:P(X(48),Yd(slabZ(48))-6)},fadeA(t,44.2,55.4));
+ caption(c,{text:'Sóng địa chấn (P ≈ 6–8 km/s, S ≈ 3,5–4,5 km/s) gây *rung lắc mạnh*…',x:760,y:700,w:656,anchor:P(X(181.6),Ye(ground(181.6))-6)},fadeA(t,56.6,61.4));
+ caption(c,{text:'…nhưng sóng địa chấn *KHÔNG* phải thứ tạo ra sóng thần.',x:760,y:700,w:656,anchor:P(X(181.6),Ye(ground(181.6))-6)},fadeA(t,61.2,65));
+ caption(c,{text:'Sóng thần sinh ra do *ĐÁY BIỂN BIẾN DẠNG VĨNH VIỄN*.',x:24,y:700,w:640,anchor:P(X(46),Yw(eta0(46)*U)-4)},fadeA(t,64.8,75.4));
+ caption(c,{text:'Đứt gãy chỉ vài phút — quá nhanh, nước *không kịp chảy đi*…',x:760,y:700,w:656},fadeA(t,68,71.8));
+ caption(c,{text:'…nên mặt nước nhô lên *giống hệt đáy biển*.',x:760,y:700,w:656,anchor:P(X(60),Yw(eta0(60)*U)+10)},fadeA(t,71.6,75.4));
+ caption(c,{text:'Trọng lực kéo gò nước sụp xuống → tách thành *hai sóng* chạy ngược chiều.',x:24,y:98,w:900},fadeA(t,78,89.6));
+ if(S&&t>90&&t<105){caption(c,{text:'Sóng thần làm chuyển động *cả cột nước* từ mặt tới đáy.',x:24,y:98,w:620,anchor:P(X(-245),Yw(surf(-245))-4)},fadeA(t,91.2,104));
+  caption(c,{text:'Ngoài khơi: nước dâng 2–3 m trải trên hàng chục km — *tàu gần như không nhận ra*.',x:300,y:560,w:640,anchor:P(X(-150),Yw(surf(-150))+8)},fadeA(t,95.6,104));}
+ caption(c,{text:'*NƯỚC RÚT BẤT THƯỜNG = DẤU HIỆU TỰ NHIÊN CỦA SÓNG THẦN.* Chạy ngay lên chỗ cao!',x:24,y:98,w:900,tone:'warn',anchor:P(X(179.83),Ye(ground(179.83))-6)},fadeA(t,126.8,134));
+ caption(c,{text:'Sóng thần là *CHUỖI sóng* cách nhau hàng chục phút — sóng đầu chưa chắc lớn nhất.',x:24,y:98,w:860},fadeA(t,138.5,145.4));
+ caption(c,{text:'Tōhoku 2011: sóng leo cao nhất *40,5 m*.',x:24,y:232,w:600},fadeA(t,141.4,145.4));
+ // scale note
+ let note=null;
+ if(t>=125.5&&cm.kz>1500)note='Không theo tỉ lệ: độ cao phóng đại '+Math.round(cm.kz/kx)+' lần so với chiều ngang';
+ else if(geo)note='Không theo tỉ lệ: độ sâu phóng đại '+vn(cm.kz/kx,0)+' lần'+(t>=35?'; biến dạng vỏ và mặt nước phóng đại 1.000 lần':'');
+ else if(cm.kz<1500)note='Không theo tỉ lệ: độ sâu phóng đại '+Math.round(cm.kz/kx)+' lần; độ cao sóng phóng đại '+Math.round(cm.kw*1000/cm.kz)+' lần (so với độ sâu)';
+ if(note)scaleNote(c,note);
+}
+function scaleNote(c,txt){c.font=F(22,500);const w=c.measureText(txt).width;rrect(c,16,SRC_Y-42,w+24,34,8);c.fillStyle='rgba(255,255,255,.88)';c.fill();c.fillStyle=C.slate;c.fillText(txt,28,SRC_Y-18);}
+function drawVillage(c,X,Xi,Ye,ground,kx,shake,t,wdepth,cm){
+ const hw=clamp(0.24*kx,9,56),sp=Math.max(0.4*kx,hw*1.3);
+ for(let i=0;i<5;i++){const px=X(180.35)+i*sp;if(px<-60||px>W+60)continue;const x=Xi(px);const gyy=Ye(ground(x));const d=wdepth(x);const tilt=clamp((d-2)*0.035,0,0.25);
+  const ox=shake?shake*Math.sin(t*55+i*1.7):0;c.save();c.translate(px+ox,gyy+1);c.rotate(-tilt);
+  c.fillStyle='#F3E8D3';c.strokeStyle='#7a5b3a';c.lineWidth=Math.max(1,hw/22);c.fillRect(-hw/2,-hw*0.72,hw,hw*0.72);c.strokeRect(-hw/2,-hw*0.72,hw,hw*0.72);
+  c.fillStyle='#C8553D';c.beginPath();c.moveTo(-hw*0.62,-hw*0.7);c.lineTo(0,-hw*1.22);c.lineTo(hw*0.62,-hw*0.7);c.closePath();c.fill();
+  c.fillStyle='#6b4a2b';c.fillRect(-hw*0.12,-hw*0.38,hw*0.24,hw*0.38);c.restore();}
+ const tz=clamp(0.3*kx,10,64);
+ for(const x of [182.72,183.12,183.52,193,196.5,200,203.5,207,211]){const px=X(x);if(px<-80||px>W+80)continue;const gyy=Ye(ground(x));const ox=shake?shake*0.7*Math.sin(t*50+x):0;
+  c.fillStyle='#6E4B2C';c.fillRect(px-tz*0.08+ox*0.3,gyy-tz*0.7,tz*0.16,tz*0.72);c.fillStyle='#5E9E4A';c.beginPath();c.arc(px+ox,gyy-tz*0.85,tz*0.42,0,7);c.fill();c.fillStyle='#78B55E';c.beginPath();c.arc(px+ox-tz*0.12,gyy-tz*0.98,tz*0.2,0,7);c.fill();}
+}
+function drawBoat(c,x,y,ang,s,a){c.save();c.globalAlpha*=a;c.translate(x,y);c.rotate(ang);c.scale(s,s);
+ c.fillStyle='#fff';c.strokeStyle=C.ink;c.lineWidth=1.5/s*1.4;c.beginPath();c.moveTo(-18,-6);c.lineTo(18,-6);c.lineTo(12,3);c.lineTo(-13,3);c.closePath();c.fillStyle=C.orange;c.fill();c.stroke();
+ c.beginPath();c.moveTo(0,-6);c.lineTo(0,-30);c.stroke();c.fillStyle='#fff';c.beginPath();c.moveTo(1,-29);c.lineTo(15,-9);c.lineTo(1,-9);c.closePath();c.fill();c.stroke();c.restore();}
+function drawFish(c){c.fillStyle='#8FA6BF';c.strokeStyle='#3b4f66';c.lineWidth=1.5;c.beginPath();c.ellipse(0,0,15,6,0,0,7);c.fill();c.stroke();c.beginPath();c.moveTo(13,0);c.lineTo(22,-6);c.lineTo(22,6);c.closePath();c.fill();c.stroke();c.fillStyle='#000';c.beginPath();c.arc(-9,-1.5,1.6,0,7);c.fill();}
+function drawStress(c,x,y,w,h,v,a,t){c.save();c.globalAlpha=a;
+ c.font=F(30,800);const tw=c.measureText('Ứng suất').width;rrect(c,x+w-tw-24+4,y-50,tw+24,42,10);c.fillStyle='rgba(255,255,255,.94)';c.fill();c.fillStyle=C.ink;c.fillText('Ứng suất',x+w-tw-12+4,y-18);
+ rrect(c,x-6,y-6,w+12,h+12,12);c.fillStyle='#fff';c.fill();c.strokeStyle='#B9C8DB';c.lineWidth=2;c.stroke();
+ const g=c.createLinearGradient(0,y+h,0,y);g.addColorStop(0,'#3FA9F5');g.addColorStop(0.5,'#F2C230');g.addColorStop(1,C.red);
+ const fh=h*clamp(v,0,1);rrect(c,x,y+h-fh,w,Math.max(fh,0.1),8);c.fillStyle=g;c.fill();
+ if(v>0.97&&t<56){const fl=0.5+0.5*Math.sin(t*14);c.globalAlpha=a*fl;c.strokeStyle=C.red;c.lineWidth=6;rrect(c,x-8,y-8,w+16,h+16,14);c.stroke();}
+ c.restore();}
+function drawRuler(c,x,y,w,h,v,a){c.save();c.globalAlpha=a;rrect(c,x,y,w,h,14);c.fillStyle='#fff';c.fill();c.strokeStyle='#B9C8DB';c.lineWidth=1.5;c.stroke();
+ const cx=x+w/2,y0=y+70,L=w-90,bend=v*44;c.lineCap='round';
+ c.strokeStyle='#F2C230';c.lineWidth=16;c.beginPath();c.moveTo(cx-L/2,y0);c.quadraticCurveTo(cx,y0+bend*2,cx+L/2,y0);c.stroke();
+ c.strokeStyle='#8a6d10';c.lineWidth=1.5;for(let k=1;k<12;k++){const u=k/12,px=cx-L/2+L*u,py=y0+bend*2*2*u*(1-u);c.beginPath();c.moveTo(px,py-6);c.lineTo(px,py+(k%3?0:6));c.stroke();}
+ c.fillStyle=C.slate;c.fillRect(cx-L/2-22,y0-22,18,44);c.fillRect(cx+L/2+4,y0-22,18,44);
+ if(v>0.05){arrow(c,cx-L/2-44,y0,cx-L/2-26,y0,C.ink,3,12);arrow(c,cx+L/2+44,y0,cx+L/2+26,y0,C.ink,3,12);}
+ const L2=layout(c,'Như thước nhựa bị ép cong dần',w-30,30,600);drawLines(c,L2,cx,y+h-16-L2.lines.length*36,30,600,C.ink,36,'center');c.restore();}
+function drawTable(c,x,y,hCrest,a){if(a<=0)return;c.save();c.globalAlpha=a;const w=840;
+ let best=0,bd=1e9;TABLE.forEach((r,i)=>{const d=Math.abs(Math.log(r[0])-Math.log(Math.max(hCrest,5)));if(d<bd){bd=d;best=i;}});
+ const rows=TABLE.map(r=>{const L=layout(c,r[1]||'—',400,30,500);return {r,L,h:Math.max(46,L.lines.length*36+10)};});
+ const f1=layout(c,'Chu kỳ T ≈ 10 phút — *KHÔNG ĐỔI*. Bước sóng λ = c·T co lại: ~120 km ngoài khơi → ~6 km ở độ sâu 10 m.',w-36,30,500);
+ const f2=layout(c,'Định luật Green: A₂ = A₁·(h₁/h₂)^¼ → 2 m × (4.000/10)^¼ ≈ *9 m*.',w-36,30,500);
+ const hh=56+rows.reduce((s,r)=>s+r.h,0)+20+f1.lines.length*37+12+f2.lines.length*37+22;
+ c.shadowColor='rgba(10,30,60,.22)';c.shadowBlur=18;c.shadowOffsetY=5;rrect(c,x,y,w,hh,14);c.fillStyle='#fff';c.fill();c.shadowColor='transparent';c.strokeStyle='#B9C8DB';c.lineWidth=1.5;c.stroke();
+ c.save();rrect(c,x,y,w,hh,14);c.clip();c.fillStyle=C.navy;c.fillRect(x,y,w,52);c.restore();
+ c.font=F(28,800);c.fillStyle='#fff';c.textAlign='right';c.fillText('Độ sâu h',x+176,y+36);c.fillText('c = √(g·h)',x+380,y+36);c.textAlign='left';c.fillText('So sánh',x+412,y+36);
+ let yy=y+56;rows.forEach((o,i)=>{if(i===best){c.fillStyle='rgba(240,120,0,.16)';c.fillRect(x+4,yy,w-8,o.h);}
+  c.font=F(32,800);c.fillStyle=i===best?'#B45500':C.ink;c.textAlign='right';c.fillText(vn(o.r[0])+' m',x+176,yy+34);c.fillText(vn(Math.sqrt(9.81*o.r[0])*3.6)+' km/h',x+380,yy+34);c.textAlign='left';
+  drawLines(c,o.L,x+412,yy+6,30,500,o.r[1]?C.ink:'#9AA9BC',36);yy+=o.h;
+  c.strokeStyle='#E3EAF2';c.lineWidth=1;c.beginPath();c.moveTo(x+12,yy);c.lineTo(x+w-12,yy);c.stroke();});
+ yy+=16;drawLines(c,f1,x+18,yy,30,500,C.ink,37,'left',C.orange);yy+=f1.lines.length*37+12;drawLines(c,f2,x+18,yy,30,500,C.ink,37,'left',C.orange);
+ c.restore();}
+
+/* =========================================================================
+   SCENE 8 — Biển Đông + summary
+   ========================================================================= */
+function drawMap(c,t){
+ const T=mapT(t);
+ c.fillStyle='#F4F8FC';c.fillRect(0,TOP,W,SRC_Y-TOP);
+ c.save();rrect(c,MAP.x0,MAP.y0,MAP.w,MAP.h,14);c.clip();
+ const gx=MX(GR.lon0-GR.d/2),gyT=MY(GR.lat0+(GR.ny-0.5)*GR.d),gw=GR.nx*GR.d*MAP.sx,gh=GR.ny*GR.d*MAP.sy;
+ c.imageSmoothingEnabled=true;c.drawImage(MP.imgD,gx,gyT,gw,gh);
+ // arrival tint
+ if(T>0&&MP.lastT!==T){const d=MP.tintData.data,NX=GR.nx,NY=GR.ny;for(let j=0;j<NY;j++)for(let i=0;i<NX;i++){const n=j*NX+i,o=((NY-1-j)*NX+i)*4;const v=MP.arr[n];
+   if(v<T){d[o]=255;d[o+1]=196;d[o+2]=120;d[o+3]=Math.round(lerp(150,60,clamp(v/T,0,1)));}else d[o+3]=0;}
+  MP.imgT.getContext('2d').putImageData(MP.tintData,0,0);MP.lastT=T;}
+ if(T>0)c.drawImage(MP.imgT,gx,gyT,gw,gh);
+ // isochrones
+ {const n=MP.levels.filter(L=>L.T<=T).length;const sc=SCALE*DPR;if(!MP.iso)MP.iso=document.createElement('canvas');const ic=MP.iso;
+  if(ic.width!==cv.width||ic.height!==cv.height||MP.isoSc!==sc||n<MP.isoN){ic.width=cv.width;ic.height=cv.height;MP.isoSc=sc;MP.isoN=0;}
+  if(n>MP.isoN){const g=ic.getContext('2d');g.setTransform(sc,0,0,sc,0,0);g.lineWidth=1.6;g.strokeStyle='rgba(150,60,0,.55)';for(let q=MP.isoN;q<n;q++){const s=MP.levels[q].seg;g.beginPath();for(let k=0;k<s.length;k+=4){g.moveTo(s[k],s[k+1]);g.lineTo(s[k+2],s[k+3]);}g.stroke();}MP.isoN=n;}
+  if(n>0){c.save();c.setTransform(1,0,0,1,0,0);c.drawImage(ic,0,0);c.restore();}}
+ if(T>0&&T<31000){const s=MP.ms(T);c.lineWidth=3.5;c.strokeStyle=C.red;c.beginPath();for(let k=0;k<s.length;k+=4){c.moveTo(s[k],s[k+1]);c.lineTo(s[k+2],s[k+3]);}c.stroke();}
+ // land
+ for(const p of LAND){c.beginPath();p.forEach(([lo,la],i)=>i?c.lineTo(MX(lo),MY(la)):c.moveTo(MX(lo),MY(la)));c.closePath();c.fillStyle='#EFE5CF';c.fill();c.strokeStyle='#A8987A';c.lineWidth=1.5;c.stroke();}
+ // trench
+ c.strokeStyle=C.red;c.fillStyle=C.red;c.lineWidth=4;c.beginPath();TRENCH.forEach(([lo,la],i)=>i?c.lineTo(MX(lo),MY(la)):c.moveTo(MX(lo),MY(la)));c.stroke();
+ for(let s=0;s<TRENCH.length-1;s++){const a=[MX(TRENCH[s][0]),MY(TRENCH[s][1])],b=[MX(TRENCH[s+1][0]),MY(TRENCH[s+1][1])];const L=Math.hypot(b[0]-a[0],b[1]-a[1]);const nx=(b[1]-a[1])/L,ny=-(b[0]-a[0])/L;
+  for(let f=0.15;f<1;f+=0.34){const px=lerp(a[0],b[0],f),py=lerp(a[1],b[1],f);const tx=(b[0]-a[0])/L*7,ty=(b[1]-a[1])/L*7;c.beginPath();c.moveTo(px-tx,py-ty);c.lineTo(px+tx,py+ty);c.lineTo(px-nx*13,py-ny*13);c.closePath();c.fill();}}
+ // islands
+ c.fillStyle='#7A6A4E';for(const [lo,la] of PARACEL.concat(SPRATLY)){c.beginPath();c.arc(MX(lo),MY(la),3.2,0,7);c.fill();}
+ c.restore();
+ c.strokeStyle='#B9C8DB';c.lineWidth=1.5;rrect(c,MAP.x0,MAP.y0,MAP.w,MAP.h,14);c.stroke();
+ // map labels
+ c.save();c.font=F(52,800,true);c.fillStyle='rgba(27,78,143,.75)';c.textAlign='center';c.fillText('BIỂN ĐÔNG',MX(114.6),MY(13.6));c.restore();
+ const lab=(t1,lo,la,o)=>label(c,t1,MX(lo),MY(la),1,o);
+ lab('VIỆT NAM',105.0,15.6,{bg:'rgba(255,255,255,.6)',wt:800});
+ lab('TRUNG QUỐC',112.0,23.0,{bg:'rgba(255,255,255,.6)',wt:800});
+ lab('PHILIPPINES',122.5,16.9,{bg:'rgba(255,255,255,.6)',wt:800});
+ lab('Quần đảo *Hoàng Sa* (Việt Nam)',114.6,19.0,{w:300,anchor:[MX(112.1),MY(16.7)]});
+ lab('Quần đảo *Trường Sa* (Việt Nam)',114.2,7.6,{w:300,anchor:[MX(114.2),MY(9.3)]});
+ lab('Rãnh Manila',121.4,20.6,{color:C.red,anchor:[MX(120.1),MY(19.6)],border:C.red});
+ // stations
+ STATIONS.forEach((s,i)=>{const hit=T>=s.t;const px=MX(s.lon),py=MY(s.lat);c.beginPath();c.arc(px,py,hit?15:12,0,7);c.fillStyle=hit?C.orange:'#fff';c.fill();c.strokeStyle=hit?'#fff':C.navy;c.lineWidth=2.5;c.stroke();
+  c.fillStyle=hit?'#fff':C.navy;c.font=F(18,800);c.textAlign='center';c.fillText(String(i+1),px,py+6);c.textAlign='left';});
+ // side panel
+ const px=1020,pw=396;let y=192;
+ c.save();rrect(c,px,y,pw,752,14);c.fillStyle='#fff';c.fill();c.strokeStyle='#B9C8DB';c.lineWidth=1.5;c.stroke();
+ c.font=F(30,800);c.fillStyle=C.ink;c.fillText('Kịch bản xấu nhất',px+20,y+42);c.fillStyle=C.red;c.fillText('Mw 9,3',px+290,y+42);
+ y+=62;
+ STATIONS.forEach((s,i)=>{const hit=T>=s.t;const L=layout(c,s.txt,pw-80,30,500);const hh=L.lines.length*36+20;
+  c.globalAlpha=hit?1:0.42;if(hit){c.fillStyle='rgba(240,120,0,.12)';rrect(c,px+10,y,pw-20,hh,10);c.fill();}
+  c.beginPath();c.arc(px+32,y+28,15,0,7);c.fillStyle=hit?C.orange:'#fff';c.fill();c.strokeStyle=hit?C.orange:C.navy;c.lineWidth=2.5;c.stroke();c.font=F(18,800);c.fillStyle=hit?'#fff':C.navy;c.textAlign='center';c.fillText(String(i+1),px+32,y+34);c.textAlign='left';
+  drawLines(c,L,px+58,y+8,30,500,C.ink,36,'left',hit?'#B45500':C.ink);y+=hh+3;c.globalAlpha=1;});
+ y+=8;c.strokeStyle=C.red;c.lineWidth=3.5;c.beginPath();c.moveTo(px+20,y+18);c.lineTo(px+60,y+18);c.stroke();c.strokeStyle='rgba(150,60,0,.6)';c.lineWidth=1.6;c.beginPath();c.moveTo(px+20,y+30);c.lineTo(px+60,y+30);c.stroke();
+ const Lg=layout(c,'Mặt sóng · đẳng thời 30 phút',pw-90,30,500);drawLines(c,Lg,px+72,y,30,500,C.ink,36);y+=Lg.lines.length*36+18;
+ const Ls=layout(c,'Mô phỏng COMCOT — Nguyễn Hồng Phương và nnk. (2014), Viện Vật lý Địa cầu.',pw-40,22,400);c.globalAlpha=1;drawLines(c,Ls,px+20,y,22,400,C.slate,27);
+ c.restore();
+ scaleNote(c,'Sơ đồ, không theo tỉ lệ — đường bờ và độ sâu giản lược; đường đẳng thời minh họa');
+ // summary
+ const sA=ep(t,160.3,161.1);
+ if(sA>0){c.save();c.globalAlpha=sA*0.82;c.fillStyle='#F4F8FC';c.fillRect(0,TOP,W,SRC_Y-TOP);c.restore();
+  const items=['*~83%* sóng thần do động đất đáy biển, chủ yếu ở *đới hút chìm*.','Sóng thần do *đáy biển biến dạng vĩnh viễn* nâng cả cột nước — không phải do sóng địa chấn.','*c = √(g·h)*: ngoài khơi nhanh như máy bay, vào bờ chậm lại, dồn năng lượng thành sóng cao.','*Rung mạnh* hoặc *nước rút bất thường* → lên chỗ cao ngay, không chờ.'];
+  let yy=128;items.forEach((s,i)=>{const a=ep(t,161+i*2,161.8+i*2);if(a<=0){yy+=190;return;}c.save();c.globalAlpha=a;c.translate(0,(1-a)*24);
+   const L=layout(c,s,1080,36,500);const hh=Math.max(150,L.lines.length*46+48);
+   rrect(c,120,yy+6,1200,hh,18);c.fillStyle='rgba(10,46,92,.10)';c.fill();rrect(c,120,yy,1200,hh,18);c.fillStyle=i===3?'#FFF4F5':'#fff';c.fill();c.strokeStyle=i===3?C.red:'#C9D6E6';c.lineWidth=i===3?3:1.5;c.stroke();
+   c.beginPath();c.arc(178,yy+hh/2,32,0,7);c.fillStyle=i===3?C.red:C.navy;c.fill();c.font=F(34,800);c.fillStyle='#fff';c.textAlign='center';c.fillText(String(i+1),178,yy+hh/2+12);c.textAlign='left';
+   drawLines(c,L,232,yy+(hh-L.lines.length*46)/2-4,36,500,C.ink,46,'left',i===3?C.red:C.orange);c.restore();yy+=hh+24;});
+ }
+}
+
+/* =========================================================================
+   CHROME: header, clock, source line
+   ========================================================================= */
+let flashAt=-1e9,lastScaleId=null;
+function drawChrome(c,t,nowMs){
+ const i=sceneIdx(t);
+ c.fillStyle=C.navy;c.fillRect(0,0,W,80);c.fillStyle=C.orange;c.fillRect(0,80,W,6);
+ const title=t>=160.5?'Tổng kết':SCENES[i].title;
+ c.font=F(44,800);c.fillStyle='#fff';c.textBaseline='alphabetic';c.fillText(title,32,56);
+ const chip='Cảnh '+(i+1)+' / 8';c.font=F(26,700);const cw=c.measureText(chip).width+30;rrect(c,W-28-cw,20,cw,42,21);c.fillStyle='rgba(255,255,255,.12)';c.fill();c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1.5;c.stroke();c.fillStyle='#fff';c.fillText(chip,W-28-cw+15,50);
+ // clock
+ const info=t<160.4?realInfo(t):null;
+ if(info){if(info.id!==lastScaleId){if(lastScaleId!==null)flashAt=nowMs;lastScaleId=info.id;}
+  const fl=clamp(1-(nowMs-flashAt)/500,0,1);
+  c.font=F(30,800);const w1=c.measureText(info.main).width;c.font=F(22,500);const w2=c.measureText(info.sub).width;const bw=Math.max(w1,w2)+36;const bx=W-24-bw,by=96;
+  c.save();c.shadowColor='rgba(10,30,60,.18)';c.shadowBlur=14;c.shadowOffsetY=4;rrect(c,bx,by,bw,84,14);
+  c.fillStyle=fl>0?`rgb(${Math.round(lerp(255,240,fl))},${Math.round(lerp(255,120,fl))},${Math.round(lerp(255,0,fl))})`:'rgba(255,255,255,.95)';c.fill();c.shadowColor='transparent';c.strokeStyle=fl>0?C.orange:'#B9C8DB';c.lineWidth=2;c.stroke();
+  c.font=F(30,800);c.fillStyle=fl>0.4?'#fff':C.ink;c.fillText(info.main,bx+18,by+40);c.font=F(22,500);c.fillStyle=fl>0.4?'#fff':C.slate;c.fillText(info.sub,bx+18,by+70);c.restore();
+ } else lastScaleId=null;
+ // source band
+ c.fillStyle='#fff';c.fillRect(0,SRC_Y,W,H-SRC_Y);c.fillStyle='#DCE5EF';c.fillRect(0,SRC_Y,W,1);
+ c.font=F(22,400,true);c.fillStyle=C.slate;c.textAlign='center';
+ c.fillText('Số liệu: NOAA NCEI Global Historical Tsunami Database; Fujiwara và nnk. (2011), Science;',W/2,SRC_Y+23);
+ c.fillText('Nguyễn Hồng Phương và nnk. (2014), Physics of the Earth and Planetary Interiors 236: 95–108.',W/2,SRC_Y+48);c.textAlign='left';
+}
+
+/* =========================================================================
+   RENDER + PLAYBACK
+   ========================================================================= */
+const OFF=document.createElement('canvas');let offCtx=null;
+function renderOffscreen(fn,t){if(OFF.width!==cv.width||OFF.height!==cv.height){OFF.width=cv.width;OFF.height=cv.height;}offCtx=OFF.getContext('2d');offCtx.setTransform(SCALE*DPR,0,0,SCALE*DPR,0,0);offCtx.clearRect(0,0,W,H);fn(offCtx,t);}
+function render(t,nowMs){
+ ctx.setTransform(SCALE*DPR,0,0,SCALE*DPR,0,0);ctx.clearRect(0,0,W,H);
+ ctx.save();ctx.beginPath();ctx.rect(0,TOP,W,SRC_Y-TOP);ctx.clip();
+ if(t<20)drawScene1(ctx,t);
+ else if(t<145){drawSection(ctx,t);if(t<21){renderOffscreen(drawScene1,19.999);ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1-ep(t,20,21);ctx.drawImage(OFF,0,0);ctx.restore();}}
+ else{drawMap(ctx,t);if(t<146.2){renderOffscreen(drawSection,144.999);ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1-ep(t,145,146.2);ctx.drawImage(OFF,0,0);ctx.restore();}}
+ ctx.restore();
+ drawChrome(ctx,t,nowMs);
+}
+const SPEEDS=[0.25,0.5,1,2,4];
+const P={t:0,playing:false,started:false,spTarget:1,spFrom:1,spAt:-1e9,stopEach:true,skipBoundary:null,dragging:false};
+function curSpeed(now){const u=clamp((now-P.spAt)/300,0,1);return lerp(P.spFrom,P.spTarget,ease(u));}
+function setSpeed(s){const now=performance.now();P.spFrom=curSpeed(now);P.spTarget=s;P.spAt=now;document.querySelectorAll('#speeds button').forEach(b=>b.classList.toggle('on',parseFloat(b.dataset.s)===s));}
+function setPlaying(v){if(v&&P.t>=T_END-0.01)P.t=0;P.playing=v;document.getElementById('icoPlay').innerHTML=v?'<path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/>':'<path d="M7 4.5v15l13-7.5z"/>';}
+function seek(t){P.t=clamp(t,0,T_END);P.skipBoundary=null;ETA_T=-1;}
+function gotoScene(i){i=clamp(i,0,7);seek(SCENES[i].t0+0.001);}
+let lastNow=performance.now();
+function frame(now){
+ const dt=Math.min(0.1,(now-lastNow)/1000);lastNow=now;
+ if(P.started&&P.playing&&!P.dragging){
+  const sp=curSpeed(now);let nt=P.t+dt*sp;
+  if(P.stopEach){for(const s of SCENES){const b=s.t1;if(P.t<b&&nt>=b&&b<T_END){if(P.skipBoundary===b){P.skipBoundary=null;continue;}nt=b-0.0005;setPlaying(false);P.skipBoundary=b;break;}}}
+  if(nt>=T_END){nt=T_END-0.0005;setPlaying(false);}
+  P.t=nt;
+ }
+ render(P.t,now);updateBar();requestAnimationFrame(frame);
+}
+/* ---------- controls ---------- */
+const $=id=>document.getElementById(id);
+const tl=$('tl'),track=$('tlTrack'),tip=$('tip');
+SCENES.forEach((s,i)=>{const m=document.createElement('div');m.className='mk';m.textContent=i+1;m.style.left=(s.t0/T_END*100)+'%';m.dataset.i=i;
+ m.addEventListener('mouseenter',()=>{tip.textContent='Cảnh '+(i+1)+': '+s.title;tip.style.left=m.style.left;tip.style.opacity=1;});
+ m.addEventListener('mouseleave',()=>{tip.style.opacity=0;});
+ m.addEventListener('pointerdown',e=>{e.stopPropagation();gotoScene(i);});track.appendChild(m);});
+function tFromEvt(e){const r=track.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width,0,1)*T_END;}
+tl.addEventListener('pointerdown',e=>{P.dragging=true;tl.setPointerCapture(e.pointerId);seek(tFromEvt(e));});
+tl.addEventListener('pointermove',e=>{if(P.dragging)seek(tFromEvt(e));});
+tl.addEventListener('pointerup',e=>{P.dragging=false;});
+function updateBar(){const f=P.t/T_END*100;$('tlFill').style.width=f+'%';$('tlHead').style.left=f+'%';const si=sceneIdx(P.t);document.querySelectorAll('.mk').forEach((m,i)=>m.classList.toggle('cur',i===si));}
+$('bPlay').onclick=()=>setPlaying(!P.playing);
+$('bPrev').onclick=()=>{const i=sceneIdx(P.t);gotoScene(P.t-SCENES[i].t0>1.5?i:i-1);};
+$('bNext').onclick=()=>gotoScene(sceneIdx(P.t)+1);
+$('bRestart').onclick=()=>{seek(0);setPlaying(true);};
+document.querySelectorAll('#speeds button').forEach(b=>b.onclick=()=>setSpeed(parseFloat(b.dataset.s)));
+const tog=(id,get,set)=>{$(id).onclick=()=>{set(!get());$(id).classList.toggle('on',get());};};
+tog('tLabels',()=>SHOW_LABELS,v=>SHOW_LABELS=v);tog('tTable',()=>SHOW_TABLE,v=>SHOW_TABLE=v);tog('tStop',()=>P.stopEach,v=>{P.stopEach=v;P.skipBoundary=null;});
+function toggleFull(){if(!document.fullscreenElement)(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement);else document.exitFullscreen();}
+$('bFull').onclick=toggleFull;
+document.addEventListener('keydown',e=>{
+ if(!P.started){if(e.key===' '||e.key==='Enter'||e.key==='PageDown'||e.key==='b'||e.key==='B'||e.key==='.'){e.preventDefault();start();}return;}
+ const k=e.key;let h=true;
+ if(k===' '||k==='b'||k==='B'||k==='.')setPlaying(!P.playing);
+ else if(k==='ArrowRight'||k==='PageDown')$('bNext').onclick();
+ else if(k==='ArrowLeft'||k==='PageUp')$('bPrev').onclick();
+ else if(k==='ArrowUp'){const i=SPEEDS.indexOf(P.spTarget);setSpeed(SPEEDS[Math.min(SPEEDS.length-1,i+1)]);}
+ else if(k==='ArrowDown'){const i=SPEEDS.indexOf(P.spTarget);setSpeed(SPEEDS[Math.max(0,i-1)]);}
+ else if(k>='1'&&k<='8')gotoScene(parseInt(k)-1);
+ else if(k==='f'||k==='F')toggleFull();
+ else if(k==='l'||k==='L'){$('tLabels').onclick();}
+ else h=false;
+ if(h){e.preventDefault();if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();}
+});
+/* presentation mode: auto-hide bar + cursor in fullscreen */
+let idleT=null;
+function poke(){$('bar').classList.remove('hidden');document.body.classList.remove('hidecur');clearTimeout(idleT);if(document.fullscreenElement)idleT=setTimeout(()=>{$('bar').classList.add('hidden');document.body.classList.add('hidecur');},3000);}
+document.addEventListener('mousemove',poke);document.addEventListener('fullscreenchange',()=>{poke();fit();});
+/* ---------- fit stage ---------- */
+function fit(){const vw=window.innerWidth,vh=window.innerHeight;SCALE=Math.min(vw/1440,vh/1080);DPR=window.devicePixelRatio||1;
+ const st=$('stage');st.style.transform=`scale(${SCALE})`;st.style.left=((vw-1440*SCALE)/2)+'px';st.style.top=((vh-1080*SCALE)/2)+'px';
+ cv.width=Math.round(1440*SCALE*DPR);cv.height=Math.round(1008*SCALE*DPR);}
+window.addEventListener('resize',fit);
+function start(){if(!S)return;P.started=true;$('intro').classList.add('gone');seek(0);setPlaying(true);}
+$('start').onclick=start;
+/* ---------- init ---------- */
+NOISE=makeNoise();STRIPES=makeStripes();fit();
+setTimeout(()=>{S=runSim();MP=buildMap();$('load').textContent='Sẵn sàng — bấm “Bắt đầu” khi vào giảng';requestAnimationFrame(frame);
+ window.__seek=t=>{P.started=true;$('intro').classList.add('gone');setPlaying(false);seek(t);render(P.t,performance.now()+1e6);};
+ window.__S=S;},30);
+</script>
+</body>
+</html>

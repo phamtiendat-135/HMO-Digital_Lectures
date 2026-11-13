@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sóng biển — hạt nước quay vòng</title>
+<style>
+:root{--navy:#0A2E5C;--ocean:#1B4E8F;--sky:#60C0F0;--skyl:#A8D8F0;--orange:#F07800;--ink:#0F1E3A;--slate:#546E8F;--line:#D5E1F0;--red:#D62828}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0F1E3A}
+body{font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+#stage{position:absolute;left:0;top:0;width:1200px;height:900px;background:#FFFFFF;transform-origin:0 0;overflow:hidden}
+header{position:absolute;left:0;top:0;width:1200px;height:102px;background:var(--navy);display:flex;align-items:center}
+header img{height:88px;width:auto;margin-left:10px;display:block}
+header h1{flex:1;margin-left:20px;color:#FFFFFF;font-size:34px;font-weight:700;line-height:1.1}
+header .tag{margin-right:22px;color:var(--sky);font-size:18px;font-weight:600}
+#strip{position:absolute;left:0;top:102px;width:1200px;height:10px;background:var(--orange)}
+#capRow{position:absolute;left:0;top:112px;width:1200px;height:74px;display:flex;align-items:flex-start;padding:9px 20px 0 22px;gap:16px}
+#cap{flex:1;min-width:0}
+#capMain{font-size:30px;font-weight:700;color:var(--navy);line-height:1.12;white-space:nowrap}
+#capSub{font-size:17px;color:var(--slate);margin-top:4px;line-height:1.2;white-space:nowrap;min-height:20px}
+.show{animation:fin 380ms cubic-bezier(.16,1,.3,1) both}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#scen{display:flex;align-items:center;gap:7px;padding-top:4px}
+.pill{width:30px;height:30px;border-radius:15px;border:2px solid var(--line);color:var(--slate);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background-color 300ms ease-out,color 300ms ease-out,border-color 300ms ease-out}
+.pill.done{border-color:var(--sky);color:var(--navy)}
+.pill.on{background:var(--navy);border-color:var(--navy);color:#FFFFFF}
+#prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--sky)}
+canvas{position:absolute;left:0;top:186px;width:1200px;height:590px;display:block}
+#info{position:absolute;left:14px;top:192px;pointer-events:none}
+#infoMain{font-size:17px;font-weight:600;color:var(--ink);white-space:nowrap}
+#infoNote{font-size:15px;font-style:italic;color:var(--slate);margin-top:2px;white-space:nowrap}
+#counter{position:absolute;right:12px;top:192px;padding:7px 12px 7px 12px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-left:5px solid var(--orange);border-radius:8px;font-size:17px;line-height:1.35;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums;pointer-events:none}
+#counter b{color:var(--navy)}
+#counter .r b{color:var(--red)}
+#bar{position:absolute;left:0;top:776px;width:1200px;height:91px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:8px;background:#FFFFFF}
+.grp{display:flex;flex-direction:column;gap:4px}
+.gl{font-size:14px;color:var(--slate);font-weight:600;padding-left:2px;white-space:nowrap}
+.row{display:flex;gap:6px}
+.seg{display:flex}
+button{font-family:inherit;font-size:17px;font-weight:700;height:48px;padding:0 13px;border:2px solid var(--navy);background:#FFFFFF;color:var(--navy);border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;transition:background-color 300ms ease-out,color 300ms ease-out}
+button:hover{background:#EEF4FB}
+button.on,button.primary{background:var(--navy);color:#FFFFFF}
+button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.seg button{border-radius:0;margin-left:-2px}
+.seg button:first-child{border-radius:10px 0 0 10px;margin-left:0}
+.seg button:last-child{border-radius:0 10px 10px 0}
+button svg{width:16px;height:16px;fill:currentColor}
+#play{width:142px}
+#skip{height:38px;font-size:16px;padding:0 12px;margin-left:6px}
+#hgrp{width:178px}
+input[type=range]{width:100%;height:48px;accent-color:var(--navy);cursor:pointer}
+footer{position:absolute;left:0;top:867px;width:1200px;height:33px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px}
+footer .l{color:#FFFFFF}
+footer .r{color:var(--sky)}
+@media (prefers-reduced-motion: reduce){.show{animation:none}.pill,button{transition:none}}
+</style>
+</head>
+<body>
+<div id="stage" role="application" aria-label="Mô phỏng sóng biển: hạt nước quay vòng, năng lượng truyền đi">
+  <header>
+    <img src="data:image/png;base64,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" alt="Logo Khoa Khí tượng Thủy văn và Hải dương học">
+    <h1>Hạt nước quay vòng — năng lượng truyền đi</h1>
+    <div class="tag">Bài 5 · Sóng biển</div>
+  </header>
+  <div id="strip"></div>
+  <div id="capRow">
+    <div id="cap"><div id="capMain"></div><div id="capSub"></div></div>
+    <div id="scen">
+      <div class="pill" data-p="1">1</div><div class="pill" data-p="2">2</div><div class="pill" data-p="3">3</div><div class="pill" data-p="4">4</div>
+      <button id="skip" type="button">Bỏ qua ▸</button>
+    </div>
+    <div id="prog"></div>
+  </div>
+  <canvas id="cv" aria-label="Mặt cắt thẳng đứng của sóng truyền từ trái sang phải"></canvas>
+  <div id="info"><div id="infoMain"></div><div id="infoNote"></div></div>
+  <div id="counter"><div id="c1"></div><div id="c2" class="r"></div></div>
+  <div id="bar">
+    <div class="grp"><span class="gl">Điều khiển</span>
+      <div class="row">
+        <button id="play" class="primary" type="button"></button>
+        <button id="step" type="button" title="Tiến 1/8 chu kỳ (phím →)"><svg viewBox="0 0 16 16"><path d="M2 2l8 6-8 6z"/><rect x="11" y="2" width="3" height="12"/></svg>Bước tiếp</button>
+      </div></div>
+    <div class="grp"><span class="gl">Tốc độ</span>
+      <div class="seg" id="spd"><button type="button" data-s="0.25">0,25×</button><button type="button" data-s="0.5">0,5×</button><button type="button" data-s="1">1×</button></div></div>
+    <div class="grp"><span class="gl">Vùng nước</span>
+      <div class="seg" id="wat"><button type="button" data-w="0">Nước sâu</button><button type="button" data-w="1">Nước nông</button></div></div>
+    <div class="grp"><span class="gl">Hiển thị</span>
+      <div class="row"><button id="tTrail" type="button" aria-pressed="true">Vệt quỹ đạo</button><button id="tVel" type="button" aria-pressed="false">Vectơ vận tốc</button></div></div>
+    <div class="grp" id="hgrp"><span class="gl" id="hLab"></span>
+      <input id="hRange" type="range" min="0.5" max="3" step="0.1" value="2" aria-label="Độ cao sóng H (m)"></div>
+  </div>
+  <footer><span class="l">HMO | HUS VNU · Hải dương học đại cương · Bài 5</span><span class="r">Lý thuyết sóng tuyến tính (Airy)</span></footer>
+</div>
+<script>
+"use strict";
+/* ===================== VẬT LÝ (Airy, tuyến tính) ===================== */
+const PI2 = 2 * Math.PI, G = 9.81;
+const T = 10, OMEGA = PI2 / T;            // chu kỳ 10 s
+const L_DEEP = 156, K_DEEP = PI2 / L_DEEP; // nước sâu: L = 156 m, C = 15,6 m/s
+const DISPLAY_T = 4;                       // 1 chu kỳ = 4 s trên màn hình (ở 1×)
+const W = 1200, HC = 590;                  // kích thước canvas (px artboard)
+const H_SHALLOW = 7.8, H_START = 16;       // nước nông h = L/20 ≈ 7,8 m; cận cảnh bắt đầu từ 16 m
+
+// Quan hệ tán sắc ω² = g·k·tanh(k·h), giải k theo Newton (T giữ nguyên khi sóng vào vùng nông)
+function kOf(h) {
+  let k = OMEGA * OMEGA / G;
+  if (k * h < 0.5) k = OMEGA / Math.sqrt(G * h);
+  for (let i = 0; i < 50; i++) {
+    const th = Math.tanh(k * h), f = G * k * th - OMEGA * OMEGA;
+    const df = G * (th + k * h * (1 - th * th));
+    const dk = f / df; k -= dk;
+    if (Math.abs(dk) < 1e-12) break;
+  }
+  return k;
+}
+
+function deepScene(a) {
+  const s = 4.4, k = K_DEEP, E = 8;
+  return {
+    deep: true, s, ys: 180, E, a, k, h: Infinity, L: L_DEEP, C: L_DEEP / T, xref: 0,
+    bedY: 180 + 85 * s,
+    rows: [0, -L_DEEP / 9, -L_DEEP / 4, -3 * L_DEEP / 8, -L_DEEP / 2],
+    rowNames: ['Mặt · 0 m', 'L/9 · 17 m', 'L/4 · 39 m', '3L/8 · 59 m', 'L/2 · 78 m'],
+    cols: Array.from({ length: 12 }, (_, i) => 160 / s + i * L_DEEP / 9),
+    buoyX0: 731 / s, redCol: 3, bar: 20,
+    // x = x0 − a·e^(k·z0)·sinθ ; z = z0 + a·e^(k·z0)·cosθ  (nhân E để phóng đại khi vẽ)
+    Ah(z0) { return a * E * Math.exp(k * z0); },
+    Av(z0) { return a * E * Math.exp(k * z0); }
+  };
+}
+
+function shallowScene(a, ramp) {
+  const s = 22, E = 2, h = H_START + (H_SHALLOW - H_START) * ramp, k = kOf(h), sh = Math.sinh(k * h);
+  return {
+    deep: false, s, ys: 200, E, a, k, h, L: PI2 / k, C: PI2 / k / T, xref: 27,
+    bedY: 200 + h * s,
+    rows: [0, -0.25 * h, -0.5 * h, -0.75 * h, -h],
+    rowNames: ['Mặt', 'h/4', 'h/2', '3h/4', 'Đáy'],
+    cols: Array.from({ length: 12 }, (_, i) => 160 / s + i * 4),
+    buoyX0: 820 / s, redCol: 3, bar: 5,
+    // x = x0 − a·cosh(k(z0+h))/sinh(kh)·sinθ ; z = z0 + a·sinh(k(z0+h))/sinh(kh)·cosθ
+    Ah(z0) { return a * E * Math.cosh(k * (z0 + h)) / sh; },
+    Av(z0) { return a * E * Math.sinh(k * (z0 + h)) / sh; }
+  };
+}
+
+// θ = k·x0 − ω·t ; trả về vị trí (m, đã phóng đại E) và vận tốc
+function pos(sc, x0, z0, t) {
+  const th = sc.k * (x0 - sc.xref) - OMEGA * t, Ah = sc.Ah(z0), Av = sc.Av(z0);
+  return { x: x0 - Ah * Math.sin(th), z: z0 + Av * Math.cos(th), u: Ah * OMEGA * Math.cos(th), w: Av * OMEGA * Math.sin(th), th };
+}
+
+/* ===================== TRẠNG THÁI ===================== */
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const S = {
+  playing: !RM, speed: 1, t: 0, crest: 0, H: 2,
+  scen: true, sc: 0, phase: 0, subShown: false,
+  shallow: false, blend: 0, ramp: 0,
+  showTrail: true, showVel: false
+};
+const LY = { grid: 0, red: 0, depth: 0, wave: 0, focus: 0 };
+let LT = { grid: 0, red: 0, depth: 0, wave: 0, focus: 0 };
+const TARGETS = {
+  1: { grid: 0, red: 0, depth: 0, wave: 0, focus: 0 },
+  2: { grid: 1, red: 1, depth: 0, wave: 0, focus: 0 },
+  3: { grid: 1, red: 1, depth: 1, wave: 1, focus: 1 },
+  4: { grid: 1, red: 1, depth: 1, wave: 1, focus: 0.5 },
+  0: { grid: 1, red: 1, depth: 1, wave: 1, focus: 0 }
+};
+const CAPS = {
+  1: ['Phao có bị sóng đẩy vào bờ không?', 'Nhìn mốc nét đứt: sóng đi qua, phao vẫn quay về chỗ cũ.'],
+  2: ['Hạt nước quay vòng tròn tại chỗ.', 'Sau mỗi chu kỳ (10 s) hạt đỏ về đúng chỗ cũ, còn đỉnh sóng đã đi 156 m.'],
+  3: ['Càng xuống sâu, vòng quay càng nhỏ.', 'Bán kính quỹ đạo giảm theo e<sup>kz</sup>: 100% → 50% → 21% → 9% → 4% (ở độ sâu L/2).'],
+  4: ['Vào vùng nước nông, quỹ đạo bị đáy ép bẹt.', 'T giữ 10 s; sóng ngắn lại (L ≈ 83 m), chậm lại (C ≈ 8,3 m/s); sát đáy hạt chỉ chạy tới – lui.'],
+  0: ['Xem tự do: đổi H, tốc độ, vùng nước, bật vectơ vận tốc.', 'Phím cách: phát / tạm dừng · Phím →: bước tiếp 1/8 chu kỳ.']
+};
+
+/* ===================== DOM ===================== */
+const $ = id => document.getElementById(id);
+const stage = $('stage'), cv = $('cv'), ctx = cv.getContext('2d');
+const off = document.createElement('canvas'), octx = off.getContext('2d');
+let F = 1, DPR = 1;
+function fit() {
+  F = Math.min(innerWidth / 1200, innerHeight / 900);
+  DPR = window.devicePixelRatio || 1;
+  stage.style.transform = `translate(${(innerWidth - 1200 * F) / 2}px,${(innerHeight - 900 * F) / 2}px) scale(${F})`;
+  for (const c of [cv, off]) { c.width = Math.round(W * F * DPR); c.height = Math.round(HC * F * DPR); }
+}
+addEventListener('resize', fit); fit();
+
+const fmt = (x, d) => x.toFixed(d).replace('.', ',');
+const fmtInt = x => Math.round(x).toLocaleString('vi-VN');
+
+function setCaption(p, withSub) {
+  const m = $('capMain'), s = $('capSub');
+  m.innerHTML = CAPS[p][0]; s.innerHTML = withSub ? CAPS[p][1] : '';
+  for (const el of [m, s]) { el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); }
+}
+function setSub(p) { const s = $('capSub'); s.innerHTML = CAPS[p][1]; s.classList.remove('show'); void s.offsetWidth; s.classList.add('show'); }
+
+const ICON_PLAY = '<svg viewBox="0 0 16 16"><path d="M3 1.5l11 6.5-11 6.5z"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 16 16"><rect x="2.5" y="1.5" width="4" height="13"/><rect x="9.5" y="1.5" width="4" height="13"/></svg>';
+function syncButtons() {
+  $('play').innerHTML = S.playing ? ICON_PAUSE + 'Tạm dừng' : ICON_PLAY + 'Phát';
+  for (const b of $('spd').children) b.classList.toggle('on', +b.dataset.s === S.speed);
+  for (const b of $('wat').children) b.classList.toggle('on', (b.dataset.w === '1') === S.shallow);
+  $('tTrail').classList.toggle('on', S.showTrail); $('tTrail').setAttribute('aria-pressed', S.showTrail);
+  $('tVel').classList.toggle('on', S.showVel); $('tVel').setAttribute('aria-pressed', S.showVel);
+  $('skip').textContent = S.scen ? 'Bỏ qua ▸' : 'Xem lại kịch bản ↺';
+  $('hLab').textContent = 'Độ cao sóng H = ' + fmt(S.H, 1) + ' m';
+}
+function activeScene() { return S.blend >= 0.5 ? shallowScene(S.H / 2, S.ramp) : deepScene(S.H / 2); }
+
+function togglePlay() { S.playing = !S.playing; syncButtons(); }
+function stepFwd() {
+  S.playing = false;
+  const dt = T / 8; S.t += dt; S.crest += activeScene().C * dt;
+  syncButtons();
+}
+function goFree() {
+  if (!S.scen) return;
+  S.scen = false; S.phase = 0; LT = TARGETS[0]; setCaption(0, true);
+}
+function restartScenario() {
+  Object.assign(S, { scen: true, sc: 0, t: 0, crest: 0, phase: 0, subShown: false, shallow: false, blend: 0, ramp: 0 });
+}
+function onBtn(id, fn) { $(id).addEventListener('click', e => { fn(e); e.currentTarget.blur(); syncButtons(); }); }
+onBtn('play', togglePlay);
+onBtn('step', stepFwd);
+onBtn('skip', () => { S.scen ? goFree() : restartScenario(); });
+onBtn('tTrail', () => { S.showTrail = !S.showTrail; });
+onBtn('tVel', () => { S.showVel = !S.showVel; });
+for (const b of $('spd').children) b.addEventListener('click', e => { S.speed = +b.dataset.s; b.blur(); syncButtons(); });
+for (const b of $('wat').children) b.addEventListener('click', e => {
+  goFree(); S.shallow = b.dataset.w === '1';
+  if (RM) { S.blend = S.shallow ? 1 : 0; S.ramp = S.shallow ? 1 : 0; }
+  b.blur(); syncButtons();
+});
+$('hRange').addEventListener('input', e => {
+  const sc = activeScene();
+  S.H = Math.min(+e.target.value, sc.L / 7);   // giới hạn độ dốc H/L ≤ 1/7
+  syncButtons();
+});
+addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  else if (e.code === 'ArrowRight' && document.activeElement !== $('hRange')) { e.preventDefault(); stepFwd(); }
+});
+
+/* ===================== VẼ ===================== */
+const FONT = 'Calibri, Carlito, "Segoe UI", Arial, sans-serif';
+function rrect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+}
+function pill(c, text, x, y, alpha, align) {
+  if (alpha < 0.02) return;
+  c.save(); c.globalAlpha = alpha; c.font = `700 15px ${FONT}`;
+  const w = c.measureText(text).width + 14, x0 = align === 'right' ? x - w : x;
+  rrect(c, x0, y - 11, w, 22, 6); c.fillStyle = 'rgba(10,46,92,0.86)'; c.fill();
+  c.fillStyle = '#FFFFFF'; c.textBaseline = 'middle'; c.fillText(text, x0 + 7, y + 1); c.restore();
+}
+function arrow(c, x1, y1, x2, y2, head, color, width) {
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  c.strokeStyle = color; c.fillStyle = color; c.lineWidth = width; c.lineCap = 'round';
+  c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2 - Math.cos(ang) * head * 0.6, y2 - Math.sin(ang) * head * 0.6); c.stroke();
+  c.beginPath(); c.moveTo(x2, y2);
+  c.lineTo(x2 - head * Math.cos(ang - 0.45), y2 - head * Math.sin(ang - 0.45));
+  c.lineTo(x2 - head * Math.cos(ang + 0.45), y2 - head * Math.sin(ang + 0.45)); c.closePath(); c.fill();
+}
+function dot(c, X, Y, r, fill, stroke, lw, alpha) {
+  c.globalAlpha = alpha; c.beginPath(); c.arc(X, Y, r, 0, PI2);
+  c.fillStyle = fill; c.fill(); c.lineWidth = lw; c.strokeStyle = stroke; c.stroke(); c.globalAlpha = 1;
+}
+// Vệt quỹ đạo: đúng 1 chu kỳ gần nhất, mờ dần theo tuổi
+function trail(c, sc, x0, z0, color, amax, width) {
+  if (amax < 0.02) return;
+  const N = 48, s = sc.s; c.strokeStyle = color; c.lineWidth = width; c.lineCap = 'round';
+  let p = pos(sc, x0, z0, S.t - T);
+  for (let j = 1; j <= N; j++) {
+    const q = pos(sc, x0, z0, S.t - T + T * j / N);
+    c.globalAlpha = amax * j / N; c.beginPath();
+    c.moveTo(p.x * s, sc.ys - p.z * s); c.lineTo(q.x * s, sc.ys - q.z * s); c.stroke(); p = q;
+  }
+  c.globalAlpha = 1;
+}
+function guide(c, sc, x0, z0, alpha) {
+  if (alpha < 0.02) return;
+  const s = sc.s; c.save(); c.globalAlpha = alpha; c.setLineDash([4, 4]); c.lineWidth = 1.2; c.strokeStyle = '#FFFFFF';
+  c.beginPath(); c.ellipse(x0 * s, sc.ys - z0 * s, Math.max(0.01, sc.Ah(z0) * s), Math.max(0.01, sc.Av(z0) * s), 0, 0, PI2); c.stroke(); c.restore();
+}
+function buoy(c, X, Y, ang) {
+  c.save(); c.translate(X, Y); c.rotate(ang);
+  c.lineJoin = 'round';
+  c.beginPath(); c.moveTo(0, -36); c.lineTo(0, -22); c.strokeStyle = '#0A2E5C'; c.lineWidth = 2; c.stroke();
+  c.beginPath(); c.moveTo(0, -37); c.lineTo(13, -32.5); c.lineTo(0, -28); c.closePath(); c.fillStyle = '#0A2E5C'; c.fill();
+  c.beginPath(); c.moveTo(-9, -7); c.lineTo(0, -23); c.lineTo(9, -7); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(-16, -7); c.lineTo(16, -7); c.quadraticCurveTo(15, 12, 0, 13); c.quadraticCurveTo(-15, 12, -16, -7); c.closePath();
+  c.fillStyle = '#FFFFFF'; c.fill(); c.strokeStyle = '#0A2E5C'; c.lineWidth = 2; c.stroke();
+  c.beginPath(); c.rect(-15.5, -2, 31, 5); c.fillStyle = '#60C0F0'; c.fill();
+  c.restore();
+}
+
+function drawScene(c, sc) {
+  const s = sc.s, ys = sc.ys, t = S.t, Ah0 = sc.Ah(0), Av0 = sc.Av(0);
+  c.setTransform(F * DPR, 0, 0, F * DPR, 0, 0);
+  c.globalAlpha = 1; c.setLineDash([]);
+  c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, HC);
+
+  // Mặt sóng: vẽ theo đường của các hạt mặt (z0 = 0) — cùng nghiệm Airy, hạt mặt luôn nằm đúng trên mặt
+  const pts = [];
+  for (let X = -80; X <= W + 80; X += 3) {
+    const x0 = X / s, th = sc.k * (x0 - sc.xref) - OMEGA * t;
+    pts.push((x0 - Ah0 * Math.sin(th)) * s, ys - Av0 * Math.cos(th) * s);
+  }
+  c.beginPath(); c.moveTo(pts[0], pts[1]);
+  for (let i = 2; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]);
+  c.lineTo(W + 80, sc.bedY + 2); c.lineTo(-80, sc.bedY + 2); c.closePath();
+  const g = c.createLinearGradient(0, ys - Av0 * s, 0, sc.bedY);
+  g.addColorStop(0, '#60C0F0'); g.addColorStop(1, '#1B4E8F'); c.fillStyle = g; c.fill();
+
+  // Đáy cát
+  c.fillStyle = '#E3CC98'; c.fillRect(0, sc.bedY, W, HC - sc.bedY);
+  c.strokeStyle = '#B8975A'; c.lineWidth = 2; c.beginPath(); c.moveTo(0, sc.bedY); c.lineTo(W, sc.bedY); c.stroke();
+  c.font = `600 15px ${FONT}`; c.fillStyle = '#6B5426'; c.textBaseline = 'alphabetic';
+  c.fillText(sc.deep ? 'Đáy biển (sâu hơn L/2)' : 'Đáy biển nông · h = ' + fmt(sc.h, 1) + ' m', 14, sc.bedY + 24);
+  { // thước tỉ lệ
+    const bw = sc.bar * s, x2 = W - 16, x1 = x2 - bw, yb = sc.bedY + 19;
+    c.strokeStyle = '#6B5426'; c.lineWidth = 2; c.beginPath();
+    c.moveTo(x1, yb - 5); c.lineTo(x1, yb); c.lineTo(x2, yb); c.lineTo(x2, yb - 5); c.stroke();
+    c.textAlign = 'right'; c.fillText(sc.bar + ' m', x1 - 8, yb + 5); c.textAlign = 'left';
+  }
+
+  // Đáy sóng L/2
+  if (sc.deep && LY.wave > 0.02) {
+    const yb = ys + (L_DEEP / 2) * s;
+    c.save(); c.globalAlpha = LY.wave; c.setLineDash([10, 7]); c.strokeStyle = '#FFFFFF'; c.lineWidth = 2;
+    c.beginPath(); c.moveTo(0, yb); c.lineTo(W, yb); c.stroke(); c.setLineDash([]);
+    c.font = `700 16px ${FONT}`; c.fillStyle = '#FFFFFF'; c.textAlign = 'right';
+    c.fillText('Đáy sóng (L/2): chuyển động chỉ còn 4%', W - 14, yb - 9); c.restore();
+  }
+
+  // Viền mặt sóng
+  c.beginPath(); c.moveTo(pts[0], pts[1]);
+  for (let i = 2; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]);
+  c.strokeStyle = '#0A2E5C'; c.lineWidth = 3; c.lineJoin = 'round'; c.stroke();
+
+  // Mốc vị trí ban đầu của phao
+  { const X = sc.buoyX0 * s;
+    c.save(); c.setLineDash([6, 5]); c.strokeStyle = '#546E8F'; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(X, ys - 78); c.lineTo(X, ys + 50); c.stroke(); c.restore();
+    c.font = `italic 14px ${FONT}`; c.fillStyle = '#546E8F'; c.textAlign = 'center'; c.fillText('mốc ban đầu', X, ys - 84); c.textAlign = 'left'; }
+
+  // Lưới hạt nước
+  const dim = 1 - 0.7 * LY.focus;
+  if (LY.grid > 0.02) {
+    for (let r = 0; r < sc.rows.length; r++) for (let i = 0; i < sc.cols.length; i++) {
+      if (i === sc.redCol) continue;
+      const p = pos(sc, sc.cols[i], sc.rows[r], t);
+      dot(c, p.x * s, ys - p.z * s, 5.5, '#FFFFFF', '#0A2E5C', 2, LY.grid * dim);
+    }
+    const x0r = sc.cols[sc.redCol];
+    for (let r = 0; r < sc.rows.length; r++) {
+      if (r === 0 && LY.red > 0.02) continue;
+      if (S.showTrail) trail(c, sc, x0r, sc.rows[r], '#D62828', 0.8 * LY.depth * LY.grid, 2.2);
+      guide(c, sc, x0r, sc.rows[r], 0.55 * LY.depth);
+      const p = pos(sc, x0r, sc.rows[r], t);
+      dot(c, p.x * s, ys - p.z * s, 5.5, '#FFFFFF', LY.depth > 0.5 ? '#D62828' : '#0A2E5C', 2.2, LY.grid);
+    }
+  }
+  // Mốc của hạt đỏ + hạt đỏ + vệt
+  if (LY.red > 0.02) {
+    const x0r = sc.cols[sc.redCol], X = x0r * s;
+    c.save(); c.globalAlpha = 0.7 * LY.red; c.setLineDash([5, 5]); c.strokeStyle = '#D62828'; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(X, ys - 60); c.lineTo(X, ys + 46); c.stroke(); c.restore();
+    guide(c, sc, x0r, 0, 0.55 * LY.depth);
+    if (S.showTrail) trail(c, sc, x0r, 0, '#D62828', 0.95 * LY.red, 3);
+    const p = pos(sc, x0r, 0, t);
+    dot(c, p.x * s, ys - p.z * s, 8, '#D62828', '#FFFFFF', 2.5, LY.red);
+  }
+  // Nhãn độ sâu (lề trái) và nhãn % / elip cạnh cột hạt đỏ
+  if (LY.depth > 0.02) {
+    const x0r = sc.cols[sc.redCol];
+    for (let r = 0; r < sc.rows.length; r++) {
+      const z0 = sc.rows[r], Y = ys - z0 * s;
+      pill(c, sc.rowNames[r], 10, Y, LY.depth);
+      const Xl = (x0r + sc.Ah(z0)) * s + 12;
+      if (sc.deep) pill(c, Math.round(100 * Math.exp(sc.k * z0)) + '%', Xl, Y, LY.depth);
+      else if (r === 0) pill(c, 'elip ' + fmt(2 * sc.Ah(0) / sc.E, 1) + ' × ' + fmt(2 * sc.Av(0) / sc.E, 1) + ' m', Xl, Y - 2, LY.depth);
+      else if (r === sc.rows.length - 1) pill(c, 'sát đáy: chỉ tới – lui ' + fmt(2 * sc.Ah(z0) / sc.E, 1) + ' m', Xl, Y - 14, LY.depth);
+    }
+  }
+  // Vectơ vận tốc: ở đỉnh hạt tiến cùng chiều sóng, ở chân lùi lại
+  if (S.showVel && LY.grid > 0.02) {
+    const sv = (sc.deep ? 30 : 20) / (sc.a * sc.E * OMEGA);
+    c.globalAlpha = LY.grid;
+    for (let r = 0; r < sc.rows.length; r++) for (let i = 0; i < sc.cols.length; i++) {
+      const p = pos(sc, sc.cols[i], sc.rows[r], t), X = p.x * s, Y = ys - p.z * s;
+      const dx = p.u * sv, dy = -p.w * sv;
+      if (Math.hypot(dx, dy) < 4) continue;
+      arrow(c, X, Y, X + dx, Y + dy, 8, '#0A2E5C', 4.5);
+      arrow(c, X, Y, X + dx, Y + dy, 7, '#FFFFFF', 2);
+    }
+    c.globalAlpha = 1;
+    const base = OMEGA * t, Lp = sc.L * s;
+    let n = Math.ceil(((260 / s - sc.xref) * sc.k - base) / PI2);
+    const xc = (sc.xref + (base + PI2 * n) / sc.k) * s;
+    if (xc < 1000) {
+      pill(c, 'Ở đỉnh: hạt tiến →', xc - 14, ys - Av0 * s + 40, LY.grid, 'right');
+      const xt = xc + Lp / 2 < 1060 ? xc + Lp / 2 : xc - Lp / 2;
+      if (xt > 120) pill(c, '← Ở chân: hạt lùi', xt + 14, ys + Av0 * s + 30, LY.grid);
+    }
+  }
+  // Phao: nhấp nhô theo quỹ đạo của hạt mặt, không trôi
+  { const p = pos(sc, sc.buoyX0, 0, t);
+    const dX = 1 - Ah0 * sc.k * Math.cos(p.th), dZ = -Av0 * sc.k * Math.sin(p.th);
+    buoy(c, p.x * s, ys - p.z * s, Math.atan2(-dZ, dX)); }
+  // Mũi tên năng lượng gắn trên đỉnh sóng
+  { const Wa = 150, Wl = Math.min(sc.L * s, 880), base = OMEGA * t;
+    const Yc = ys - Av0 * s;
+    let n = Math.ceil(((Wa / s - sc.xref) * sc.k - base) / PI2);
+    for (;; n++) {
+      const Xc = (sc.xref + (base + PI2 * n) / sc.k) * s;
+      if (Xc > Wa + Wl) break;
+      const a = Math.max(0, Math.min(1, (Xc - Wa) / 70, (Wa + Wl - Xc) / 70));
+      if (a < 0.02) continue;
+      c.save(); c.globalAlpha = a;
+      arrow(c, Xc - 34, Yc - 22, Xc + 66, Yc - 22, 16, '#F07800', 5);
+      c.font = `700 18px ${FONT}`; c.lineWidth = 4; c.strokeStyle = '#FFFFFF'; c.lineJoin = 'round';
+      c.strokeText('Năng lượng sóng truyền đi', Xc - 34, Yc - 34); c.fillStyle = '#F07800'; c.fillText('Năng lượng sóng truyền đi', Xc - 34, Yc - 34);
+      c.restore();
+    }
+  }
+}
+
+/* ===================== VÒNG LẶP ===================== */
+function approach(dt) {
+  const k = RM ? 1 : 1 - Math.exp(-dt / 0.11);   // ease-out ~350 ms cho lớp xuất hiện
+  for (const key in LY) LY[key] += (LT[key] - LY[key]) * k;
+}
+function updateScenario() {
+  if (!S.scen) return;
+  if (S.sc >= 60) restartScenario();
+  const p = Math.min(4, 1 + Math.floor(S.sc / 15));
+  if (p !== S.phase) { S.phase = p; S.subShown = p !== 1; LT = TARGETS[p]; setCaption(p, p !== 1); }
+  if (p === 1 && !S.subShown && S.sc >= 7) { S.subShown = true; setSub(1); }
+  S.blend = Math.max(0, Math.min(1, S.sc - 45.5));
+  S.ramp = Math.max(0, Math.min(1, (S.sc - 46.5) / 8));
+  const sh = S.sc >= 45.5; if (sh !== S.shallow) { S.shallow = sh; syncButtons(); }
+}
+function updateFree(dt) {
+  if (S.scen) return;
+  if (S.shallow) {
+    S.blend = Math.min(1, S.blend + dt / 1.0);
+    if (S.blend >= 1) S.ramp = Math.min(1, S.ramp + dt / 4);
+  } else {
+    S.blend = Math.max(0, S.blend - dt / 1.0);
+    if (S.blend <= 0) S.ramp = 0;
+  }
+}
+let lastC1 = '', lastC2 = '', lastI = '', lastN = '';
+function updateDOM(sc) {
+  const cyc = Math.floor(S.t / T + 0.003);
+  const c1 = `Đỉnh sóng đã đi: <b>${fmtInt(S.crest)} m</b> (${cyc} chu kỳ)`;
+  const x0r = sc.cols[sc.redCol], p1 = pos(sc, x0r, 0, S.t), p0 = pos(sc, x0r, 0, S.t - T);
+  const net = Math.hypot(p1.x - p0.x, p1.z - p0.z) / sc.E;          // dịch chuyển thực sau 1 chu kỳ (m)
+  const who = LY.red > 0.5 || !S.scen || S.phase > 1 ? 'Hạt đỏ' : 'Phao';
+  const dH = 2 * sc.Ah(0) / sc.E, dV = 2 * sc.Av(0) / sc.E;
+  const orb = sc.deep ? `chỉ quay vòng Ø ${fmt(dH, 1)} m` : `chỉ quay elip ${fmt(dH, 1)} × ${fmt(dV, 1)} m`;
+  const c2 = `${who} dịch chuyển thực: <b>${fmt(Math.abs(net) < 0.05 ? 0 : net, 0)} m</b> — ${orb}`;
+  if (c1 !== lastC1) { $('c1').innerHTML = c1; lastC1 = c1; }
+  if (c2 !== lastC2) { $('c2').innerHTML = c2; lastC2 = c2; }
+  const steep = Math.round(sc.L / S.H);
+  const im = sc.deep
+    ? `Nước sâu · H = ${fmt(S.H, 1)} m · T = 10 s · L = 156 m · C = 15,6 m/s`
+    : `Nước nông · h = ${fmt(sc.h, 1)} m · H = ${fmt(S.H, 1)} m · T = 10 s · L ≈ ${Math.round(sc.L)} m · C ≈ ${fmt(sc.C, 1)} m/s`;
+  const nt = sc.deep
+    ? `biên độ phóng đại ×8 để dễ quan sát · H/L = 1/${steep}`
+    : `cận cảnh vùng nước nông (thang khác, xem thước), biên độ phóng đại ×2 · H/L = 1/${steep}`;
+  if (im !== lastI) { $('infoMain').textContent = im; lastI = im; }
+  if (nt !== lastN) { $('infoNote').textContent = nt; lastN = nt; }
+  $('prog').style.width = S.scen ? (S.sc / 60 * 1200) + 'px' : '0px';
+  $('scen').querySelectorAll('.pill').forEach(el => {
+    const q = +el.dataset.p; el.classList.toggle('on', S.scen && q === S.phase); el.classList.toggle('done', S.scen && q < S.phase);
+  });
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.1, Math.max(0, (now - last) / 1000)); last = now;
+  if (S.playing) {
+    const dtp = dt * S.speed * (T / DISPLAY_T);          // thời gian vật lý tuyến tính theo thời gian thực
+    S.crest += activeScene().C * dtp; S.t += dtp;
+    if (S.scen) S.sc += dt;
+  }
+  updateScenario(); updateFree(dt); approach(dt);
+  const a = S.H / 2, dsc = deepScene(a), ssc = shallowScene(a, S.ramp);
+  if (S.blend < 1) drawScene(ctx, dsc);
+  if (S.blend > 0) {
+    if (S.blend >= 1) drawScene(ctx, ssc);
+    else {
+      drawScene(octx, ssc);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = S.blend; ctx.drawImage(off, 0, 0); ctx.globalAlpha = 1;
+    }
+  }
+  updateDOM(S.blend >= 0.5 ? ssc : dsc);
+  requestAnimationFrame(frame);
+}
+syncButtons();
+requestAnimationFrame(frame);
+
+// Móc kiểm thử (không ảnh hưởng khi chiếu)
+window.__wave = { S, LY, deepScene, shallowScene, pos, kOf, T, OMEGA,
+  jump(sc) { S.sc = sc; S.t = sc * T / DISPLAY_T; S.crest = S.t * 15.6; S.phase = 0; updateScenario(); for (const k in LY) LY[k] = LT[k]; } };
+</script>
+</body>
+</html>
