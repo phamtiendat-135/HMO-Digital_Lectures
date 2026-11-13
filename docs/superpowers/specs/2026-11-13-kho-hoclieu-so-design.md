@@ -103,11 +103,13 @@ Lý do chọn A: người dùng chính dùng điện thoại và có sổ điể
 - Ngưỡng 3D đợt đầu: tối đa 2/8 animation (25%, dưới trần 30% của đề bài).
 - Pilot tạm tính, chốt lại ở G1: T3 `luc-tao-trieu`, T2 `kenh-sofar`, T1 `song-than-hut-chim`. Nếu sau review không có file nào thật sự là T1 thì pilot T1 thay bằng một file T2 thứ hai và ghi rõ trong TRIAGE.
 
-### 4.5 `luc-tao-trieu` là bộ 12 slide — CHỜ TS. ĐẠT QUYẾT ĐỊNH
+### 4.5 `luc-tao-trieu` là bộ 12 slide → một animation 7 cảnh (TS. Đạt chọn)
 
 Các slide: 01 Bìa · 02 Khối tâm chung · 03 Lực ly tâm Fc · 04 Lực hấp dẫn Fg · 05 Hợp lực Ft · 06 Tịnh tiến quanh CM · 07 Vì sao có lực ly tâm · 08 Mô hình 3D (duy nhất dùng three.js) · 09 Mặt Trăng quay quanh Trái Đất · 10 Xích vĩ và bán nhật triều · 11 Quỹ đạo nhìn ngang · 12 Triều cường – triều kém. Slide 1–5 chủ yếu là chữ và hình tĩnh; 6–12 là các mô hình tương tác riêng.
 
-_(Quyết định sẽ được ghi vào đây.)_
+**Quyết định:** phát hành thành **một animation 7 cảnh**, mỗi cảnh là một mô hình tương tác của slide 6–12 theo đúng thứ tự; cảnh 3 là mô hình 3D (three.js), sáu cảnh còn lại là 2D. Nội dung chữ và hình tĩnh của slide 1–5 chuyển thành đoạn Giải thích (chủ yếu cho cảnh 1–3), không dựng thành cảnh. Cả 7 cảnh là cảnh tự do (4.6). Dự phòng không có WebGL2 chỉ cần thay cảnh 3 bằng hình 2D tương đương. Khối lượng L.
+
+Đã cân nhắc và loại: tách thành 2–3 animation (kho phình thành 9–10 mục, phải soạn 8–12 câu hỏi); chỉ phát hành mô hình 3D (mất phần giải thích vì sao có hai múi triều). Bộ slide gốc vẫn nguyên trong `_nguon/` để trình chiếu.
 
 ### 4.6 Cảnh tự do (quyết định của Fable)
 
