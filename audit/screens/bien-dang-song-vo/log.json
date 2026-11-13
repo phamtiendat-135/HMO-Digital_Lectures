@@ -1,0 +1,21 @@
+{
+  "slug": "bien-dang-song-vo",
+  "file": "bien_dang_song_vo.html",
+  "khung": {
+    "laptop": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    },
+    "doc": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    },
+    "ngang": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    }
+  }
+}
