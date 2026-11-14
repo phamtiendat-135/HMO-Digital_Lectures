@@ -11,7 +11,7 @@ Lệnh quét: `grep -il "plotly\|three\|d3\.\|chart\.js\|cdn\|fonts.googleapis" 
 | kenh-sofar | Kenh SOFAR.html | 1.874 | bundle Claude Design, JSX dịch trên trình duyệt | React 18.3.1, ReactDOM 18.3.1, Babel standalone 7.29.0 (3,1 MB sau giải nén), 27 woff2 | nhúng | không | chạy được, nhưng Babel dịch JSX mỗi lần tải |
 | chu-ky-trieu-mat-trang | Chu ky trieu Mat Trang-latest.html | 2.005 | như trên | React 18.3.1, ReactDOM 18.3.1, Babel standalone 7.29.0, 24 woff2, 1 PNG `hmoLogo` 38 KB | nhúng | không | chạy được, nhưng Babel dịch JSX mỗi lần tải |
 | luc-tao-trieu | Luc tao trieu - offline.html | 1.141 | bundle Claude Design, bộ 12 slide; JS thường (không Babel) | React 18.3.1, ReactDOM 18.3.1 nhúng; **three.js 0.160.0 + OrbitControls gọi từ unpkg.com**; 21 woff2; 1 JPEG 91 KB | lẫn lộn | `unpkg.com/three@0.160.0/build/three.module.js`, `unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js` | **hỏng phần 3D** dù tên file ghi "offline" |
-| su-hinh-thanh-bao | su-hinh-thanh-bao-preview.html | 79 | widget xuất từ chat Claude, hoạt hình CSS | @floating-ui/core 1.7.3, @floating-ui/dom 1.7.4, lucide 1.17.0 | **CDN** | 3 file trên `unpkg.com` | **thiếu thư viện** khi mất mạng |
+| su-hinh-thanh-bao | su-hinh-thanh-bao-preview.html | 79 | widget xuất từ công cụ visualization của ChatGPT/Codex (id `codex-visualization`, gọi `window.openai`), hoạt hình CSS; nội dung thật chỉ 18,8 KB nằm trong `data-srcdoc` | @floating-ui/core 1.7.3 và @floating-ui/dom 1.7.4 (nạp nhưng không dùng), lucide 1.17.0 (biểu tượng nút Phát) | **CDN** | 3 file trên `unpkg.com` | chữ và hình vẫn hiện, **mất biểu tượng** khi mất mạng; font hệ thống |
 
 ## Kết luận
 
