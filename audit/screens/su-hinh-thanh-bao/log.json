@@ -1,0 +1,45 @@
+{
+  "slug": "su-hinh-thanh-bao",
+  "file": "su-hinh-thanh-bao-preview.html",
+  "khung": {
+    "laptop": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js",
+        "https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js",
+        "https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"
+      ]
+    },
+    "doc": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js",
+        "https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js",
+        "https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"
+      ]
+    },
+    "ngang": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js",
+        "https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js",
+        "https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js"
+      ]
+    }
+  }
+}
