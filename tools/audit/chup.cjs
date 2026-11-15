@@ -13,7 +13,7 @@ const NGUON = {
   'khuc-xa-song': 'khuc_xa_song_HMO.html',
   'kenh-sofar': 'Kenh SOFAR.html',
   'luc-tao-trieu': 'Luc tao trieu - offline.html',
-  'chu-ky-trieu-mat-trang': 'Chu ky trieu Mat Trang-latest.html',
+  'chu-ky-trieu-18-6-nam': 'Chu ky trieu Mat Trang-latest.html',
   'su-hinh-thanh-bao': 'su-hinh-thanh-bao-preview.html',
 };
 const KHUNG = {

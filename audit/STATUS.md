@@ -4,13 +4,13 @@ Trạng thái: audited → spec-approved → in-progress → in-review → appro
 
 | Slug | Tầng | Trạng thái | Ghi chú |
 |---|---|---|---|
-| `song-than-hut-chim` | T2 | audited | |
-| `bien-dang-song-vo` | T2 | audited | |
-| `khuc-xa-song` | T2 | audited | |
-| `hat-nuoc-quay-vong` | T2 | audited | pilot đề xuất |
-| `kenh-sofar` | T2 | audited | pilot đề xuất |
-| `luc-tao-trieu` | T3 | audited | pilot đề xuất |
-| `chu-ky-trieu-mat-trang` | T2 | audited | chờ quyết định đổi slug (TRIAGE Q-B) |
-| `su-hinh-thanh-bao` | T2 | audited | chờ quyết định đưa vào đợt này (TRIAGE Q-A) |
+| `song-than-hut-chim` | T2 | spec-approved | |
+| `bien-dang-song-vo` | T2 | spec-approved | |
+| `khuc-xa-song` | T2 | spec-approved | |
+| `hat-nuoc-quay-vong` | T2 | spec-approved | pilot |
+| `kenh-sofar` | T2 | spec-approved | pilot |
+| `luc-tao-trieu` | T3 | spec-approved | pilot |
+| `chu-ky-trieu-18-6-nam` | T2 | spec-approved | slug cũ: chu-ky-trieu-mat-trang; tag "nâng cao" |
+| `su-hinh-thanh-bao` | T2 | spec-approved | dựng lại, xếp cuối hàng |
 
 Không phát hành: `_nguon/Chu ky trieu Mat Trang.html` (bản cũ, đã có bản `-latest`).

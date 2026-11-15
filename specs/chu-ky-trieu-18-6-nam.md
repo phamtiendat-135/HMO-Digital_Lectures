@@ -1,4 +1,4 @@
-# chu-ky-trieu-mat-trang — Hai chu kỳ nhiều năm của Mặt Trăng chi phối triều cao (18,61 năm và 8,85 năm)
+# chu-ky-trieu-18-6-nam — Hai chu kỳ nhiều năm của Mặt Trăng chi phối triều cao (18,61 năm và 8,85 năm)
 
 > Số dòng trong spec này trỏ vào mã riêng của animation sau khi tách bundle: `nodal-piece-vi-standalone.jsx` (uuid `6c8933c7…`, 744 dòng), lấy lại bằng `node tools/audit/tach-bundle.cjs "_nguon/Chu ky trieu Mat Trang-latest.html" <thư mục>`. "tpl" = `template.html` của bundle; "v3" = `animations-v3.jsx` (uuid `caff81db…`).
 >
@@ -13,7 +13,7 @@
 | Dung lượng | 2.005 KB (2.053.166 byte) |
 | Công nghệ | Bundle Claude Design: React 18.3.1 + ReactDOM 18.3.1 (UMD) + **Babel standalone 7.29.0 dịch JSX lúc tải** (3,14 MB sau giải nén) + dc-runtime (69 KB) + `animations-v3.jsx` (55 KB, khung hoạt hình của Claude Design) + `tweaks-panel.jsx` (25 KB, bảng chỉnh của trình soạn) + mã riêng 52 KB. Vẽ bằng SVG + DOM, phép chiếu 3D tự viết (dòng 26–30), không WebGL. 24 file woff2: Be Vietnam Pro 400/500/600/700, JetBrains Mono 400/500/700, Source Serif 4 (≥ 400/600), mỗi độ đậm 3–6 khối unicode kể cả Cyrillic, Hy Lạp. 1 PNG logo HMO 223 × 131 px, 38 KB |
 | Sân khấu | **1920 × 1080 (16:9)**, không phải 1440 × 1080 (dòng 731) |
-| Chạy offline | Có. `audit/screens/chu-ky-trieu-mat-trang/log.json`: 0 request bị chặn, 0 lỗi console ở cả 3 khung |
+| Chạy offline | Có. `audit/screens/chu-ky-trieu-18-6-nam/log.json`: 0 request bị chặn, 0 lỗi console ở cả 3 khung |
 
 **Mục tiêu học tập**
 1. Giải thích vì sao độ xích vĩ cực đại của Mặt Trăng dao động giữa 18°18′ và 28°36′ theo chu kỳ nút 18,61 năm.
@@ -69,7 +69,7 @@
 | S-07 | Hình ảnh | toàn bộ | Dựng lại bố cục từ 1920 × 1080 sang **1440 × 1080**: hình quỹ đạo ở trên/trái, bảng số và đồ thị bên phải hoặc dưới; cỡ chữ theo chuẩn (tiêu đề ≥ 44, chú thích ≥ 36, nhãn ≥ 30, nguồn và ghi chú tỉ lệ ≥ 22) | Đo trên ảnh 1440 × 1080: không nhãn nào < 30 px ngoài dòng nguồn/tỉ lệ; không chữ tràn hay đè nhau ở cả 10 cảnh |
 | S-08 | Sư phạm / Tự học | dòng 221, 265, 296, 415, 459, 501–503 | Chuyển các đoạn văn dài khỏi sân khấu xuống khung Giải thích (mục 7); trên hình chỉ giữ nhãn, số đọc và chú thích ≤ 20 từ | Không khối chữ nào trên sân khấu > 20 từ |
 | S-09 | Tương tác | toàn bộ | Ghép khung chung: `HMO.dangKy({canh, thoiLuong, ve(t), datNhan, khoiTao, huy})`. `ve(t)` render `<Piece>` với `T = t`. Bỏ `CompositionStage`, `PlaybackBar`, bắt phím, rAF và lưu vị trí phát của v3; chỉ giữ `Easing`, `clamp` | 6 kiểm tra smoke của Bước 4 đạt ở 3 khung; ←/→ và PageUp/PageDown đổi cảnh; tự dừng cuối mỗi cảnh |
-| S-10 | Tương tác | dòng 700–722, 726–728 | Thay `SpeedControl` (chỉ hiện khi rê chuột) và công tắc "Phóng đại" của TweaksPanel bằng `dieuKhien` của khung: thanh trượt "Mặt Trăng: 1 vòng / 1–15 s" và bật/tắt "Phóng đại độ nghiêng, độ dẹt". Bỏ `window.__moonPeriod` và `localStorage` | Trên điện thoại chạm được cả hai điều khiển, cao ≥ 44 px; `grep localStorage src/chu-ky-trieu-mat-trang/` = 0 |
+| S-10 | Tương tác | dòng 700–722, 726–728 | Thay `SpeedControl` (chỉ hiện khi rê chuột) và công tắc "Phóng đại" của TweaksPanel bằng `dieuKhien` của khung: thanh trượt "Mặt Trăng: 1 vòng / 1–15 s" và bật/tắt "Phóng đại độ nghiêng, độ dẹt". Bỏ `window.__moonPeriod` và `localStorage` | Trên điện thoại chạm được cả hai điều khiển, cao ≥ 44 px; `grep localStorage src/chu-ky-trieu-18-6-nam/` = 0 |
 | S-11 | Tương tác | cảnh có quỹ đạo | Thêm `dieuKhien` thanh trượt "Góc nhìn" (phương vị camera, cộng vào `cam.az` dòng 572) để sinh viên tự xoay nhìn hai mặt phẳng cắt nhau | Kéo thanh trượt: hình quay, phần sau/trước của quỹ đạo đổi nét đúng |
 | S-12 | Hình ảnh | màn dọc | `datNhan('toi-gian')`: ẩn nhãn tiếng Anh in nghiêng, chú giải bên phải, đoạn nguồn; giữ hình quỹ đạo, đồ thị và 1–2 số đọc lớn | Ảnh 390 × 844: hình và đồ thị nhận ra được; khung Giải thích có chữ ≥ 16 px; không tràn ngang |
 | S-13 | Hiệu năng | build | **Biên dịch sẵn JSX bằng esbuild, bỏ Babel**, bỏ dc-runtime, `tweaks-panel.jsx`, phần không dùng của `animations-v3.jsx` | Bản phát hành không chứa chuỗi `Babel`, `text/babel`, `__bundler` |
@@ -147,22 +147,22 @@ Cấu trúc cảnh đề xuất: 10 cảnh **có giờ**, tổng 119 s. Cảnh b
 
 **Câu hỏi tự kiểm tra**
 
-- **chu-ky-trieu-mat-trang-q1** (nhớ). Mặt phẳng quỹ đạo Mặt Trăng xoay hết một vòng so với hoàng đạo sau bao lâu?
+- **chu-ky-trieu-18-6-nam-q1** (nhớ). Mặt phẳng quỹ đạo Mặt Trăng xoay hết một vòng so với hoàng đạo sau bao lâu?
   A. 4,4 năm  B. 8,85 năm  C. 18,61 năm  D. 29,5 ngày
   **Đáp án C.** Đường nút lùi về phía tây khoảng 19,3° mỗi năm, nên 360°/19,34° ≈ 18,61 năm.
 
-- **chu-ky-trieu-mat-trang-q2** (hiểu). Vào những năm N = 0° (ví dụ 2025), điều gì xảy ra với thủy triều?
+- **chu-ky-trieu-18-6-nam-q2** (hiểu). Vào những năm N = 0° (ví dụ 2025), điều gì xảy ra với thủy triều?
   A. Sóng bán nhật triều M₂ đạt biên độ lớn nhất
   B. Độ xích vĩ cực đại lớn nhất, các sóng nhật triều K₁ và O₁ mạnh lên
   C. Mặt Trăng ở gần Trái Đất nhất
   D. Triều không thay đổi so với các năm khác
   **Đáp án B.** Khi N = 0°, hai độ nghiêng cộng nhau thành 28°36′, hệ số nút của O₁ là 1,196 còn của M₂ chỉ 0,963.
 
-- **chu-ky-trieu-mat-trang-q3** (vận dụng). Xích đạo nghiêng 23°27′ so với hoàng đạo, quỹ đạo Mặt Trăng nghiêng 5°9′ so với hoàng đạo. Khi N = 180°, độ xích vĩ cực đại của Mặt Trăng là bao nhiêu?
+- **chu-ky-trieu-18-6-nam-q3** (vận dụng). Xích đạo nghiêng 23°27′ so với hoàng đạo, quỹ đạo Mặt Trăng nghiêng 5°9′ so với hoàng đạo. Khi N = 180°, độ xích vĩ cực đại của Mặt Trăng là bao nhiêu?
   A. 5°9′  B. 18°18′  C. 23°27′  D. 28°36′
   **Đáp án B.** Khi N = 180° hai độ nghiêng trừ nhau: 23°27′ − 5°9′ = 18°18′.
 
-- **chu-ky-trieu-mat-trang-q4** (vận dụng). Lực tạo triều tỉ lệ với 1/r³. Mặt Trăng ở cận điểm cách Trái Đất 363.300 km, khoảng cách trung bình là 384.400 km. Lực tạo triều ở cận điểm lớn hơn mức trung bình khoảng bao nhiêu?
+- **chu-ky-trieu-18-6-nam-q4** (vận dụng). Lực tạo triều tỉ lệ với 1/r³. Mặt Trăng ở cận điểm cách Trái Đất 363.300 km, khoảng cách trung bình là 384.400 km. Lực tạo triều ở cận điểm lớn hơn mức trung bình khoảng bao nhiêu?
   A. 5,5%  B. 11%  C. 18%  D. 27%
   **Đáp án C.** (384.400/363.300)³ = 1,058³ ≈ 1,18, tức lớn hơn khoảng 18%.
 

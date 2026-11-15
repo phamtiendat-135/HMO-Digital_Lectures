@@ -9,7 +9,7 @@ Lệnh quét: `grep -il "plotly\|three\|d3\.\|chart\.js\|cdn\|fonts.googleapis" 
 | song-than-hut-chim | song_than_hut_chim_1.html | 74 | vanilla JS, Canvas 2D | không | — | không | chạy được |
 | khuc-xa-song | khuc_xa_song_HMO.html | 407 | vanilla JS, Canvas + SVG | không | — | không | chạy được |
 | kenh-sofar | Kenh SOFAR.html | 1.874 | bundle Claude Design, JSX dịch trên trình duyệt | React 18.3.1, ReactDOM 18.3.1, Babel standalone 7.29.0 (3,1 MB sau giải nén), 27 woff2 | nhúng | không | chạy được, nhưng Babel dịch JSX mỗi lần tải |
-| chu-ky-trieu-mat-trang | Chu ky trieu Mat Trang-latest.html | 2.005 | như trên | React 18.3.1, ReactDOM 18.3.1, Babel standalone 7.29.0, 24 woff2, 1 PNG `hmoLogo` 38 KB | nhúng | không | chạy được, nhưng Babel dịch JSX mỗi lần tải |
+| chu-ky-trieu-18-6-nam | Chu ky trieu Mat Trang-latest.html | 2.005 | như trên | React 18.3.1, ReactDOM 18.3.1, Babel standalone 7.29.0, 24 woff2, 1 PNG `hmoLogo` 38 KB | nhúng | không | chạy được, nhưng Babel dịch JSX mỗi lần tải |
 | luc-tao-trieu | Luc tao trieu - offline.html | 1.141 | bundle Claude Design, bộ 12 slide; JS thường (không Babel) | React 18.3.1, ReactDOM 18.3.1 nhúng; **three.js 0.160.0 + OrbitControls gọi từ unpkg.com**; 21 woff2; 1 JPEG 91 KB | lẫn lộn | `unpkg.com/three@0.160.0/build/three.module.js`, `unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js` | **hỏng phần 3D** dù tên file ghi "offline" |
 | su-hinh-thanh-bao | su-hinh-thanh-bao-preview.html | 79 | widget xuất từ công cụ visualization của ChatGPT/Codex (id `codex-visualization`, gọi `window.openai`), hoạt hình CSS; nội dung thật chỉ 18,8 KB nằm trong `data-srcdoc` | @floating-ui/core 1.7.3 và @floating-ui/dom 1.7.4 (nạp nhưng không dùng), lucide 1.17.0 (biểu tượng nút Phát) | **CDN** | 3 file trên `unpkg.com` | chữ và hình vẫn hiện, **mất biểu tượng** khi mất mạng; font hệ thống |
 
@@ -18,7 +18,7 @@ Lệnh quét: `grep -il "plotly\|three\|d3\.\|chart\.js\|cdn\|fonts.googleapis" 
 - **Plotly, d3, Chart.js: không file nào dùng.** Quy tắc Plotly của đề bài không phải áp dụng; không file nào được miễn ngưỡng dung lượng.
 - **three.js: 1 file** (`luc-tao-trieu`, chỉ slide 8), gọi qua CDN. Khác với ghi nhận sơ bộ "chưa file nào dùng three.js".
 - **Gọi mạng thật sự: 2 file** (`luc-tao-trieu`, `su-hinh-thanh-bao`). Bản phát hành phải nhúng hoặc bỏ các thư viện này.
-- **Babel trên trình duyệt: 2 file** (`kenh-sofar`, `chu-ky-trieu-mat-trang`). Riêng Babel đã là 3,1 MB mã phải phân tích mỗi lần tải; biên dịch sẵn bằng esbuild là bắt buộc.
+- **Babel trên trình duyệt: 2 file** (`kenh-sofar`, `chu-ky-trieu-18-6-nam`). Riêng Babel đã là 3,1 MB mã phải phân tích mỗi lần tải; biên dịch sẵn bằng esbuild là bắt buộc.
 - Trong 3 bundle, mã riêng của từng animation chỉ 32–95 KB; phần còn lại là React, Babel và font. Hai bundle SOFAR và Chu kỳ triều dùng chung hai file JSX (55 KB + 25 KB) là bộ khung hoạt hình của Claude Design.
 - Bản `Chu ky trieu Mat Trang.html` (không `-latest`) khác bản `-latest` ở mã riêng (47 KB so với 52 KB) và template; không phát hành.
 

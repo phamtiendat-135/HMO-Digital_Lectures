@@ -69,7 +69,7 @@ Bundle Claude Design chứa manifest tài nguyên trong `<script type="__bundler
 | khuc_xa_song_HMO | `khuc-xa-song` |
 | Kenh SOFAR | `kenh-sofar` |
 | Luc tao trieu - offline | `luc-tao-trieu` |
-| Chu ky trieu Mat Trang-latest | `chu-ky-trieu-mat-trang` |
+| Chu ky trieu Mat Trang-latest | `chu-ky-trieu-18-6-nam` |
 | su-hinh-thanh-bao-preview | `su-hinh-thanh-bao` |
 
 Bộ lọc "học phần" trên trang chủ tự ẩn khi chưa animation nào có `hocPhan`.

@@ -1,4 +1,6 @@
-# TRIAGE — kết quả Bước 1 (chờ duyệt ở CỔNG G1)
+# TRIAGE — kết quả Bước 1 (ĐÃ DUYỆT ở CỔNG G1, 15/11/2026)
+
+**Quyết định của TS. Đạt ở G1:** (1) pilot là `luc-tao-trieu`, `kenh-sofar`, `hat-nuoc-quay-vong`; (2) `su-hinh-thanh-bao` vào đợt này, coi là dựng lại, xếp cuối hàng; (3) `chu-ky-trieu-mat-trang` đổi slug thành `chu-ky-trieu-18-6-nam`, tên hiển thị "Chu kỳ triều 18,6 năm và 4,4 năm", tag "nâng cao". Các câu hỏi khoa học ở mục 7 chưa được trả lời riêng: worker dùng phương án đề xuất; số còn `[CẦN NGUỒN]` không được hiển thị.
 
 Ngày: 14/11/2026. Mỗi dòng tóm tắt một spec trong `specs/`. Điểm chấm theo chuẩn đích (STANDARDS + tài liệu thiết kế), thang 0–5, 8 tiêu chí.
 
