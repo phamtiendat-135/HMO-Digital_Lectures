@@ -1,0 +1,41 @@
+{
+  "slug": "luc-tao-trieu",
+  "ten": "Lực tạo triều: vì sao có hai múi triều",
+  "moTa": "Bảy cảnh tương tác, trong đó có một mô hình 3D, giải thích lực ly tâm, lực hấp dẫn của Mặt Trăng và lực tạo triều sinh ra hai múi triều.",
+  "loai": "3D",
+  "hocPhan": "", "bai": "",
+  "tags": ["thủy triều", "lực tạo triều", "Mặt Trăng", "triều cường", "triều kém", "3D"],
+  "phienBan": "1.0.0", "ngayCapNhat": "2026-11-15",
+  "canhThumb": 2, "giayThumb": 2,
+  "nguon": "Nguồn: NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science. Thư viện đồ hoạ: three.js 0.160.0 (giấy phép MIT).",
+  "canh": [
+    { "id": "tinh-tien", "ten": "Trái Đất tịnh tiến quanh khối tâm chung",
+      "giaiThich": "Trái Đất và Mặt Trăng cùng quay quanh khối tâm chung CM. CM cách tâm Trái Đất 4.671 km, tức nằm trong lòng đất, sâu khoảng 1.700 km. Trong chuyển động này Trái Đất chỉ tịnh tiến, không xoay: hãy theo dõi ba điểm A, B, C, chúng vẽ ba đường tròn cùng bán kính, cùng chiều, cùng lúc." },
+    { "id": "ly-tam", "ten": "Vì sao lực ly tâm chỉ có một hướng",
+      "giaiThich": "Vì ba đường tròn bằng nhau và ba điểm luôn ở cùng vị trí trên đường tròn của mình, lực ly tâm Fc tại mọi điểm có cùng độ lớn và song song với nhau. Fc luôn chỉ ra xa Mặt Trăng. Độ lớn của nó đúng bằng lực hấp dẫn của Mặt Trăng tại tâm Trái Đất: Fc = G·M/a², với a = 384.400 km." },
+    { "id": "mo-hinh-3d", "ten": "Mô hình 3D: ba lực tại một điểm",
+      "giaiThich": "Lực hấp dẫn Fg của Mặt Trăng mạnh hơn ở phía gần (103,4% so với tại tâm) và yếu hơn ở phía xa (96,8%). Lực tạo triều Ft = Fg + Fc, chỉ bằng khoảng 3,4% Fc. Hãy kéo điểm cam: gần Mặt Trăng và phía đối diện, Ft hướng ra ngoài; ở vành đai vuông góc, Ft hướng vào tâm. Nước dồn về hai múi chủ yếu nhờ thành phần nằm ngang của Ft." },
+    { "id": "quy-dao", "ten": "Một ngày có hai lần nước lớn",
+      "giaiThich": "Hai múi triều luôn nằm dọc đường nối Trái Đất – Mặt Trăng. Trái Đất tự quay một vòng gần một ngày nên điểm P lần lượt đi qua cả hai múi: mỗi ngày có hai lần nước lớn, hai lần nước ròng. Vì Mặt Trăng cũng tiến lên trên quỹ đạo, P cần 24 giờ 50 phút mới gặp lại Mặt Trăng." },
+    { "id": "xich-vi", "ten": "Xích vĩ Mặt Trăng làm hai lần nước lớn không bằng nhau",
+      "giaiThich": "Mặt Trăng thường không nằm trên xích đạo mà lệch một góc xích vĩ δ, nên hai múi triều nằm chéo so với xích đạo. Một điểm ở vĩ độ trung bình đi qua một múi cao và một múi thấp trong ngày. Hãy kéo δ về 0°: hai lần nước lớn bằng nhau. Tăng δ: chênh lệch lớn dần, ở vĩ độ cao chỉ còn một lần." },
+    { "id": "nhin-ngang", "ten": "Xích vĩ thay đổi trong một tháng",
+      "giaiThich": "Nhìn ngang mặt phẳng xích đạo, quỹ đạo Mặt Trăng là một đường nghiêng. Trong 27,3 ngày, Mặt Trăng lên phía bắc xích đạo rồi xuống phía nam, xích vĩ δ dao động giữa +i và −i. Vì vậy mức chênh giữa hai lần nước lớn trong ngày cũng lớn dần rồi nhỏ dần, mỗi tháng hai lần." },
+    { "id": "trieu-cuong-kem", "ten": "Triều cường và triều kém",
+      "giaiThich": "Mặt Trời cũng tạo triều, bằng 0,46 lần Mặt Trăng. Vào ngày sóc và vọng, ba thiên thể thẳng hàng, hai tác động cộng lại thành 1,46: triều cường. Vào thượng huyền và hạ huyền, hai trục vuông góc, còn 0,54: triều kém. Chu kỳ lặp lại sau 14,77 ngày, tức nửa tuần trăng 29,53 ngày." }
+  ],
+  "cauHoi": [
+    { "id": "luc-tao-trieu-q1", "hoi": "Vì sao lực ly tâm Fc bằng nhau tại mọi điểm trên Trái Đất?",
+      "phuongAn": ["Vì mọi điểm cách khối tâm chung một khoảng bằng nhau", "Vì Trái Đất tịnh tiến quanh khối tâm chung nên mọi điểm vẽ đường tròn cùng bán kính", "Vì Trái Đất tự quay quanh trục với tốc độ góc không đổi", "Vì lực hấp dẫn của Mặt Trăng như nhau tại mọi điểm"],
+      "dapAn": 1, "giaiThich": "Chuyển động là tịnh tiến, nên mọi điểm vẽ đường tròn bán kính 4.671 km, cùng pha; gia tốc vì thế giống hệt nhau." },
+    { "id": "luc-tao-trieu-q2", "hoi": "Tại điểm trên Trái Đất nằm đối diện với Mặt Trăng, lực tạo triều Ft hướng về đâu?",
+      "phuongAn": ["Về phía Mặt Trăng, xuyên qua tâm Trái Đất", "Vào tâm Trái Đất", "Ra xa tâm Trái Đất, ngược phía Mặt Trăng", "Bằng 0"],
+      "dapAn": 2, "giaiThich": "Ở đó Fg chỉ còn 96,8% trong khi Fc vẫn 100% và chỉ ra xa Mặt Trăng, nên hợp lực hướng ra ngoài, tạo múi triều thứ hai." },
+    { "id": "luc-tao-trieu-q3", "hoi": "Khoảng cách Trái Đất – Mặt Trăng là 384.400 km; Trái Đất nặng gấp 81,3 lần Mặt Trăng. Khối tâm chung cách tâm Trái Đất khoảng bao nhiêu?",
+      "phuongAn": ["1.700 km", "4.671 km", "6.371 km", "60.336 km"],
+      "dapAn": 1, "giaiThich": "d = 384.400 / (81,3 + 1) = 384.400 / 82,3 ≈ 4.671 km, nhỏ hơn bán kính Trái Đất 6.371 km nên nằm trong lòng đất." },
+    { "id": "luc-tao-trieu-q4", "hoi": "Tác động tạo triều của Mặt Trời bằng 0,46 lần Mặt Trăng. Biên độ triều cường lớn gấp khoảng mấy lần biên độ triều kém?",
+      "phuongAn": ["1,5 lần", "2,2 lần", "2,7 lần", "3,2 lần"],
+      "dapAn": 2, "giaiThich": "Triều cường: 1 + 0,46 = 1,46; triều kém: 1 − 0,46 = 0,54; tỉ số 1,46 / 0,54 ≈ 2,7." }
+  ]
+}
