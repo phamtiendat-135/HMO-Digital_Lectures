@@ -173,3 +173,16 @@ test('vuốt ngang trên sân khấu đổi cảnh', async ({ page }, info) => {
   await vuot(b.x + b.width * 0.2, b.x + b.width * 0.8);
   expect((await trangThai(page)).iCanh).toBe(0);
 });
+
+test('nút bấm một lần: dừng đồng hồ và đổi hình; thanh trượt hiện số theo thapPhan', async ({ page }) => {
+  await canhGac(page); await mo(page, '?che-do=tu-hoc');
+  await denCuoi(page); await page.evaluate(() => window.HMO.phat(true)); await page.waitForTimeout(200);
+  await expect(page.locator('label[for="hmo-dk-ban-kinh"]')).toContainText('60,0 px');
+  await page.locator('#hmo-dk-buoc').click();
+  expect((await trangThai(page)).dangPhat).toBe(false);
+  await page.waitForTimeout(150);
+  const a1 = await page.locator('#hmo-san-khau').screenshot();
+  await page.locator('#hmo-dk-buoc').click(); await page.waitForTimeout(150);
+  const a2 = await page.locator('#hmo-san-khau').screenshot();
+  expect(a1.equals(a2)).toBe(false);
+});
