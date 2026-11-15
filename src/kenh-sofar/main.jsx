@@ -22,7 +22,7 @@ const win = (T, a, b, f = 0.4) => Math.min(MOTION.enter(T, a, f), 1 - MOTION.ent
 // Vùng đặt: khi tia ở múi dưới (x 510–735 px) dùng góc dưới-phải hoặc nửa trên; khi tia ở múi trên dùng nửa trên-phải hoặc góc dưới-phải.
 const CALLOUTS = [
   { a: 1.2, b: 5.6, x: 770, top: 628, tx: 4.0, dong: ['↓ Xuống lớp ĐẶC HƠN:', 'ρ 1.032,7 → 1.034,5 kg/m³'] },
-  { a: 3.2, b: 5.8, x: 770, top: 766, dong: ['Nhưng c TĂNG: 1.483,5 → 1.486,0 m/s', '→ tia bị bẻ dần về phương ngang.'] },
+  { a: 3.2, b: 5.8, x: 700, top: 766, dong: ['Nhưng c TĂNG: 1.483,5 → 1.486,0 m/s', '→ tia bị bẻ dần về phương ngang.'] },
   { a: 6.4, b: 10.6, x: 540, bot: 548, tx: 11.25, dong: ['Điểm quay đầu: c = 1.483,5 / cos 4°', '= 1.487,1 m/s → tia nằm ngang rồi đi lên.'] },
   { a: 10.8, b: 14.0, x: 770, top: 700, tx: 17.0, dong: ['↑ Về lớp có c nhỏ hơn', '→ tia dốc lại.'] },
   { a: 14.2, b: 17.4, x: 790, top: 640, tx: 22.5, dong: ['Qua trục SOFAR —', 'chỗ âm đi chậm nhất.'] },
@@ -260,7 +260,7 @@ function Piece({ T }) {
           {splash.map((r, i) => r > 0 && r < 1 && <circle key={'s' + i} cx={X(4.1)} cy={SY0} r={8 + 50 * r} fill="none" stroke={MAU.orange} stroke-width="3" opacity={0.9 * (1 - r)} />)}
           <Dot x={p18.sx} y={p18.sy} color={MAU_TIA[18]} T={T} op={dot18Op} />
         </g>
-        {srcOp > 0 && <g transform={`translate(${X(0)} ${Y(AXIS)}) scale(${0.6 + 0.4 * srcOp})`} opacity={srcOp}>
+        {srcOp > 0 && <g transform={`translate(${X(0)} ${Y(AXIS)}) ` + (srcOp < 1 ? ` scale(${(0.6 + 0.4 * srcOp).toFixed(4)})` : ``)} opacity={srcOp < 1 ? srcOp : null}>
           <circle r="24" fill="#fff" stroke={MAU.navy} stroke-width="2" />
           <g transform="translate(-12 -12)"><path d={VOLUME} fill="none" stroke={MAU.navy} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></g>
         </g>}
@@ -351,4 +351,4 @@ HMO.dangKy({
   huy() { render(null, goc); goc.remove(); },
 });
 // Dùng cho kiểm thử: giá trị ô góc tia ở khung hình vừa vẽ.
-window.__sofar = { goc: () => st.goc, cOf };
+window.__sofar = { goc: () => st.goc, cOf, ve: (t) => render(<Piece T={t} />, goc) };
