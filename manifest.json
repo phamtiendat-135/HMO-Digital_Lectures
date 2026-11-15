@@ -1,3 +1,24 @@
 {
-  "animations": []
+  "animations": [
+    {
+      "slug": "kenh-sofar",
+      "ten": "Kênh SOFAR hình thành như thế nào?",
+      "hocPhan": "",
+      "bai": "",
+      "moTa": "Profile tốc độ âm ở Biển Đông và cách tia âm bị giữ quanh trục SOFAR theo định luật Snell.",
+      "tags": [
+        "âm học biển",
+        "kênh SOFAR",
+        "tốc độ âm",
+        "định luật Snell",
+        "Biển Đông"
+      ],
+      "loai": "2D",
+      "ngayCapNhat": "2026-11-15",
+      "phienBan": "1.0.0",
+      "dungLuong": 137085,
+      "giayThumb": 70,
+      "canhThumb": 4
+    }
+  ]
 }
