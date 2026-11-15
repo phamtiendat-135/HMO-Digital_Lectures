@@ -3,7 +3,7 @@
 Ngày: 13/11/2026 · Trạng thái: chờ duyệt (CỔNG G0)
 Repo: `phamtiendat-135/HMO-Digital_Lectures` (public) · URL đích: https://phamtiendat-135.github.io/HMO-Digital_Lectures/
 
-Tài liệu này ghi các quyết định thiết kế. Quy trình chi tiết từng bước (khung spec, cây phân tầng, chuẩn chung, test, sổ điểm) nằm trong đề bài gốc của TS. Phạm Tiến Đạt, được chép nguyên văn vào `docs/DE_BAI_GOC.md` khi bắt đầu thực thi và vẫn có hiệu lực, **trừ những điểm tài liệu này ghi là thay đổi** (mục 6).
+Tài liệu này ghi các quyết định thiết kế. Quy trình chi tiết từng bước (khung spec, cây phân tầng, chuẩn chung, test, sổ điểm) nằm trong đề bài gốc của TS. Phạm Tiến Đạt và vẫn có hiệu lực (các quy tắc vận hành của nó đã được viết lại trong `docs/STANDARDS.md`, `.claude/agents/` và các kế hoạch trong `docs/superpowers/plans/`; bản gốc do TS. Đạt giữ, có thể tải lên `docs/DE_BAI_GOC.md` để lưu trữ), **trừ những điểm tài liệu này ghi là thay đổi** (mục 6).
 
 ## 1. Mục đích
 
