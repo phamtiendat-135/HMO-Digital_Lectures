@@ -56,6 +56,9 @@ export function chu(g, s, x, y, o = {}) {
   if (tt.muc === 'toi-gian') { if (!o.khoa) return; co = Math.max(60, co * 2); }
   g.font = `${o.nghieng ? 'italic ' : ''}${o.dam || 600} ${co}px ${FONT}`;
   g.textAlign = o.can || 'left'; g.textBaseline = o.goc || 'alphabetic';
+  // giữ chữ trong sân khấu (nhãn bám theo vật thể có thể chạm mép)
+  const rong = g.measureText(s).width, trai = g.textAlign === 'center' ? x - rong / 2 : g.textAlign === 'right' ? x - rong : x;
+  x += Math.max(0, 12 - trai) - Math.max(0, trai + rong - (W - 12));
   if (o.vien) { g.lineWidth = co * 0.2; g.lineJoin = 'round'; g.strokeStyle = o.vien; g.strokeText(s, x, y); }
   g.fillStyle = o.mau || MAU.ink; g.fillText(s, x, y);
 }

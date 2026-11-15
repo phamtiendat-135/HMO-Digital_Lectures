@@ -2,6 +2,12 @@
 import { W, H, tt } from './chung.js';
 import c1 from './canh1-tinh-tien.js';
 import c2 from './canh2-ly-tam.js';
+import c3 from './canh3-mo-hinh-3d.js';
+import c3Phang from './2d.js';
+import c4 from './canh4-quy-dao.js';
+import c5 from './canh5-xich-vi.js';
+import c6 from './canh6-nhin-ngang.js';
+import c7 from './canh7-trieu-cuong-kem.js';
 
 function taoDinhNghia(dsCanh) {
   const ds = dsCanh.slice();
@@ -12,7 +18,14 @@ function taoDinhNghia(dsCanh) {
     thoiLuong: 0,
     khoiTao(sanKhau, mt) {
       tt.giam = !!mt.giamChuyenDong;
-      for (const c of ds) if (c.khoiTao) c.khoiTao(sanKhau, mt);
+      ds.forEach((c, i) => {
+        if (!c.khoiTao) return;
+        try { c.khoiTao(sanKhau, mt); } catch (loi) {
+          // three.js không tạo được WebGL dù trình duyệt báo có: tự chuyển cảnh 3 sang bản 2D
+          if (c !== c3) throw loi;
+          c3Phang.tuBao = true; c3Phang.khoiTao(sanKhau, mt); ds[i] = c3Phang;
+        }
+      });
       cv = document.createElement('canvas');
       cv.width = Math.round(W * mt.dpr); cv.height = Math.round(H * mt.dpr);
       cv.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:${H}px;pointer-events:none`;
@@ -38,4 +51,7 @@ function taoDinhNghia(dsCanh) {
   };
 }
 
-window.HMO.dangKy(taoDinhNghia([c1, c2]));
+const dinhNghia = taoDinhNghia([c1, c2, c3, c4, c5, c6, c7]);
+dinhNghia.canWebGL2 = true;
+dinhNghia.duPhong = taoDinhNghia([c1, c2, c3Phang, c4, c5, c6, c7]);
+window.HMO.dangKy(dinhNghia);

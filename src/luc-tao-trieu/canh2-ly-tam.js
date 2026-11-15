@@ -1,5 +1,5 @@
 // Cảnh 2: vì sao lực ly tâm Fc bằng nhau và song song tại mọi điểm.
-import { MAU, TI_SO_CM, TAU, D2R, CM_KM, nghin, nen, chu, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { MAU, TI_SO_CM, TAU, D2R, CM_KM, nghin, nen, chu, tieuDe, chanTrang, tron, doan, matTrang, muiTen, heSoNhan } from './chung.js';
 
 const LAP = 9, GOC0 = 35;
 const st = { duong: true, fc: true };
@@ -29,6 +29,7 @@ export default {
     const nx = -uy, ny = ux;
     const mx = CX - DM * ux, my = CY - DM * uy;      // Mặt Trăng luôn đối diện Trái Đất qua CM
     const can = nx < 0 ? 'right' : 'left', goc = ny < 0 ? 'bottom' : 'top';
+    const k = heSoNhan();
     nen(g);
 
     doan(g, ex, ey, mx, my, MAU.slate, 2, [9, 7]);
@@ -36,10 +37,10 @@ export default {
     chu(g, 'Mặt Trăng', mx, my + RMT + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top', khoa: true, vien: MAU.nen });
 
     tron(g, ex, ey, R, 'rgba(27,78,143,0.88)', MAU.sky, 3);
-    chu(g, 'Trái Đất', ex + nx * R * 0.62, ey + ny * R * 0.62, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
+    chu(g, 'Trái Đất', ex - R * 0.1, ey + R * 0.66, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
 
     tron(g, CX, CY, 9, MAU.navy, '#FFFFFF', 2.5);
-    chu(g, 'CM', CX + nx * 16, CY + ny * 16, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can, goc, khoa: true });
+    chu(g, 'CM', CX - ux * 40 * k, CY - uy * 36 * k, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });
 
     DIEM.forEach((p) => {
       const ox = ex + p.lech[0] * R * 0.78, oy = ey + p.lech[1] * R * 0.78; // vị trí điểm

@@ -68,7 +68,7 @@ export default {
         { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: m.ten === 'C' ? 'left' : 'right', goc: m.ten === 'C' ? 'middle' : 'bottom', khoa: true });
     });
     tron(g, CX, CY, 9, MAU.navy, '#FFFFFF', 2.5);
-    chu(g, 'CM', CX + 14, CY + 10 * k, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, goc: 'top', khoa: true });
+    chu(g, 'CM', CX - Math.cos(a) * 38 * k, CY + Math.sin(a) * 34 * k, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });
 
     tieuDe(g, 'Trái Đất tịnh tiến quanh khối tâm chung CM',
       `A, B trên mặt đất, C ở tâm: ba đường tròn bằng nhau, bán kính ${nghin(CM_KM)} km.`);
