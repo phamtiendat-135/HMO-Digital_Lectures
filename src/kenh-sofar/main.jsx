@@ -26,9 +26,9 @@ const CALLOUTS = [
   { a: 6.4, b: 10.6, x: 540, bot: 548, tx: 11.25, dong: ['Điểm quay đầu: c = 1.483,5 / cos 4°', '= 1.487,1 m/s → tia nằm ngang rồi đi lên.'] },
   { a: 10.8, b: 14.0, x: 770, top: 700, tx: 17.0, dong: ['↑ Về lớp có c nhỏ hơn', '→ tia dốc lại.'] },
   { a: 14.2, b: 17.4, x: 790, top: 640, tx: 22.5, dong: ['Qua trục SOFAR —', 'chỗ âm đi chậm nhất.'] },
-  { a: 16.6, b: 21.0, x: 960, bot: 408, tx: 26.5, dong: ['↑ Lên lớp NHẸ HƠN:', 'ρ 1.032,7 → 1.030,3 kg/m³'] },
+  { a: 16.6, b: 21.0, x: 900, bot: 408, tx: 26.5, dong: ['↑ Lên lớp NHẸ HƠN:', 'ρ 1.032,7 → 1.030,3 kg/m³'] },
   { a: 18.4, b: 21.0, x: 790, top: 766, dong: ['nhưng ẤM HƠN: 3,7 → 6,5 °C', '→ c TĂNG → tia bị bẻ xuống.'] },
-  { a: 21.2, b: 25.4, x: 960, bot: 400, tx: 33.65, dong: ['Điểm quay đầu phía trên', '→ tia quay xuống.'] },
+  { a: 21.2, b: 25.4, x: 900, bot: 400, tx: 33.65, dong: ['Điểm quay đầu phía trên', '→ tia quay xuống.'] },
 ];
 const THE_TONG_KET = [
   ['Tốc độ âm nhỏ nhất ở ≈ 1.140 m (Biển Đông) = trục SOFAR.'],
@@ -52,7 +52,8 @@ function Box({ x, top, bot, op, style, dong, cls }) {
 function Leader({ x1, y1, x2, y2, op }) {
   if (op <= 0.001) return null;
   return <g opacity={op}>
-    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={MAU.slate} stroke-width="2" />
+    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={MAU.navy} stroke-width="5" stroke-opacity="0.45" />
+    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#fff" stroke-width="2" />
     <circle cx={x2} cy={y2} r="6" fill="#fff" stroke={MAU.navy} stroke-width="2.5" />
   </g>;
 }
@@ -175,7 +176,7 @@ function Piece({ T }) {
         {/* ===== PANEL TRÁI: c(z) và cột ρ ===== */}
         <g opacity={frameOp}>
           {[1480, 1490, 1500, 1510, 1520, 1530, 1540].map((v) => <line key={'g' + v} x1={CX(v)} y1={SY0} x2={CX(v)} y2={SY1} stroke={MAU.slate} stroke-opacity="0.15" />)}
-          {[1480, 1510, 1540].map((v) => <line key={'t' + v} x1={CX(v)} y1={SY0 - 8} x2={CX(v)} y2={SY0} stroke={MAU.slate} stroke-width="1.5" />)}
+          {[1490, 1540].map((v) => <line key={'t' + v} x1={CX(v)} y1={SY0 - 8} x2={CX(v)} y2={SY0} stroke={MAU.slate} stroke-width="1.5" />)}
           {[0, 500, 1000, 1500, 2000].map((z) => <g key={z}>
             <line x1={CX0} y1={Y(z)} x2={CX1} y2={Y(z)} stroke={MAU.slate} stroke-opacity="0.15" />
             <line x1={CX0 - 8} y1={Y(z)} x2={CX0} y2={Y(z)} stroke={MAU.slate} stroke-width="1.5" />
@@ -185,7 +186,7 @@ function Piece({ T }) {
           {du && <g class="nhan-truc">
             <SVGT x={24} y={142} font-size="30" font-weight="600" fill={MAU.navy}>Tốc độ âm c (m/s)</SVGT>
             <SVGT x={(RX0 + RX1) / 2} y={142} font-size="30" font-weight="600" fill={MAU.navy} text-anchor="middle">ρ</SVGT>
-            {[1480, 1510, 1540].map((v) => <SVGT key={v} x={CX(v)} y={178} font-size="30" fill={MAU.slate} text-anchor="middle">{vn(v)}</SVGT>)}
+            {[1490, 1540].map((v) => <SVGT key={v} x={CX(v)} y={178} font-size="30" fill={MAU.slate} text-anchor="middle">{vn(v)}</SVGT>)}
             {[0, 500, 1000, 1500, 2000].map((z) => <SVGT key={z} x={CX0 - 12} y={Y(z) + 10} font-size="30" fill={MAU.slate} text-anchor="end">{vn(z)}</SVGT>)}
             <SVGT transform={`translate(30 ${(SY0 + SY1) / 2}) rotate(-90)`} font-size="30" fill={MAU.slate} text-anchor="middle">Độ sâu (m)</SVGT>
           </g>}
@@ -293,7 +294,6 @@ function Piece({ T }) {
       {du && <Box x={540} top={208} op={sumOp} dong={['Lên hay xuống, tia đều gặp nước có c lớn hơn', '→ luôn bị đẩy về trục SOFAR.']} style={{ background: MAU.navy, color: '#fff', border: 'none', font: '600 36px/1.3 ' + FONT }} />}
 
       {/* bó tia */}
-      {du && <Box cls="nhan" x={1086} top={196} op={legendOp} dong={[]} style={{ padding: '6px 14px', font: '400 30px/1.2 ' + FONT, boxShadow: 'none' }} />}
       {du && legendOp > 0.001 && <div class="nhan" style={{ position: 'absolute', left: '1086px', top: '196px', width: '316px', padding: '6px 14px', boxSizing: 'border-box', background: '#fff', border: '1.5px solid rgba(84,110,143,0.55)', borderRadius: '10px', font: '400 30px/1.2 ' + FONT, color: MAU.ink, opacity: legendOp, whiteSpace: 'nowrap' }}>
         <div style={{ font: '600 30px/1.2 ' + FONT, color: MAU.navy }}>Độ sâu quay đầu</div>
         {[[2, '927 / 1.322 m'], [4, '714 / 1.591 m'], [6, '513 / 1.926 m']].map(([k, t]) =>
