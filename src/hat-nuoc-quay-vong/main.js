@@ -337,12 +337,11 @@ HMO.dangKy({
     { id: 'theo-do-sau', batDau: 2 * DAI_CANH, ketThuc: 3 * DAI_CANH },
     { id: 'nong-dan', batDau: 3 * DAI_CANH, ketThuc: 4 * DAI_CANH },
     { id: 'tu-kham-pha', lap: LAP_TU_DO, dieuKhien: [
-      { id: 'do-cao', loai: 'truot', nhan: 'Độ cao sóng H', min: 0.5, max: 3, buoc: 0.1, giaTri: 2, donVi: 'm' },
+      { id: 'do-cao', loai: 'truot', nhan: 'Độ cao sóng H', min: 0.5, max: 3, buoc: 0.1, thapPhan: 1, giaTri: 2, donVi: 'm' },
       { id: 'vung-nuoc', loai: 'chon', nhan: 'Vùng nước', giaTri: 'sau', luaChon: [{ giaTri: 'sau', nhan: 'Nước sâu' }, { giaTri: 'nong', nhan: 'Nước nông dần' }] },
       { id: 'vet', loai: 'bat-tat', nhan: 'Vệt quỹ đạo', giaTri: true },
       { id: 'van-toc', loai: 'bat-tat', nhan: 'Vectơ vận tốc', giaTri: false },
-      // Bộ khung chưa có loại "nút bấm một lần": dùng bat-tat, mỗi lần bấm là một bước (xem báo cáo).
-      { id: 'buoc', loai: 'bat-tat', nhan: 'Bước 1/8 chu kỳ ▸', giaTri: false },
+      { id: 'buoc', loai: 'nut', nhan: 'Bước 1/8 chu kỳ ▸' },
     ] },
   ],
   thoiLuong: 4 * DAI_CANH,
@@ -371,10 +370,6 @@ HMO.dangKy({
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = st.blend; ctx.drawImage(off, 0, 0); ctx.globalAlpha = 1;
     }
     veChu(ctx, st, st.blend >= 0.5 ? nong : sau);
-    if (st.tuDo) { // nút bước là nút bấm một lần: không giữ trạng thái "đang bật"
-      const b = document.getElementById('hmo-dk-buoc');
-      if (b && b.getAttribute('aria-pressed') === 'true') b.setAttribute('aria-pressed', 'false');
-    }
   },
   datNhan(muc) { mucNhan = muc; },
   khiDoi(id, v) {
@@ -383,10 +378,8 @@ HMO.dangKy({
     else if (id === 'vet') DK.vet = v;
     else if (id === 'van-toc') DK.vanToc = v;
     else if (id === 'buoc') {
-      HMO.phat(false);
+      HMO.tamDung();
       DK.lech = (DK.lech + BUOC) % LAP_TU_DO;
-      const b = document.getElementById('hmo-dk-buoc');
-      if (b) b.setAttribute('aria-pressed', 'false');
     }
     HMO.yeuCauVe();
   },
