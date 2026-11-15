@@ -46,8 +46,11 @@ dieuKhien: [
   { id: 'do-cao', loai: 'truot', nhan: 'Độ cao sóng', min: 0.5, max: 3, buoc: 0.5, giaTri: 2, donVi: 'm' },
   { id: 'quy-dao', loai: 'bat-tat', nhan: 'Hiện quỹ đạo', giaTri: true },
   { id: 'chu-ky', loai: 'chon', nhan: 'Chu kỳ', giaTri: 8, luaChon: [{ giaTri: 6, nhan: '6 s' }, { giaTri: 8, nhan: '8 s' }] },
+  { id: 'buoc', loai: 'nut', nhan: 'Bước 1/8 chu kỳ' },   // bấm một lần: khung gọi khiDoi('buoc', true)
 ]
 ```
+
+Thanh trượt nhận thêm `thapPhan` (số chữ số sau dấu phẩy khi hiển thị, ví dụ `thapPhan: 1` → "2,0 m"). Animation muốn dừng đồng hồ (ví dụ trong `khiDoi` của nút "Bước") gọi `HMO.tamDung()`; không tự sửa phần tử DOM của bộ khung.
 
 Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 
@@ -65,6 +68,7 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 ```
 
 - Lấy đoạn Giải thích và câu hỏi từ mục 7 của spec. Được sửa câu chữ cho khớp animation sau khi sửa; không đổi ý, không đổi ID câu hỏi.
+- `canhThumb` là chỉ số cảnh (từ 0) và `giayThumb` là giây TRONG cảnh đó (cùng nghĩa với `HMO.tua(t)`), dùng để chụp thumbnail.
 - `dapAn` là chỉ số 0–3. Đúng 4 câu, mỗi câu 4 phương án.
 - Mọi chữ dài trên sân khấu của bản gốc (đoạn văn, thẻ tổng kết, bảng nhiều dòng) chuyển vào `giaiThich`. Sinh viên xem màn dọc chỉ đọc được khung giải thích.
 
@@ -80,6 +84,7 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 - Màu HMO: Navy `#0A2E5C`, Ocean `#1B4E8F`, Sky `#60C0F0`, Orange `#F07800` (điểm nhấn), Ink `#0F1E3A`, Slate `#546E8F`. Tương phản chữ ≥ 4,5:1.
 - Font: `"Be Vietnam Pro","Segoe UI",Arial,sans-serif`. Bộ khung đã nhúng Be Vietnam Pro 400/600/700 (Latin + tiếng Việt); không nhúng thêm font. Chỉ dùng ba độ đậm đó. Ký hiệu toán như √ ≈ → λ rơi về font hệ thống, chấp nhận được.
 - Hình phóng đại phải ghi rõ, ví dụ "Không theo tỉ lệ: độ sâu phóng đại 25 lần".
+- **Dải đáy 130 px của sân khấu** (y từ 950 đến 1080) có thể bị thanh điều khiển nổi che trong 3 giây ở chế độ Trình chiếu. Chỉ đặt ở đó nội dung hiện suốt cảnh (dòng nguồn, ghi chú tỉ lệ); chú thích hiện thoáng qua phải nằm trên y = 950.
 - Không có thông tin nào chỉ hiện khi rê chuột.
 - `moiTruong.giamChuyenDong` = true: tắt chuyển động trang trí (gợn sóng nền, hạt lấp lánh), giữ chuyển động mang nội dung.
 - Không nhúng logo hay thanh tiêu đề của Khoa lên sân khấu.
