@@ -25,6 +25,13 @@ async function buildMot(slug, thuMucRa, cauHinh = cauHinhGoc) {
   if (!fs.existsSync(tepND)) throw new Error(`${slug}: thiếu noidung/${slug}.json`);
   const nd = JSON.parse(fs.readFileSync(tepND, 'utf8'));
   if (nd.slug !== slug) throw new Error(`${slug}: trường slug trong noidung không khớp`);
+  for (const c of nd.canh || []) { // bảng số tuỳ chọn: {cot:[chuỗi], dong:[[ô…]]}, mỗi dòng đủ số cột
+    if (c.bang == null) continue;
+    const { cot, dong } = c.bang;
+    const oHopLe = (x) => typeof x === 'string' || typeof x === 'number';
+    if (!Array.isArray(cot) || !cot.length || !cot.every(oHopLe)) throw new Error(`${slug}: cảnh ${c.id}: bang.cot phải là mảng chuỗi không rỗng`);
+    if (!Array.isArray(dong) || !dong.every((d) => Array.isArray(d) && d.length === cot.length && d.every(oHopLe))) throw new Error(`${slug}: cảnh ${c.id}: mỗi dòng của bang.dong phải có đúng ${cot.length} ô (chuỗi hoặc số)`);
+  }
   const kq = await build({
     stdin: {
       contents: `import ${JSON.stringify(path.join(GOC, 'lib/fonts/fonts.css'))};\nimport ${JSON.stringify(path.join(GOC, 'lib/khung.css'))};\nimport ${JSON.stringify(path.join(GOC, 'lib/khung.js'))};\nimport ${JSON.stringify(entry)};\n`,

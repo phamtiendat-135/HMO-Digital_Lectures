@@ -13,6 +13,8 @@ Worker nhận ba thứ: file này, `specs/<slug>.md`, và file nguồn trong `_n
 
 Không sửa `lib/`, `tools/`, `tests/`, `config.js`, `_nguon/`, hay file của animation khác. Nếu bộ khung thiếu thứ bạn cần, dừng lại và báo `NEEDS_ESCALATION` kèm mô tả, không tự vá.
 
+**Dùng Preact + JSX (`main.jsx`)**: được phép (`preact` đã có trong `package.json`, build biên dịch JSX sẵn). Preact **không** đổi tên thuộc tính SVG dạng camelCase như React: `strokeWidth`, `textAnchor`, `fontSize`, `dominantBaseline` sẽ bị bỏ qua lặng lẽ. Trong JSX luôn viết đúng tên thuộc tính SVG dạng kebab-case: `stroke-width`, `text-anchor`, `font-size`, `font-weight`, `stroke-dasharray`, `fill-opacity`, `dominant-baseline`. Ngoại lệ là các tên vốn camelCase trong SVG: `viewBox`, `preserveAspectRatio`, `gradientUnits`. Riêng `class` viết là `class`.
+
 Bản phát hành là **một file HTML tự chứa**, mở được bằng `file://` khi không có mạng: không CDN, không tải font, ảnh hay script từ ngoài. Ngưỡng: 2D ≤ 500 KB, 3D ≤ 1,5 MB (bộ khung và font đã chiếm khoảng 96 KB).
 
 ## 2. Hợp đồng với bộ khung (`lib/khung.js`)
@@ -36,6 +38,7 @@ HMO.dangKy({
 
 - **`t`**: với cảnh có giờ, `t` chạy từ `batDau` đến `ketThuc`; với cảnh tự do, `t` chạy vòng trong `[0, lap)`.
 - **`ve(t, idCanh)` là hàm thuần**: gọi hai lần với cùng `t`, cùng giá trị điều khiển và cùng mức nhãn phải ra cùng một hình, bất kể trước đó đã vẽ gì. Mô phỏng tích luỹ (hạt, tia, nghiệm số) phải tính trước hoặc viết dạng giải tích. Đây là điều kiện để tua lui, đổi tốc độ và test "khung hình đứng yên" hoạt động.
+- **Mở trang luôn ở trạng thái dừng, t = 0**, ở mọi chế độ (Tự học lẫn Trình chiếu). Người xem bấm phát khi đã sẵn sàng; bộ khung lo việc này, animation không tự phát.
 - **Animation không được** tự gọi `requestAnimationFrame`, `setInterval`, không bắt phím, không vẽ nút phát/dừng, thanh tua, nút toàn màn hình, màn hình chờ "Bắt đầu". Bộ khung làm những việc đó.
 - **`moiTruong`** = `{ rong: 1440, cao: 1080, dpr, webgl2, giamChuyenDong }`. Dùng `dpr` này cho độ phân giải canvas (đã giới hạn 1,5 trên laptop, 1,0 trên điện thoại).
 - **Trạng thái ngoài `t`** (góc camera 3D, điểm đang kéo): giữ trong animation, gọi `HMO.yeuCauVe()` sau khi đổi. Cảnh cần tự xử lý chạm trên sân khấu thì đặt `giuCham: true`; khi đó chạm sân khấu không còn là phát/dừng và vuốt không đổi cảnh.
@@ -71,6 +74,7 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 - `canhThumb` là chỉ số cảnh (từ 0) và `giayThumb` là giây TRONG cảnh đó (cùng nghĩa với `HMO.tua(t)`), dùng để chụp thumbnail.
 - `dapAn` là chỉ số 0–3. Đúng 4 câu, mỗi câu 4 phương án.
 - Mọi chữ dài trên sân khấu của bản gốc (đoạn văn, thẻ tổng kết, bảng nhiều dòng) chuyển vào `giaiThich`. Sinh viên xem màn dọc chỉ đọc được khung giải thích.
+- **Bảng số** (không bắt buộc): cảnh nào cần bảng nhiều dòng thì thêm `"bang": { "cot": ["Độ sâu (m)", "c (m/s)"], "dong": [["0", "1.540,2"], ["1.000", "1.483,5"]] }` vào mục cảnh đó, thay vì nhồi số vào `giaiThich`. Mỗi dòng đủ số cột; ô là chuỗi hoặc số, viết sẵn theo định dạng Việt Nam (dấu phẩy thập phân). Bộ khung dựng `<table>` dưới đoạn Giải thích bằng `textContent` (chữ trong ô không bao giờ được hiểu là HTML), cuộn ngang được trên màn hẹp; `build.mjs` báo lỗi nếu bảng sai cấu trúc. Khi có bảng, `giaiThich` vẫn giữ 40–60 từ và chỉ nói ý chính của bảng.
 
 ## 4. Sân khấu và hình ảnh
 
@@ -103,6 +107,8 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 node tools/build.mjs <slug>
 npx playwright test -g "<slug>"
 ```
+
+Test tự động chặn mọi móc gỡ lỗi kiểu `window.__ten` trong bản phát hành. Cần đo `ve(t)` khi phát triển thì đặt móc tạm, **xoá trước khi commit bản cuối**; không đưa móc vào `HMO.trangThai()` hay đối tượng `HMO`.
 
 Cả hai phải đạt. Sau đó tự xem ảnh chụp ở ba khung (1024 × 768, 390 × 844, 844 × 390) cho từng cảnh và đối chiếu từng mục của checklist trong spec. fps không đo được trong máy không màn hình: ghi "kiểm tay".
 
