@@ -108,6 +108,8 @@ node tools/build.mjs <slug>
 npx playwright test -g "<slug>"
 ```
 
+Test tự động chặn mọi móc gỡ lỗi kiểu `window.__ten` trong bản phát hành. Cần đo `ve(t)` khi phát triển thì đặt móc tạm, **xoá trước khi commit bản cuối**; không đưa móc vào `HMO.trangThai()` hay đối tượng `HMO`.
+
 Cả hai phải đạt. Sau đó tự xem ảnh chụp ở ba khung (1024 × 768, 390 × 844, 844 × 390) cho từng cảnh và đối chiếu từng mục của checklist trong spec. fps không đo được trong máy không màn hình: ghi "kiểm tay".
 
 ## 7. Git
