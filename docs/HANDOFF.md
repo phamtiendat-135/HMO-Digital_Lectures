@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 7de817b | 115 KB | 87 passed / 12 skipped (toàn bộ) | Lần 1 KHÔNG ĐẠT (tương phản chữ cảnh 5 + 3 chỗ chữ bị che). `anim-2d` đã sửa đủ 4 mục (1a5be74…941223f; tương phản nhỏ nhất worker đo được 5,01:1). **Đang nghiệm thu lần 2** bằng `anim-reviewer` mới. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 32ba88b (WIP) | 636 KB (ngưỡng 1,5 MB) | 18/18 slug (trước WIP) | `anim-3d` báo đủ 26/26 S-xx, 14.482 tam giác tối đa, dự phòng 2D chạy đủ 7 cảnh. Sau đó trưởng nhóm giao thêm 2 việc: (1) rút Giải thích cảnh 3 và 5 về ≤ 67 tiếng: **xong** (881bce1); (2) nút "Phóng to"/"Thu nhỏ" cho cảnh 3: **đang làm**, phần dở lưu ở WIP 32ba88b. Chưa nghiệm thu lần nào. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 slug; 90 passed / 9 skipped toàn bộ | `anim-3d` xong 26/26 S-xx + 2 việc thêm (Giải thích ≤ 67 tiếng; nút Phóng to/Thu nhỏ ×1,25, giới hạn 3–14). Tam giác tối đa 14.482. **Đang nghiệm thu lần 1** bằng `anim-reviewer` mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -75,9 +75,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 
 Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 
-1. **`luc-tao-trieu`:** chờ `anim-3d` báo xong nút thu phóng (việc 2). Nếu phiên mới không liên lạc được với worker cũ, tạo `anim-3d` mới:
-   - giao đọc `git show 32ba88b` và làm nốt: 2 nút `loai: 'nut'` trong `dieuKhien` cảnh 3, mỗi lần bấm đổi khoảng cách camera một bậc trong giới hạn OrbitControls, rồi gọi `HMO.yeuCauVe()`; `ve(t)` vẫn thuần; nút ≥ 44 px;
-   - kiểm bằng 3 lệnh build/test, chụp ảnh, đo số tam giác ở mức phóng gần nhất.
+1. **`luc-tao-trieu`:** nút thu phóng xong (82d996d).
 2. **Nghiệm thu `luc-tao-trieu` lần 1** bằng `anim-reviewer` mới. Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
 3. **`hat-nuoc-quay-vong`:** đọc báo cáo nghiệm thu lần 2. Nếu ĐẠT thì merge.
 4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
