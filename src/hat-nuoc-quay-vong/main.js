@@ -273,7 +273,6 @@ function veNuoc(c, sc, st) {
   { const p = pos(sc, sc.buoyX0, 0, tp);
     const dX = 1 - Ah0 * sc.k * Math.cos(p.th), dZ = -Av0 * sc.k * Math.sin(p.th);
     buoy(c, p.x * s, ys - p.z * s, Math.atan2(-dZ, dX)); }
-  if (nhan) veNhanNuoc(c, sc, st);
 }
 
 /* ===================== NHÃN TRÊN VÙNG NƯỚC ===================== */
@@ -422,15 +421,19 @@ HMO.dangKy({
   ve(t, id) {
     const st = trangThaiTai(t, id), a = st.H / 2;
     const sau = deepScene(a), nong = shallowScene(a, st.ramp);
-    BT = boTri(ctx, st, st.blend >= 0.5 ? nong : sau);
-    // Ngoài khoảng hoà chỉ vẽ một cảnh (S-15)
+    // Chữ chỉ theo một vùng nước: trong khoảng hoà 48–49 s, nhãn nước sâu tới t = 48,5 rồi đổi hẳn sang nhãn vùng nông
+    const scNhan = st.blend >= 0.5 ? nong : sau;
+    BT = boTri(ctx, st, scNhan);
+    // Phần hình: ngoài khoảng hoà chỉ vẽ một cảnh (S-15); trong khoảng hoà vẽ cả hai rồi hoà (không có chữ)
     if (st.blend <= 0) veNuoc(ctx, sau, st);
     else if (st.blend >= 1) veNuoc(ctx, nong, st);
     else {
       veNuoc(ctx, sau, st); veNuoc(octx, nong, st);
       ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = st.blend; ctx.drawImage(off, 0, 0); ctx.globalAlpha = 1;
     }
-    veChu(ctx, st, st.blend >= 0.5 ? nong : sau);
+    // Phần chữ: vẽ một lần, sau khi hoà, nên không bao giờ có hai bộ nhãn chồng nhau
+    if (mucNhan === 'day-du') veNhanNuoc(ctx, scNhan, st);
+    veChu(ctx, st, scNhan);
   },
   datNhan(muc) { mucNhan = muc; },
   khiDoi(id, v) {
