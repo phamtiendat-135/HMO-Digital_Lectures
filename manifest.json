@@ -1,6 +1,24 @@
 {
   "animations": [
     {
+      "slug": "hat-nuoc-quay-vong",
+      "ten": "Sóng biển: hạt nước quay vòng, năng lượng truyền đi",
+      "hocPhan": "Hải dương học đại cương",
+      "bai": "Bài 5",
+      "moTa": "Vì sao sóng truyền năng lượng đi xa trong khi hạt nước và cái phao chỉ quay vòng gần như tại chỗ.",
+      "tags": [
+        "sóng",
+        "lý thuyết Airy",
+        "quỹ đạo hạt nước"
+      ],
+      "loai": "2D",
+      "ngayCapNhat": "2026-11-15",
+      "phienBan": "1.0.0",
+      "dungLuong": 117506,
+      "giayThumb": 12,
+      "canhThumb": 2
+    },
+    {
       "slug": "kenh-sofar",
       "ten": "Kênh SOFAR hình thành như thế nào?",
       "hocPhan": "",

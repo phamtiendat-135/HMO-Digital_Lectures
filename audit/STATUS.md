@@ -7,7 +7,7 @@ Trạng thái: audited → spec-approved → in-progress → in-review → appro
 | `song-than-hut-chim` | T2 | spec-approved | |
 | `bien-dang-song-vo` | T2 | spec-approved | |
 | `khuc-xa-song` | T2 | spec-approved | |
-| `hat-nuoc-quay-vong` | T2 | in-progress | pilot |
+| `hat-nuoc-quay-vong` | T2 | approved | pilot; đạt nghiệm thu lần 3 ngày 18/11/2026; 117.506 byte |
 | `kenh-sofar` | T2 | approved | pilot; đạt nghiệm thu lần 2 ngày 18/11/2026; 137.855 byte |
 | `luc-tao-trieu` | T3 | in-progress | pilot |
 | `chu-ky-trieu-18-6-nam` | T2 | spec-approved | slug cũ: chu-ky-trieu-mat-trang; tag "nâng cao" |

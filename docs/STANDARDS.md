@@ -92,6 +92,10 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 - Hình phóng đại phải ghi rõ, ví dụ "Không theo tỉ lệ: độ sâu phóng đại 25 lần".
 - **Cảnh có `dieuKhien`**: ở chế độ Trình chiếu, khối điều khiển riêng nổi trên sân khấu có thể che tới khoảng y = 900 trong 3 giây khi hiện (ví dụ 3 thanh trượt che tới y ≈ 925). Ở cảnh đó, phần từ y = 900 trở xuống cũng chỉ đặt nội dung hiện suốt cảnh.
 - **Dải đáy 130 px của sân khấu** (y từ 950 đến 1080) có thể bị thanh điều khiển nổi che trong 3 giây ở chế độ Trình chiếu. Chỉ đặt ở đó nội dung hiện suốt cảnh (dòng nguồn, ghi chú tỉ lệ); chú thích hiện thoáng qua phải nằm trên y = 950.
+- **Quy tắc đặt nhãn trên hình động** (chốt ngày 18/11/2026, sau nghiệm thu `luc-tao-trieu` lần 2):
+  1. **Ổn định trước, tránh đè sau.** Vị trí nhãn là hàm liên tục, xác định của hình học: ví dụ nhãn Mặt Trăng luôn nằm phía ngoài, theo hướng bán kính từ tâm Trái Đất, cách mép đĩa 12 px; nhãn một điểm có độ lệch cố định so với điểm. **Không dò tìm chỗ trống lại ở từng khung.** Nếu buộc phải đổi phía (ví dụ khi vật đi qua một vùng chật), dùng ngưỡng trễ (hysteresis): đổi khi góc vượt 10°, đổi lại khi lùi quá 10° theo chiều ngược. Đo bằng cách quét bước 1/30 s trong một chu kỳ: mỗi nhãn nhảy quá 40 px giữa hai khung liền nhau hoặc hiện/ẩn **tối đa 1 lần trong 2 s**, và **0 lần lật A → B → A trong 1 s**. Chuyển động trơn theo vật không tính là nhảy.
+  2. **Cấm chồng**: chữ lên chữ; chữ lên vật chính (đĩa thiên thể, các điểm có tên như A, B, C, D, P, CM, đầu mũi tên vectơ); vật chính bị bảng số, tiêu đề hay dải đáy che.
+  3. **Được chồng, với điều kiện chữ có viền sáng (halo)**: chữ chồng lên nét phụ như quỹ đạo, lưới, vành điểm mẫu, vết, dấu mờ. Viền là nét màu nền dày ≥ 4 px (`strokeText` trước `fillText`, hoặc `paint-order: stroke` trong SVG). Tương phản p5 của chữ trên nền thực vẫn phải ≥ 4,5:1.
 - Không có thông tin nào chỉ hiện khi rê chuột.
 - `moiTruong.giamChuyenDong` = true: tắt chuyển động trang trí (gợn sóng nền, hạt lấp lánh), giữ chuyển động mang nội dung.
 - Không nhúng logo hay thanh tiêu đề của Khoa lên sân khấu.

@@ -1,0 +1,71 @@
+{
+  "slug": "hat-nuoc-quay-vong",
+  "ten": "Sóng biển: hạt nước quay vòng, năng lượng truyền đi",
+  "moTa": "Vì sao sóng truyền năng lượng đi xa trong khi hạt nước và cái phao chỉ quay vòng gần như tại chỗ.",
+  "loai": "2D",
+  "hocPhan": "Hải dương học đại cương",
+  "bai": "Bài 5",
+  "tags": ["sóng", "lý thuyết Airy", "quỹ đạo hạt nước"],
+  "phienBan": "1.0.0",
+  "ngayCapNhat": "2026-11-15",
+  "canhThumb": 2,
+  "giayThumb": 12,
+  "nguon": "Nguồn: Lý thuyết sóng tuyến tính (Airy); T = 10 s, H = 2 m là giá trị minh hoạ; L, C và bán kính quỹ đạo tính từ nghiệm Airy với g = 9,81 m/s². Hình vẽ: 1 giây hoạt hình = 2,5 giây thực; biên độ phóng đại 8 lần (nước sâu) và 2 lần (cận cảnh vùng nước nông dần).",
+  "canh": [
+    {
+      "id": "phao",
+      "ten": "Phao có bị sóng đẩy vào bờ không?",
+      "giaiThich": "Sóng đang chạy từ trái sang phải, mỗi đỉnh sóng đi 156 m trong 10 giây. Hãy nhìn cái phao và vạch mốc nét đứt. Phao nhô lên, tiến một chút, hạ xuống, lùi lại, rồi gần như trở về chỗ cũ. Sóng đi qua nhưng không mang nước và phao đi theo."
+    },
+    {
+      "id": "quay-vong",
+      "ten": "Hạt nước quay vòng tròn tại chỗ",
+      "giaiThich": "Mỗi chấm trắng là một hạt nước. Hạt đỏ ở mặt biển vẽ nên một vòng tròn có đường kính đúng bằng độ cao sóng, ở đây là 2 m. Trên đỉnh sóng hạt tiến cùng chiều sóng, dưới chân sóng hạt lùi lại. Thứ được truyền đi xa là năng lượng, còn nước gần như ở lại."
+    },
+    {
+      "id": "theo-do-sau",
+      "ten": "Càng xuống sâu, vòng quay càng nhỏ",
+      "giaiThich": "Năm hạt đỏ nằm trên cùng một cột nước. Bán kính vòng quay giảm theo hàm mũ e^(kz): còn 50% ở 17 m, 21% ở 39 m, 9% ở 59 m và chỉ 4% ở 78 m, tức nửa bước sóng. Dưới độ sâu L/2, nước gần như không biết có sóng ở trên. Tàu ngầm lặn sâu vì thế rất êm."
+    },
+    {
+      "id": "nong-dan",
+      "ten": "Vào vùng nước nông dần, quỹ đạo bị đáy ép bẹt",
+      "giaiThich": "Đáy biển chỉ còn sâu 7,8 m, nông hơn L/2, nên sóng \"chạm đáy\" (vùng chuyển tiếp, h/L ≈ 0,09). Chu kỳ vẫn là 10 giây, nhưng sóng chậm lại còn 8,3 m/s và ngắn lại còn 83 m. Vòng tròn bị ép thành elip rộng 3,8 m, cao 2 m. Sát đáy, hạt nước chỉ chạy tới rồi lui 3,2 m, đủ sức khuấy cát."
+    },
+    {
+      "id": "tu-kham-pha",
+      "ten": "Tự khám phá",
+      "giaiThich": "Bạn hãy kéo thanh \"Độ cao sóng H\" và xem đường kính vòng quay ở mặt thay đổi theo đúng H. Bật \"Vectơ vận tốc\" để thấy hạt ở đỉnh tiến, hạt ở chân lùi. Chuyển qua lại giữa nước sâu và nước nông dần để so sánh vòng tròn với elip. Dùng \"Bước 1/8 chu kỳ\" để xem từng pha."
+    }
+  ],
+  "cauHoi": [
+    {
+      "id": "hat-nuoc-quay-vong-q1",
+      "hoi": "Khi một con sóng nước sâu đi qua, hạt nước ở mặt biển chuyển động thế nào?",
+      "phuongAn": ["Trôi theo sóng với tốc độ bằng tốc độ sóng", "Quay vòng gần tròn tại chỗ, đường kính bằng độ cao sóng", "Chỉ dao động thẳng đứng lên xuống", "Đứng yên, chỉ mặt nước đổi hình"],
+      "dapAn": 1,
+      "giaiThich": "Hạt nước quay một vòng mỗi chu kỳ rồi gần như về chỗ cũ; sóng truyền năng lượng chứ không chở nước đi."
+    },
+    {
+      "id": "hat-nuoc-quay-vong-q2",
+      "hoi": "Ở độ sâu bằng nửa bước sóng (L/2), bán kính quỹ đạo hạt nước còn khoảng bao nhiêu so với ở mặt?",
+      "phuongAn": ["50%", "21%", "9%", "4%"],
+      "dapAn": 3,
+      "giaiThich": "Bán kính giảm theo e^(kz); tại z = −L/2 thì e^(−π) ≈ 0,043, tức khoảng 4%."
+    },
+    {
+      "id": "hat-nuoc-quay-vong-q3",
+      "hoi": "Một sóng lừng nước sâu có chu kỳ T = 8 s. Bước sóng và tốc độ truyền của nó gần nhất với cặp giá trị nào? (g = 9,81 m/s²)",
+      "phuongAn": ["50 m và 6,2 m/s", "100 m và 12,5 m/s", "156 m và 15,6 m/s", "200 m và 25 m/s"],
+      "dapAn": 1,
+      "giaiThich": "L = gT²/2π = 9,81 × 64/6,283 ≈ 100 m; C = L/T = 100/8 = 12,5 m/s."
+    },
+    {
+      "id": "hat-nuoc-quay-vong-q4",
+      "hoi": "Sóng nước sâu có H = 2 m, L = 156 m. Đường kính quỹ đạo của hạt nước ở độ sâu 39 m (bằng L/4) là khoảng bao nhiêu?",
+      "phuongAn": ["1,0 m", "0,42 m", "0,18 m", "0,09 m"],
+      "dapAn": 1,
+      "giaiThich": "Đường kính = H·e^(kz) = 2 × e^(−π/2) = 2 × 0,208 ≈ 0,42 m."
+    }
+  ]
+}
