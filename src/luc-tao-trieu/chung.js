@@ -65,26 +65,12 @@ export function nhanNgoai(g, s, cx, cy, r, ux, uy, khe, o = {}) {
   if (p) chu(g, s, p[0], p[1], { ...o, can: 'center', goc: 'middle' });
 }
 /** Tâm nhãn mà nhanNgoai sẽ dùng (null nếu nhãn bị ẩn). */
-const LECH = 2;
 export function viTriNgoai(g, s, cx, cy, r, ux, uy, khe, o = {}) {
   const k = kichThuoc(g, s, o);
   if (!k) return null;
-  const dat = (ux, uy) => {
-    const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
-    const d = r + khe + Math.abs(ux) * (k[0] / 2 + 5) + Math.abs(uy) * (k[1] * 0.6 + 5);   // nửa hộp chữ cộng viền
-    return [cx + ux * d, cy + uy * d];
-  };
-  const p = dat(ux, uy);
-  // Tuỳ chọn tránh (liên tục, không đổi phương án): hướng nhãn được cộng dần một thành phần xuống dưới theo độ gần giữa vật
-  // cản và vùng nhãn có thể chiếm quanh đĩa (đĩa nới thêm một bề rộng/bề cao nhãn). Độ gần chỉ phụ thuộc vị trí đĩa nên đổi
-  // chậm theo chuyển động của vật. o.mep: mép trái/phải sân khấu; o.tranh: các hộp [x0, y0, x1, y1] cần tránh.
-  const nw = k[0] / 2 + 5, nh = k[1] * 0.6 + 5, G = 200;
-  const X0 = cx - r - 2 * nw, X1 = cx + r + 2 * nw, Y0 = cy - r - 2 * nh, Y1 = cy + r + 2 * nh;
-  let gan = o.mep ? Math.max(0, 1 - (X0 - 12) / G, 1 - (W - 12 - X1) / G) : 0;
-  for (const b of o.tranh || []) gan = Math.max(gan, 1 - Math.max(b[0] - X1, X0 - b[2], b[1] - Y1, Y0 - b[3]) / G);
-  if (gan <= 0) return p;
-  const l = Math.hypot(ux, uy) || 1;
-  return dat(ux / l, uy / l + LECH * Math.min(gan, 1.6));
+  const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
+  const d = r + khe + Math.abs(ux) * (k[0] / 2 + 5) + Math.abs(uy) * (k[1] * 0.6 + 5);   // nửa hộp chữ cộng viền
+  return [cx + ux * d, cy + uy * d];
 }
 /** Góc a (rad, mọi giá trị) có nằm trong cung [tu, den) (độ, đi theo chiều tăng) không. */
 export function trongCung(a, tu, den) {

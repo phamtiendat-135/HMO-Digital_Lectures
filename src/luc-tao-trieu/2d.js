@@ -1,6 +1,6 @@
 // Bản dự phòng 2D của cảnh 3 khi thiết bị không có WebGL2: lát cắt qua trục Trái Đất – Mặt Trăng, nhìn từ cực Bắc.
 import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, tt, baLuc, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
-import { LAP3, st3, DIEU_KHIEN_2D, khiDoiChung, soDoc, veBang, veChuGiai, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
+import { LAP3, st3, DIEU_KHIEN_2D, khiDoiChung, soDoc, veBang, veChuGiai, veThienThe, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
 
 // Hình thu gọn để Mặt Trăng và nhãn của nó không chạm bảng số (góc trên phải) và dải đáy
 const CX = 500, CY = 560, R = 125, K = TI_SO_CM * R, DM = 300, DAI = 0.9 * R, RMT = 26;
@@ -79,7 +79,8 @@ export default {
     // Tên ba lực và CM nằm trong bảng số (mức đầy đủ) hoặc khối chú giải cố định ở góc trên phải (mức tối giản).
     // Trên hình chỉ còn nhãn thiên thể, đặt theo quy tắc cố định.
     const toiGian = tt.muc === 'toi-gian';
-    veChuGiai(g, 48, 60, true, true);   // mức tối giản: hàng chú giải ở dải trên cùng, cùng chỗ với bản 3D
+    veChuGiai(g, 48, 60, true);   // mức tối giản: hàng chú giải ở dải trên cùng, cùng chỗ với bản 3D
+    if (tt.muc === 'toi-gian') veThienThe(g, 48, 146);   // tên Trái Đất, Mặt Trăng ở mức tối giản (S-17)
     const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true };
     // Mặt Trăng (mức đầy đủ): phía ngoài đĩa theo hướng bán kính từ CM. Mức tối giản dùng mẫu trong hàng chú giải:
     // chữ 60 px không có chỗ cố định quanh đĩa (ở hai đầu quỹ đạo phải đổi phía trên/dưới, tức là nhảy chỗ).

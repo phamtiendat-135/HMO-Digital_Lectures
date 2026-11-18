@@ -1,5 +1,5 @@
 // Phần dùng chung của cảnh 3 cho bản 3D (three.js) và bản dự phòng 2D: trạng thái, điều khiển, số đọc, bảng số.
-import { MAU, D2R, PHONG_DAI_FT, tt, vn, baLuc, doDai, chu, matTrang } from './chung.js';
+import { MAU, D2R, PHONG_DAI_FT, tt, vn, baLuc, doDai, chu, tron, matTrang } from './chung.js';
 
 export const LAP3 = 8;
 /** Trạng thái ngoài t của cảnh 3. huong: hướng điểm cam nhìn từ tâm Trái Đất (x về phía Mặt Trăng lúc đầu, y = cực Bắc). */
@@ -76,19 +76,27 @@ export function veBang(g, sd) {
   chu(g, '/', x + 210, y + 274, { co: 30, dam: 400, mau: MAU.slate, vien: null });
   chu(g, 'vào tâm', x + 232, y + 274, { co: 30, dam: sd.raNgoai ? 400 : 700, mau: sd.raNgoai ? MAU.slate : MAU.ink, vien: null });
 }
-/** Chú giải cho mức tối giản (không có bảng số): ba mẫu mũi tên với tên lực, xếp dọc tại (x, y), chữ to gấp đôi. */
-export function veChuGiai(g, x, y, ngang = false, coTrang = false) {
+/** Chú giải cho mức tối giản (không có bảng số): ba mẫu mũi tên với tên lực tại (x, y), xếp ngang hoặc dọc, chữ to gấp đôi. */
+export function veChuGiai(g, x, y, ngang = false) {
   if (tt.muc !== 'toi-gian') return;
   [['fc', 'Fc', MAU.luc], ['fg', 'Fg', MAU.do], ['ft', 'Ft', MAU.ftChu]].forEach(([k, ten, mau], i) => {
     const xx = ngang ? x + i * 190 : x, yy = ngang ? y : y + i * 74;
     mauMau(g, k, xx, yy, 56);
     chu(g, ten, xx + 70, yy, { co: 30, dam: 700, mau, goc: 'middle', khoa: true, vien: null });
   });
-  if (coTrang) {   // mẫu Mặt Trăng (hình 3D ở mức tối giản không có nhãn bám Mặt Trăng: chữ 60 px không có chỗ ổn định quanh nó)
-    const xx = ngang ? x + 3 * 190 : x, yy = ngang ? y : y + 3 * 74;
-    matTrang(g, xx + 28, yy, 18);
-    chu(g, 'Mặt Trăng', xx + 70, yy, { co: 30, dam: 700, mau: MAU.navy, goc: 'middle', khoa: true, vien: null });
-  }
+}
+/**
+ * Chú giải tên thiên thể (STANDARDS mục 4, quy tắc 4): mẫu hình tròn đúng màu + tên Trái Đất, Mặt Trăng, một hàng ngang
+ * tại (x, y). Dùng ở cả hai mức nhãn của hình 3D (camera tự do nên không đặt nhãn bám theo thiên thể) và ở mức tối giản
+ * của bản 2D. Mức tối giản: chữ to gấp đôi, mẫu lớn hơn.
+ */
+export function veThienThe(g, x, y) {
+  if (tt.muc === 'tat') return;
+  const tg = tt.muc === 'toi-gian', r = tg ? 22 : 14, cach = tg ? 60 : 38, buoc = tg ? 370 : 200;
+  tron(g, x + r, y, r, MAU.ocean, MAU.sky, 2.5);
+  chu(g, 'Trái Đất', x + cach, y, { co: 30, dam: 700, mau: MAU.navy, goc: 'middle', khoa: true, vien: null });
+  matTrang(g, x + buoc + r, y, r);
+  chu(g, 'Mặt Trăng', x + buoc + cach, y, { co: 30, dam: 700, mau: MAU.navy, goc: 'middle', khoa: true, vien: null });
 }
 export const GHI_CHU_3 = `Không theo tỉ lệ: khoảng cách Trái Đất – Mặt Trăng thu ngắn; vector Ft phóng đại ${PHONG_DAI_FT} lần. Lục địa vẽ giản lược.`;
 export const MO_TA_3 = 'Mô hình Trái Đất và Mặt Trăng: tại điểm cam trên mặt Trái Đất có ba mũi tên lực ly tâm Fc, lực hấp dẫn Fg và lực tạo triều Ft; vành 16 điểm mẫu cho thấy hai múi triều.';

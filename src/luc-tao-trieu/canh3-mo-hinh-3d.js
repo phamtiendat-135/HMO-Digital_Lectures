@@ -6,8 +6,8 @@ import {
   AmbientLight, DirectionalLight, Color, SRGBColorSpace,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, tt, kep, baLuc, doDai, chu, kichThuoc, nhanNgoai, viTriNgoai, tieuDe, chanTrang } from './chung.js';
-import { LAP3, st3, DIEU_KHIEN_3D, khiDoiChung, soDoc, BANG3, veBang, veChuGiai, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
+import { W, H, TI_SO_CM, PHONG_DAI_FT, TAU, tt, kep, baLuc, doDai, tieuDe, chanTrang } from './chung.js';
+import { LAP3, st3, DIEU_KHIEN_3D, khiDoiChung, soDoc, veBang, veChuGiai, veThienThe, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
 
 const D_TRANG = 3.3;      // khoảng cách vẽ Trái Đất – Mặt Trăng (thực tế 60,3 bán kính Trái Đất); thu gọn để quỹ đạo khi bật hoạt hoạ nằm trong khung
 const K = TI_SO_CM;       // CM cách tâm Trái Đất 0,733 bán kính
@@ -59,22 +59,6 @@ function taoMuiTen(mau) {
   than.renderOrder = dau.renderOrder = 20;
   nhom.add(than, dau); nhom.userData = { than, dau };
   return nhom;
-}
-/**
- * Đẩy nhãn (tâm p, nửa rộng nw, nửa cao nh) tiếp theo hướng u cho tới khi vượt qua các đĩa vật chính `vat` ([x, y, r]) nằm
- * phía sau nó (gần gốc hơn theo u). Lượng đẩy của mỗi đĩa giảm liên tục về 0 khi đĩa lệch ngang khỏi hộp chữ hoặc khi đĩa
- * đã ở phía trước nhãn, nên vị trí là hàm liên tục của hình, không có phương án rời rạc.
- */
-function dayQua(p, ux, uy, nw, nh, vat) {
-  const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
-  const tua = Math.abs(ux) * nw + Math.abs(uy) * nh, ngang = Math.abs(uy) * nw + Math.abs(ux) * nh;
-  let day = 0;
-  for (const [x, y, r] of vat) {
-    const a = (x - p[0]) * ux + (y - p[1]) * uy, b = Math.abs((x - p[0]) * uy - (y - p[1]) * ux);
-    const wNgang = Math.max(0, Math.min(1, 1 - (b - ngang - r) / 40)), wSau = Math.max(0, Math.min(1, 1 - a / 30));
-    day = Math.max(day, Math.max(0, a + r + 8 + tua) * wNgang * wSau);
-  }
-  return [p[0] + ux * day, p[1] + uy * day];
 }
 function datMuiTen(m, goc, vec, dai) {
   const dau = kep(dai * 0.34, 0.04, 0.2), than = Math.max(dai - dau, 0.002), r = kep(dai * 0.045, 0.008, 0.028);
@@ -243,56 +227,14 @@ export default {
     }
     renderer.render(scene, camera);
 
-    // Lớp chữ 2D phía trên. Tên ba lực và CM nằm trong bảng số (mức đầy đủ) hoặc khối chú giải cố định (mức tối giản):
-    // ba mũi tên chung gốc quay đủ mọi hướng, nhãn đặt cạnh chúng theo quy tắc nào cũng có lúc đè đầu mũi tên khác.
-    // Trên hình chỉ còn nhãn thiên thể, mỗi nhãn là hàm liên tục của vị trí chiếu lên màn hình.
+    // Lớp chữ 2D phía trên. Camera tự do nên không có nhãn nào bám theo vật chuyển động (STANDARDS mục 4, quy tắc 4):
+    // tên ba lực và CM ở bảng số (mức đầy đủ) hoặc hàng chú giải trên cùng (mức tối giản); tên Trái Đất, Mặt Trăng ở hàng
+    // chú giải thiên thể cố định, cả hai mức.
     g.clearRect(0, 0, W, H);
     tieuDe(g, 'Mô hình 3D: ba lực tại một điểm', 'Kéo để xoay · chụm, lăn hoặc nút để phóng · chạm Trái Đất đặt điểm cam.');
     chanTrang(g, GHI_CHU_3);
     veBang(g, sd);
-    veChuGiai(g, 48, 60, true, true);   // mức tối giản: hàng ngang ở dải trên cùng (không có tiêu đề ở mức này)
-    const toiGian = tt.muc === 'toi-gian';
-    const len = v1.set(0, 1, 0).applyQuaternion(camera.quaternion).clone();   // hướng "lên" của màn hình, trong không gian cảnh
-    const trongKhung = ([x, y, truoc]) => truoc && x >= 0 && x <= W && y >= 0 && y <= 950;
-    const chieu = (v) => mauTrenStage(v);
-    const banKinh = (tam, r) => { const a = chieu(tam), b = chieu(v2.copy(tam).addScaledVector(len, r)); return Math.hypot(b[0] - a[0], b[1] - a[1]); };
-    const pTD = chieu(tamTD), rTD = banKinh(tamTD, 1), pMT = chieu(moon.position), rMT = banKinh(moon.position, 0.3);
-    // hướng tâm Trái Đất → Mặt Trăng trên màn hình, cộng một thành phần cố định (đơn vị: bán kính Trái Đất trên màn hình)
-    // để hướng vẫn xác định và đổi liên tục cả khi Mặt Trăng đi ngay sau/trước Trái Đất
-    const dx = (pMT[0] - pTD[0]) / rTD, dy = (pMT[1] - pTD[1]) / rTD;
-    const oThienThe = { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', khoa: true };
-    // vật chính cần né: đĩa Mặt Trăng và đầu ba mũi tên tại điểm cam (hình chiếu tâm khối nón, bán kính theo cỡ khối)
-    const vatChinh = [[pMT[0], pMT[1], rMT]];
-    for (const k of ['fc', 'fg', 'ft']) {
-      const d = this.mt[k].userData.dau; if (!this.mt[k].visible) continue;
-      const w = d.getWorldPosition(v2), c = chieu(w), rr = banKinh(w.clone(), Math.max(d.scale.x, d.scale.y / 2));
-      vatChinh.push([c[0], c[1], rr]);
-    }
-    // Nhãn Mặt Trăng (mức đầy đủ): ngoài đĩa Mặt Trăng theo hướng (dx, dy + 0,8), gần mép sân khấu hoặc bảng số thì bẻ dần
-    // xuống (mep, tranh). Khi Mặt Trăng đi trước/sau Trái Đất, nhãn được đẩy tiếp theo cùng hướng cho tới ngoài đĩa Trái Đất,
-    // với lượng đẩy giảm liên tục theo khoảng lệch ngang: nhãn không ẩn/hiện và không nằm trên đĩa Trái Đất.
-    if (!toiGian && trongKhung(pMT)) {
-      let p = viTriNgoai(g, 'Mặt Trăng', pMT[0], pMT[1], rMT, dx, dy + 0.8, 8, { ...oThienThe, mep: true, tranh: [BANG3] });
-      const k = kichThuoc(g, 'Mặt Trăng', oThienThe), nw = k[0] / 2 + 5, nh = k[1] * 0.6 + 5;
-      let ux = p[0] - pMT[0], uy = p[1] - pMT[1]; const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
-      const ex = p[0] - pTD[0], ey = p[1] - pTD[1];
-      const doc = ex * ux + ey * uy, ngang = Math.abs(ex * uy - ey * ux);                 // toạ độ tâm nhãn theo hướng u và vuông góc
-      const can = rTD + 10 + Math.abs(ux) * nw + Math.abs(uy) * nh;                       // cần đi tới đâu theo u để ra ngoài đĩa
-      const tamNgang = rTD + 10 + Math.abs(uy) * nw + Math.abs(ux) * nh;                 // bề ngang vùng ảnh hưởng
-      const he = Math.max(0, Math.min(1, 1 - (ngang - tamNgang) / 80));
-      const day = Math.max(0, can - doc) * he;
-      p = dayQua([p[0] + ux * day, p[1] + uy * day], ux, uy, nw, nh, vatChinh.slice(1));   // rồi qua các đầu mũi tên
-      chu(g, 'Mặt Trăng', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
-    }
-    // Trái Đất (mức đầy đủ): phía đối diện điểm cam (các mũi tên tại điểm cam dài tối đa một bán kính, nên không vươn tới
-    // đó), lệch thêm khỏi hướng Mặt Trăng và nghiêng lên-trái; rồi đẩy tiếp qua các đầu mũi tên. Mọi thành phần đổi liên tục
-    // theo hình chiếu.
-    if (!toiGian && trongKhung(pTD)) {
-      const pP = chieu(diemCam.position), cx = (pP[0] - pTD[0]) / rTD, cy = (pP[1] - pTD[1]) / rTD;
-      const dm = Math.max(1, Math.hypot(dx, dy));
-      const ux = -cx - 0.5 * dx / dm - 0.4, uy = -cy - 0.5 * dy / dm - 0.6, k = kichThuoc(g, 'Trái Đất', oThienThe);
-      const p = dayQua(viTriNgoai(g, 'Trái Đất', pTD[0], pTD[1], rTD, ux, uy, 10, oThienThe), ux, uy, k[0] / 2 + 5, k[1] * 0.6 + 5, vatChinh.slice(1));
-      chu(g, 'Trái Đất', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
-    }
+    veChuGiai(g, 48, 60, true);   // mức tối giản: hàng ngang ở dải trên cùng (không có tiêu đề ở mức này)
+    veThienThe(g, 48, tt.muc === 'toi-gian' ? 146 : 196);
   },
 };
