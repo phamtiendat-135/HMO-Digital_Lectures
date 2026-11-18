@@ -72,6 +72,7 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
 - `canhThumb` là chỉ số cảnh (từ 0) và `giayThumb` là giây TRONG cảnh đó (cùng nghĩa với `HMO.tua(t)`), dùng để chụp thumbnail.
 - `dapAn` là chỉ số 0–3. Đúng 4 câu, mỗi câu 4 phương án.
 - Mọi chữ dài trên sân khấu của bản gốc (đoạn văn, thẻ tổng kết, bảng nhiều dòng) chuyển vào `giaiThich`. Sinh viên xem màn dọc chỉ đọc được khung giải thích.
+- **Bảng số** (không bắt buộc): cảnh nào cần bảng nhiều dòng thì thêm `"bang": { "cot": ["Độ sâu (m)", "c (m/s)"], "dong": [["0", "1.540,2"], ["1.000", "1.483,5"]] }` vào mục cảnh đó, thay vì nhồi số vào `giaiThich`. Mỗi dòng đủ số cột; ô là chuỗi hoặc số, viết sẵn theo định dạng Việt Nam (dấu phẩy thập phân). Bộ khung dựng `<table>` dưới đoạn Giải thích bằng `textContent` (chữ trong ô không bao giờ được hiểu là HTML), cuộn ngang được trên màn hẹp; `build.mjs` báo lỗi nếu bảng sai cấu trúc. Khi có bảng, `giaiThich` vẫn giữ 40–60 từ và chỉ nói ý chính của bảng.
 
 ## 4. Sân khấu và hình ảnh
 

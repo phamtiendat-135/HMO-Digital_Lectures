@@ -199,3 +199,18 @@ test('nút bấm một lần: dừng đồng hồ và đổi hình; thanh trư�
   const a2 = await page.locator('#hmo-san-khau').screenshot();
   expect(a1.equals(a2)).toBe(false);
 });
+
+test('bảng số của cảnh: dựng <table> bằng textContent, không tràn ngang', async ({ page }) => {
+  await canhGac(page); await mo(page, '?che-do=tu-hoc');
+  await expect(page.locator('#hmo-bang-so table')).toHaveCount(0);
+  await page.evaluate(() => window.HMO.denCanh(1));
+  const bang = page.locator('#hmo-bang-so table');
+  await expect(bang).toHaveCount(1);
+  await expect(bang.locator('th')).toHaveText(['Giây', 'Vị trí y (px)']);
+  await expect(bang.locator('tbody tr')).toHaveCount(3);
+  await expect(bang.locator('tbody tr').nth(2).locator('td').nth(1)).toHaveText('<b>880</b>');
+  await expect(bang.locator('b'), 'ô bảng không được hiểu là HTML').toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+  await page.evaluate(() => window.HMO.denCanh(2));
+  await expect(page.locator('#hmo-bang-so table')).toHaveCount(0);
+});
