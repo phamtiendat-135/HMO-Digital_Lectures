@@ -20,6 +20,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 
 | File | Nội dung |
 |---|---|
+| `docs/DE_BAI_GOC.md` | Nguyên văn đề bài gốc (prompt điều phối), có bảng các điểm đã đổi ở G0/G1 |
 | `docs/superpowers/specs/2026-11-13-kho-hoclieu-so-design.md` | Thiết kế đã duyệt ở G0 (slug, 3 mức dùng, kiến trúc khung, chấm điểm) |
 | `docs/STANDARDS.md` | Chuẩn bắt buộc cho worker: hợp đồng `HMO.dangKy`, noidung, cỡ chữ, ngôn ngữ, test, git, báo cáo |
 | `audit/TRIAGE.md` | Phân tầng T1/T2/T3, quyết định G1 ghi ở đầu file, 21 câu hỏi khoa học ở mục 7 |
@@ -104,7 +105,6 @@ Phiên mới **làm theo khuyến nghị dưới đây**, trừ khi TS. Đạt n
 3. Độ sâu đáy tại 12,0°N, 114,5°E (C-2).
 4. Cột độ muối S của phao Argo dùng trong `kenh-sofar` (C-3), lấy từ file phao gốc.
 5. 21 câu hỏi khoa học trong `audit/TRIAGE.md` mục 7.
-6. Bản đề bài gốc (prompt điều phối dài). Đề nghị tải lên `docs/DE_BAI_GOC.md` để phiên mới đọc được nguyên văn; hiện các phiên chỉ còn bản tóm tắt trong file này và trong design doc.
 
 Số nào còn thiếu nguồn thì **không hiển thị** và phải ghi vào báo cáo; không được bịa.
 
