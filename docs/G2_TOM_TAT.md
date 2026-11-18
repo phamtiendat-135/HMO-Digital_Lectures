@@ -2,7 +2,7 @@
 
 Ngày: 18/11/2026. Gửi: TS. Phạm Tiến Đạt. Nhánh: `claude/relaxed-meitner-q01202`.
 
-> **Trạng thái bản này: NHÁP.** `kenh-sofar` và `hat-nuoc-quay-vong` đã approved. `luc-tao-trieu` đang nghiệm thu lần 1; các ô `[chờ]` sẽ điền khi có kết quả.
+> **Trạng thái bản này: NHÁP.** `kenh-sofar` và `hat-nuoc-quay-vong` đã approved. `luc-tao-trieu` trượt lần 1 và 2, đã sửa xong, chờ nghiệm thu lần 3; các ô `[chờ]` sẽ điền khi có kết quả.
 
 ## 1. Thầy cần làm gì ở G2
 
@@ -16,7 +16,7 @@ Ngày: 18/11/2026. Gửi: TS. Phạm Tiến Đạt. Nhánh: `claude/relaxed-meit
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2, Preact + SVG | 137.906 B (500 KB) | 15/15 | lần 1 trượt 4 mục, lần 2 đạt | approved |
 | `hat-nuoc-quay-vong` | T2, Canvas 2D | 117.506 B (500 KB) | 15/15 | lần 1 trượt (tương phản chữ), lần 2 trượt (dấu nặng "Độ" bị che), lần 3 đạt | approved |
-| `luc-tao-trieu` | T3, three.js + dự phòng 2D | 636.686 B (1,5 MB) | 18/18 (có test dự phòng 2D) | lần 1 trượt 3 mục, [chờ lần 2] | [chờ] |
+| `luc-tao-trieu` | T3, three.js + dự phòng 2D | 636.686 B (1,5 MB) | 18/18 (có test dự phòng 2D) | lần 1 trượt 3 mục, lần 2 trượt (nhãn nhảy chỗ, nhãn che vật), [chờ lần 3] | [chờ] |
 
 Toàn bộ test trên nhánh chính sau khi merge 2 pilot: 87 đạt, 12 bỏ qua (test chỉ dành cho laptop, cho màn cảm ứng, hoặc cho 3D).
 
