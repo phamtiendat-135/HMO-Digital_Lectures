@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 52652d6 (đã push, worktree sạch) | 625 KB | 18/18 luc; toàn bộ 105 đạt, 12 bỏ qua | Lần 1 và 2 KHÔNG ĐẠT. `anim-3d` đã viết lại nhãn cả 7 cảnh và bản 2D, **tự kiểm xong** (21:25 UTC): 0 nhảy chỗ vi phạm; 1 chồng cấm còn lại (cảnh 3 bản 3D, góc ban đầu, nhãn "Trái Đất" đè đĩa Mặt Trăng 12,2 px trong 0,2 s quanh t ≈ 3,07; worker giữ vì hai cách sửa khác gây lỗi lớn hơn); tương phản nhỏ nhất 4,86; `ve(t)` thuần; tam giác tối đa 14.482. **Nghiệm thu lần 3 đang chạy** (reviewer mới, scratchpad `review-luc-3/ghichu.md`). |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 3538e91 (đã push) | 639.606 B | 18/18 luc; toàn bộ 105 đạt, 12 bỏ qua | Lần 1, 2, **3** KHÔNG ĐẠT. Lần 3: 6 cảnh 2D và bản dự phòng 2D đã sạch (0 nhảy, 0 chồng); trượt ở cảnh 3 bản 3D (nhãn bám thiên thể nhảy và đè Mặt Trăng tới 35 px), cảnh 7 chữ đè Mặt Trời, S-16 cỡ 24 px, S-17 mất "Trái Đất" ở tối giản, S-21 kéo điểm cam trên điện thoại (chi tiết: REVIEW_LOG). Trưởng nhóm thêm STANDARDS mục 4 quy tắc 4–6 (50efe2e): cảnh 3D camera tự do đưa tên thiên thể vào chú giải cố định. 22:05 UTC đã giao `anim-3d` sửa đúng 5 mục. Xong thì nghiệm thu lần 4 bằng reviewer mới, dùng bộ quét `review-luc-3/r3-quet.cjs`, `chung3.cjs` (scratchpad cũ). |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -83,7 +83,7 @@ git log --oneline -5 origin/anim/luc-tao-trieu    # 5b5a98a trở lên
 ```
 Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay đổi ở `src/` chưa commit thì xem diff; hợp lý thì commit WIP rồi push. Nếu worktree mất: tạo lại theo mục 11.
 
-**Bước 1. Hoàn tất tự kiểm: ĐÃ XONG (52652d6), bỏ qua bước này.** (Chỉ cần nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi "đã quét"/"tự kiểm xong". Giao việc: *không viết lại nhãn nữa*; chỉ kiểm và sửa lỗi nhỏ nếu có:
+**Bước 1. Sửa sau lần 3 (đã giao `anim-3d` lúc 22:05 UTC 18/11, 5 mục, xem REVIEW_LOG dòng lần 3).** Phiên mới: nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi đã sửa đủ 5 mục, giao `anim-3d` mới đúng 5 mục đó. Dưới đây là mô tả bước tự kiểm cũ, vẫn áp dụng sau khi sửa. (Chỉ cần nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi "đã quét"/"tự kiểm xong". Giao việc: *không viết lại nhãn nữa*; chỉ kiểm và sửa lỗi nhỏ nếu có:
 - quét nhảy nhãn ở 1/30 s, cả 7 cảnh và bản 2D, 3 khung, 2 mức nhãn (≤ 1 lần nhảy/ẩn mỗi 2 s; 0 lần lật A→B→A trong 1 s);
 - quét chồng cấm (chữ–chữ, chữ trên vật chính, điểm có tên, đầu mũi tên; bảng/tiêu đề/dải đáy che vật chính);
 - tương phản p5 ≥ 4,5:1 cho mọi chữ không có viền sáng ≥ 4 px;
@@ -92,7 +92,7 @@ Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay 
 - đếm tam giác; chụp ảnh khung mở đầu và giữa mỗi cảnh.
 Commit, push, báo cáo theo STANDARDS mục 8.)
 
-**Bước 2. Nghiệm thu lần 3 (agent `anim-reviewer` MỚI, không dùng lại reviewer cũ).** Đã giao lúc 21:27 UTC ngày 18/11. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
+**Bước 2. Nghiệm thu lần 4 (agent `anim-reviewer` MỚI, không dùng lại reviewer cũ).** Lần 3 đã chạy xong (KHÔNG ĐẠT). Dùng prompt lần 3 làm mẫu, thêm: kiểm theo STANDARDS mục 4 quy tắc 4–6, kiểm lại đúng 5 mục trượt lần 3, test cảm ứng S-21 ở khung dọc. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
 - slug `luc-tao-trieu`, nhánh `anim/luc-tao-trieu`, worktree `../wt/luc-tao-trieu`;
 - kiểm lại 2 mục trượt lần 2 (nhảy nhãn; chồng cấm) theo đúng STANDARDS mục 4 bản mới, **và** toàn bộ S-01…S-26, checklist 10 mục, `ve(t)`, dự phòng 2D, số tam giác, mọi số khoa học;
 - quyết định đã chốt: màu Ft #8A5D0B; dòng nguồn chờ TS. Đạt; cảnh 5 mức tối giản không cần nhãn "Trái Đất"; chiều Mặt Trăng cùng chiều tự quay Trái Đất;
@@ -106,7 +106,7 @@ Commit, push, báo cáo theo STANDARDS mục 8.)
 - `npm test` (lần trước: 87 đạt, 12 bỏ qua; sau merge sẽ thêm test của luc);
 - push.
 
-Nếu KHÔNG ĐẠT: giao lại `anim-3d` đúng các mục trượt, rồi lặp bước 2. Nếu sau lần 4 vẫn trượt chỉ vì nhãn, báo TS. Đạt trước khi chạy tiếp, vì đó là dấu hiệu quy tắc nhãn cần nới.
+Nếu KHÔNG ĐẠT: giao lại `anim-3d` đúng các mục trượt, rồi lặp bước 2. Nếu lần 4 vẫn trượt chỉ vì nhãn, báo TS. Đạt trước khi chạy tiếp, vì đó là dấu hiệu quy tắc nhãn cần nới.
 
 **Bước 4. Hoàn tất `docs/G2_TOM_TAT.md`:** bỏ dòng "NHÁP"; điền các ô `[chờ]` của luc (dung lượng, test, số vòng nghiệm thu, tam giác đo lại); thêm vào mục 2 "Reviewer bắt được những gì" các lỗi của luc (chiều Mặt Trăng ngược ở bản gốc; camera trôi do `controls.update()`; nhãn nhảy 271 lần/chu kỳ). Cập nhật HANDOFF, push, rồi **DỪNG ở G2**, trình TS. Đạt: link tóm tắt G2, hướng dẫn bật GitHub Pages (mục 3 của tóm tắt), 7 điểm chờ quyết.
 
