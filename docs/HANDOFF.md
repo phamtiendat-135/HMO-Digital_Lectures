@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ aa37464 (đã push) | ≈ 641 KB | chưa chạy lại | Lần 1 và 2 KHÔNG ĐẠT (chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2; còn đặt nhãn). `anim-3d` đã viết lại nhãn theo STANDARDS mục 4 cho **cả 7 cảnh và bản 2D** (a5a184b…aa37464; hàm dò chỗ `chuTranh` đã bỏ). Lúc 17:00 UTC worker đang tự kiểm: đo tương phản p5 bằng `tuongphan.cjs` trong scratchpad của nó; chưa chạy quét nhảy nhãn, 3 lệnh build/test và đếm tam giác. Worktree có `index.html` và `manifest.json` sửa chưa commit: đó chỉ là sản phẩm build, build lại là ra. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 5b5a98a (đã push) | ≈ 641 KB | chưa chạy lại | Lần 1 và 2 KHÔNG ĐẠT (chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2; còn đặt nhãn). `anim-3d` đã viết lại nhãn theo STANDARDS mục 4 cho **cả 7 cảnh và bản 2D** (a5a184b…5b5a98a; hàm dò chỗ `chuTranh` đã bỏ). Worker chạm hạn mức lần 4 lúc ~17:10 UTC giữa lúc chỉnh nhãn cảnh 3 bản 3D (WIP 5b5a98a); 20:52 UTC đã gửi tiếp, dặn làm xong rồi chỉ kiểm, không viết lại nhãn; chưa chạy quét nhảy nhãn, 3 lệnh build/test và đếm tam giác. Worktree có `index.html` và `manifest.json` sửa chưa commit: đó chỉ là sản phẩm build, build lại là ra. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -79,7 +79,7 @@ Mọi việc khác của chặng 3 đã xong. Phiên mới làm đúng 5 bước
 **Bước 0. Kiểm tình trạng.** Agent `anim-3d` của phiên cũ không còn (agent chạy nền chết theo phiên), nên không gửi SendMessage cho nó được.
 ```bash
 git fetch origin anim/luc-tao-trieu
-git log --oneline -5 origin/anim/luc-tao-trieu    # aa37464 trở lên
+git log --oneline -5 origin/anim/luc-tao-trieu    # 5b5a98a trở lên
 ```
 Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay đổi ở `src/` chưa commit thì xem diff; hợp lý thì commit WIP rồi push. Nếu worktree mất: tạo lại theo mục 11.
 
@@ -128,7 +128,7 @@ Nếu KHÔNG ĐẠT: giao lại `anim-3d` đúng các mục trượt, rồi lặ
 - Bốn agent giữ nguyên vai trò. `anim-3d` và `anim-reviewer` đổi sang cùng model với `anim-2d` (alias trong frontmatter), bỏ hẳn model cũ vì model đó đòi usage credits và làm cả 3 agent dừng ngay lúc khởi động. `anim-label` giữ nguyên.
 - Nếu `subagent_type: anim-*` báo không tìm thấy (phiên khởi động trước khi có `.claude/agents/`), dùng `general-purpose`, chép nguyên văn phần thân file định nghĩa agent vào đầu prompt và đặt `model` đúng như frontmatter.
 
-**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên 18/11 đã chạm hạn mức 5 giờ 4 lần (lần đầu 05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Container cũng đã khởi động lại một lần và làm mất 2 reviewer đang chạy: dặn reviewer ghi kết quả dở vào `ghichu.md` trong thư mục scratchpad của nó sau mỗi bước. Worktree `../wt/*` và scratchpad vẫn còn sau khi container khởi động lại. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
+**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên 18/11 đã chạm hạn mức 5 giờ 5 lần (lần đầu 05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Container cũng đã khởi động lại một lần và làm mất 2 reviewer đang chạy: dặn reviewer ghi kết quả dở vào `ghichu.md` trong thư mục scratchpad của nó sau mỗi bước. Worktree `../wt/*` và scratchpad vẫn còn sau khi container khởi động lại. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
 
 ## 7. Các chặng sau G2
 
