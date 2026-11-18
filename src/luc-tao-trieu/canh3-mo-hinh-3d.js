@@ -14,14 +14,14 @@ const K = TI_SO_CM;       // CM cách tâm Trái Đất 0,733 bán kính
 const DAI = 1.15;         // độ dài mũi tên ứng với |Fc|
 const CM = new Vector3(K, 0, 0);
 const GOC_NHIN = {
-  'ban-dau': [[0.96, 2.11, 7.48], [1.6, -0.35, 0]],
+  'ban-dau': [[0.97, 2.81, 7.93], [1.65, 0.2, 0]],
   'cuc-bac': [[1.6, 10.5, 0.01], [1.6, 0, 0]],
   'doc-truc': [[-6, 0.6, 0], [1.6, 0, 0]],
 };
 const TRUC_Y = new Vector3(0, 1, 0);
+const TACH_NHAN = { fc: 1.5, fg: 1.5, ft: -2.5 };   // nhãn lệch thêm theo phương lệch gốc mũi tên (đơn vị 0,1)
 
 let renderer = null, scene, camera, controls, cvGL, earth, earthMat, moon, nhomTruc, nhomVanh, diemCam, vetNhom, vet = [], chamVet = [];
-let uHienTai = [1, 0, 0];
 const tia = new Raycaster(), ndc = new Vector2(), v1 = new Vector3(), v2 = new Vector3(), tamTD = new Vector3();
 const yeuCau = () => window.HMO.yeuCauVe();
 
@@ -175,22 +175,16 @@ export default {
     for (let i = 0; i < 3; i++) { const l = vongTron(K, 0xF07800, 0.8, 'xz'); vet.push(l); vetNhom.add(l); }
     for (let i = 0; i < 2; i++) { const c = new Mesh(hinhCham, new MeshBasicMaterial({ color: 0xF2C14E, depthTest: false, transparent: true })); c.renderOrder = 20; c.scale.setScalar(1.6); chamVet.push(c); vetNhom.add(c); }
 
-    window.HMO_LUC_TAO_TRIEU = { doDac: () => ({
-      tamGiac: renderer.info.render.triangles, dpr: renderer.getPixelRatio(), cm: CM.toArray(), traiDat: earth.position.toArray(), matTrang: moon.position.toArray(),
-      diemCam: diemCam.position.toArray(), huong: st3.huong.slice(), camera: camera.position.toArray(), soDoc: soDoc(uHienTai),
-      vet: vet.map((l) => l.position.toArray()), chamVet: chamVet.map((c) => c.position.toArray()), banKinhVet: K,
-    }) };
   },
   vao() { cvGL.style.display = 'block'; },
   ra() { cvGL.style.display = 'none'; },
   doiCo(tiLe) { if (controls) { controls.rotateSpeed = kep(1 / tiLe, 0.5, 2); } },
   khiDoi(id, v) { if (!khiDoiChung(id, v) && id === 'c3-goc-nhin') datGocNhin(v); },
-  huy() { if (controls) controls.dispose(); if (renderer) { renderer.dispose(); cvGL.remove(); } delete window.HMO_LUC_TAO_TRIEU; },
+  huy() { if (controls) controls.dispose(); if (renderer) { renderer.dispose(); cvGL.remove(); } },
 
   ve(g, t) {
     const a = st3.hoatHoa ? TAU * t / LAP3 : 0;
     const u = [Math.cos(a), 0, -Math.sin(a)];                 // hướng Trái Đất → Mặt Trăng
-    uHienTai = u;
     tamTD.set(K - K * u[0], 0, -K * u[2]);                     // tâm Trái Đất = CM − 0,733·u
     earth.position.copy(tamTD);
     moon.position.set(K + (D_TRANG - K) * u[0], 0, (D_TRANG - K) * u[2]);  // Mặt Trăng = CM + D·u: luôn đối diện qua CM
@@ -209,7 +203,7 @@ export default {
       const o = new Vector3(diemCam.position.x + goc[k][0], diemCam.position.y + goc[k][1], diemCam.position.z + goc[k][2]);
       const vec = new Vector3(f[k][0], f[k][1], f[k][2]);
       datMuiTen(m, o, vec, dai[k]);
-      dinh[k] = o.addScaledVector(vec.normalize(), dai[k] + 0.12);
+      dinh[k] = o.addScaledVector(vec.normalize(), dai[k] + 0.12).add(v2.set(lech[0], lech[1], lech[2]).multiplyScalar(TACH_NHAN[k]));
     }
     vetNhom.visible = st3.hoatHoa;
     if (st3.hoatHoa) {
