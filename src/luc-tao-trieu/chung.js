@@ -61,11 +61,53 @@ export function kichThuoc(g, s, o = {}) {
  * Khoảng cách từ tâm tính bằng hàm tựa của hộp chữ theo hướng đó, nên nhãn trượt liên tục khi hướng đổi.
  */
 export function nhanNgoai(g, s, cx, cy, r, ux, uy, khe, o = {}) {
+  const p = viTriNgoai(g, s, cx, cy, r, ux, uy, khe, o);
+  if (p) chu(g, s, p[0], p[1], { ...o, can: 'center', goc: 'middle' });
+}
+/** Tâm nhãn mà nhanNgoai sẽ dùng (null nếu nhãn bị ẩn). */
+export function viTriNgoai(g, s, cx, cy, r, ux, uy, khe, o = {}) {
   const k = kichThuoc(g, s, o);
-  if (!k) return;
+  if (!k) return null;
   const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
   const d = r + khe + Math.abs(ux) * (k[0] / 2 + 5) + Math.abs(uy) * (k[1] * 0.6 + 5);   // nửa hộp chữ cộng viền
-  chu(g, s, cx + ux * d, cy + uy * d, { ...o, can: 'center', goc: 'middle' });
+  return [cx + ux * d, cy + uy * d];
+}
+/**
+ * Xếp một nhóm nhãn chuyển động bằng phép đẩy mềm có số vòng cố định: mỗi nhãn có điểm neo (hàm của hình), bị kéo về neo
+ * như lò xo và bị đẩy khỏi nhãn khác, khỏi chấm/đĩa ({x, y, r}) và hộp ([x0, y0, x1, y1]) trong `vat`. Lực đẩy đổi liên tục
+ * theo vị trí nên kết quả là hàm liên tục, xác định của hình: không có bước dò chỗ trống hay nhảy giữa các phương án.
+ * ds: [{ s, x, y, o }] (x, y: tâm nhãn mong muốn). Vẽ luôn các nhãn.
+ */
+export function xepNhan(g, ds, vat = [], lan = 40) {
+  const L = [];
+  for (const d of ds) {
+    const k = kichThuoc(g, d.s, d.o);
+    if (k) L.push({ d, w: k[0] + 12, h: k[1] * 1.12 + 12, x: d.x, y: d.y });
+  }
+  for (let it = 0; it < lan; it++) {
+    for (const a of L) {
+      let fx = (a.d.x - a.x) * 0.12, fy = (a.d.y - a.y) * 0.12;
+      for (const b of L) {
+        if (b === a) continue;
+        const dx = a.x - b.x, dy = a.y - b.y, ox = (a.w + b.w) / 2 - Math.abs(dx), oy = (a.h + b.h) / 2 - Math.abs(dy);
+        if (ox > 0 && oy > 0) { const l = Math.hypot(dx, dy) || 1, m = Math.min(ox, oy) * 0.5; fx += dx / l * m; fy += dy / l * m; }
+      }
+      for (const v of vat) {
+        if (Array.isArray(v)) {
+          const cx = (v[0] + v[2]) / 2, cy = (v[1] + v[3]) / 2, dx = a.x - cx, dy = a.y - cy;
+          const ox = (a.w + v[2] - v[0]) / 2 - Math.abs(dx), oy = (a.h + v[3] - v[1]) / 2 - Math.abs(dy);
+          if (ox > 0 && oy > 0) { const l = Math.hypot(dx, dy) || 1, m = Math.min(ox, oy) * 0.6; fx += dx / l * m; fy += dy / l * m; }
+        } else {
+          const nx = kep(v.x, a.x - a.w / 2, a.x + a.w / 2), ny = kep(v.y, a.y - a.h / 2, a.y + a.h / 2);
+          const sau = v.r - Math.hypot(v.x - nx, v.y - ny);
+          if (sau > 0) { const dx = a.x - v.x, dy = a.y - v.y, l = Math.hypot(dx, dy) || 1; fx += dx / l * sau * 0.6; fy += dy / l * sau * 0.6; }
+        }
+      }
+      a.x = kep(a.x + fx, 12 + a.w / 2, W - 12 - a.w / 2);
+      a.y = kep(a.y + fy, 140 + a.h / 2, 950 - a.h / 2);
+    }
+  }
+  for (const a of L) chu(g, a.d.s, a.x, a.y, { ...a.d.o, can: 'center', goc: 'middle' });
 }
 /** Góc a (rad, mọi giá trị) có nằm trong cung [tu, den) (độ, đi theo chiều tăng) không. */
 export function trongCung(a, tu, den) {

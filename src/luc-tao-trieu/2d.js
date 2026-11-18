@@ -1,8 +1,9 @@
 // Bản dự phòng 2D của cảnh 3 khi thiết bị không có WebGL2: lát cắt qua trục Trái Đất – Mặt Trăng, nhìn từ cực Bắc.
-import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, baLuc, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, tt, baLuc, nen, chu, viTriNgoai, xepNhan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
 import { LAP3, st3, DIEU_KHIEN_2D, khiDoiChung, soDoc, veBang, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
 
-const CX = 640, CY = 590, R = 150, K = TI_SO_CM * R, DM = 2.4 * R, DAI = 0.9 * R, RMT = 30;
+// Hình thu gọn để Mặt Trăng và nhãn của nó không chạm bảng số (góc trên phải) và dải đáy
+const CX = 560, CY = 570, R = 125, K = TI_SO_CM * R, DM = 2.0 * R, DAI = 0.9 * R, RMT = 26;
 let sk = null, dangHien = false, tamX = CX - K, tamY = CY;
 const gocCam = () => Math.atan2(st3.huong[1], st3.huong[0]);
 
@@ -58,7 +59,6 @@ export default {
         const x2 = x + ft[0] * DAI * PHONG_DAI_FT, y2 = y - ft[1] * DAI * PHONG_DAI_FT;
         muiTen(g, x, y, x2, y2, MAU.ft, 4, 14);
         tron(g, x, y, 5, MAU.navy);
-        vatCan(x, y, 6); vatCanDoan(x, y, x2, y2, 5);
       }
     }
     tron(g, CX, CY, 9, MAU.navy, '#FFFFFF', 2.5);
@@ -69,7 +69,6 @@ export default {
       if (!st3[k]) return;
       const dx = f[k][0] * DAI * hs, dy = -f[k][1] * DAI * hs;
       muiTen(g, px + ox, py + oy, px + ox + dx, py + oy + dy, mau, 7, 22);
-      vatCanDoan(px + ox, py + oy, px + ox + dx, py + oy + dy, 7);
       dinh[k] = [px + ox + dx, py + oy + dy, dx, dy];
     };
     ve1('fc', MAU.luc, 1, nx, ny);
@@ -77,25 +76,25 @@ export default {
     ve1('ft', MAU.ft, PHONG_DAI_FT, -nx, -ny);
     tron(g, px, py, 13, MAU.cam, '#FFFFFF', 3);
 
-    // nhãn: chấm, mũi tên, đĩa và bảng số là vùng cấm; mỗi nhãn chọn chỗ trống gần vật của nó
-    vatCan(px, py, 15); vatCan(CX, CY, 11); vatCan(mx, my, RMT + 2);
-    if (st3.hoatHoa) { vatCan(ex, ey, 9); vatCan(ex, ey + R, 9); }
-    const c = { can: 'center', goc: 'middle' };
+    // Nhãn: điểm neo theo quy tắc cố định, rồi đẩy mềm khỏi vật chính và khỏi nhau (xepNhan, hàm liên tục của hình).
+    const toiGian = tt.muc === 'toi-gian', ds = [], vat = [];
+    vat.push({ x: px, y: py, r: 17 }, { x: CX, y: CY, r: 13 }, { x: mx, y: my, r: RMT + 4 });
+    if (!toiGian) vat.push([1000, 172, 1392, 416]);   // bảng số
     for (const [k, ten, mauChu] of [['fc', 'Fc', MAU.luc], ['fg', 'Fg', MAU.do], ['ft', 'Ft', MAU.ftChu]]) {
       if (!dinh[k]) continue;
-      const [x, y, dx, dy] = dinh[k], L = Math.hypot(dx, dy) || 1, hx = dx / L, hy = dy / L;
-      // ứng viên: ở đầu mũi tên, lệch dần sang hai bên và ra xa (3 vòng × 7 hướng)
-      const ds = [];
-      for (const r of [28, 60, 95]) for (const goc of [0, 1.57, -1.57, 0.79, -0.79, 2.36, -2.36]) {
-        const ca = Math.cos(goc), sa = Math.sin(goc);
-        ds.push([x + (hx * ca - hy * sa) * r, y + (hy * ca + hx * sa) * r, c]);
-      }
-      chuTranh(g, ten, ds, { co: 30, dam: 700, mau: mauChu, vien: '#FFFFFF', khoa: true });
+      const [x, y, dx, dy] = dinh[k], L = Math.hypot(dx, dy) || 1, o = { co: 30, dam: 700, mau: mauChu, khoa: true };
+      vat.push({ x: x - dx / L * 9, y: y - dy / L * 9, r: 14 });   // đầu mũi tên
+      const p0 = viTriNgoai(g, ten, x, y, 0, dx / L, dy / L, 10, o);
+      if (p0) ds.push({ s: ten, x: p0[0], y: p0[1], o });
     }
-    chuTranh(g, 'CM', quanh(CX, CY, 16, '25430167').concat(quanh(CX, CY, 46, '25430167'), quanh(CX, CY, 80, '25430167'), quanh(CX, CY, 115, '25430167')), { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true });
-    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, '23014567'), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
-    chuTranh(g, 'Trái Đất', [[ex, ey + R + 14, { can: 'center', goc: 'top' }], [ex, ey - R - 14, { can: 'center', goc: 'bottom' }],
-      [ex - R * 0.8, ey + R * 0.8, { can: 'right', goc: 'top' }], [ex - R * 0.8, ey - R * 0.8, { can: 'right', goc: 'bottom' }]],
-    { co: 30, dam: 700, mau: MAU.navy, vien: MAU.nen, khoa: true });
+    const oCM = { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true };
+    const pCM = viTriNgoai(g, 'CM', CX, CY, 9, 0, 1, 8, oCM);
+    if (pCM) ds.push({ s: 'CM', x: pCM[0], y: pCM[1], o: oCM });
+    const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true };
+    const pMT = toiGian ? viTriNgoai(g, 'Mặt Trăng', mx, my, RMT, 0, my <= CY ? -1 : 1, 8, oMT) : viTriNgoai(g, 'Mặt Trăng', mx, my, RMT, u[0], -u[1], 8, oMT);
+    if (pMT) ds.push({ s: 'Mặt Trăng', x: pMT[0], y: pMT[1], o: oMT });
+    const pTD = viTriNgoai(g, 'Trái Đất', ex, ey, R, -p[0], p[1], 12, oMT);
+    if (pTD) ds.push({ s: 'Trái Đất', x: pTD[0], y: pTD[1], o: oMT });
+    xepNhan(g, ds, vat);
   },
 };
