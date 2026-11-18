@@ -1,5 +1,5 @@
 // Phần dùng chung của cảnh 3 cho bản 3D (three.js) và bản dự phòng 2D: trạng thái, điều khiển, số đọc, bảng số.
-import { MAU, D2R, PHONG_DAI_FT, tt, vn, baLuc, doDai, chu } from './chung.js';
+import { MAU, D2R, PHONG_DAI_FT, tt, vn, baLuc, doDai, chu, vatCan } from './chung.js';
 
 export const LAP3 = 8;
 /** Trạng thái ngoài t của cảnh 3. huong: hướng điểm cam nhìn từ tâm Trái Đất (x về phía Mặt Trăng lúc đầu, y = cực Bắc). */
@@ -45,6 +45,7 @@ export function veBang(g, sd) {
   const x = 1000, y = 172, w = 392, h = 244;
   g.fillStyle = 'rgba(255,255,255,0.92)'; g.fillRect(x, y, w, h);
   g.strokeStyle = MAU.vien; g.lineWidth = 2; g.strokeRect(x, y, w, h);
+  vatCan([x, y, x + w, y + h]);
   const hang = [['Góc θ', vn(sd.theta) + '°', MAU.ink], ['Fc', '100,0% Fc', MAU.luc], ['Fg', vn(sd.fg, 1) + '% Fc', MAU.do], ['Ft', vn(sd.ft, 2) + '% Fc', MAU.ftChu]];
   hang.forEach(([ten, gt, mau], i) => {
     chu(g, ten, x + 20, y + 44 + i * 46, { co: 30, dam: 700, mau });

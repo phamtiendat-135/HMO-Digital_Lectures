@@ -6,7 +6,7 @@ import {
   AmbientLight, DirectionalLight, Color, SRGBColorSpace,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, kep, baLuc, doDai, chu, tieuDe, chanTrang } from './chung.js';
+import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, kep, baLuc, doDai, chuTranh, quanh, vatCan, moiKhung, tieuDe, chanTrang } from './chung.js';
 import { LAP3, st3, DIEU_KHIEN_3D, khiDoiChung, soDoc, veBang, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
 
 const D_TRANG = 4.9;      // khoảng cách vẽ Trái Đất – Mặt Trăng (thực tế 60,3 bán kính Trái Đất)
@@ -230,20 +230,47 @@ export default {
     }
     renderer.render(scene, camera);
 
-    // lớp chữ 2D phía trên
+    // lớp chữ 2D phía trên: chữ cố định trước, rồi nhãn di động chọn chỗ trống (bảng số, chấm, đĩa là vùng cấm)
     g.clearRect(0, 0, W, H);
-    // nhãn chỉ vẽ khi điểm neo nằm trong khung (khi phóng gần, vật ra ngoài khung thì nhãn cũng ẩn) và trên dải đáy
-    const nhan = (s, v, o) => { const [x, y, truoc] = mauTrenStage(v); if (truoc && x >= 0 && x <= W && y >= 0 && y <= 950) chu(g, s, x, y, o); };
-    const len = v1.set(0, 1, 0).applyQuaternion(camera.quaternion).clone();   // hướng "lên" của màn hình, trong không gian cảnh
-    nhan('Trái Đất', v2.copy(tamTD).addScaledVector(len, 1.22), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: 'bottom', khoa: true });
-    const trangCao = mauTrenStage(moon.position)[1] < 330;   // Mặt Trăng sát mép trên: nhãn đặt bên dưới để không đè tiêu đề
-    nhan('Mặt Trăng', v2.copy(moon.position).addScaledVector(len, trangCao ? -0.42 : 0.42), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: trangCao ? 'top' : 'bottom', khoa: true });
-    nhan('CM', v2.set(K, -0.16, 0), { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'top', khoa: true });
-    if (st3.vanh) nhan('vành đai θ = 90°', v2.copy(tamTD).addScaledVector(len, -1.1), { co: 30, mau: MAU.slate, vien: '#FFFFFF', can: 'center', goc: 'top' });
-    const mauChu = { fc: MAU.luc, fg: MAU.do, ft: MAU.ftChu }, ten = { fc: 'Fc', fg: 'Fg', ft: 'Ft' };
-    for (const k of ['fc', 'fg', 'ft']) if (st3[k]) nhan(ten[k], dinh[k], { co: 30, dam: 700, mau: mauChu[k], vien: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
-    veBang(g, sd);
+    moiKhung();
     tieuDe(g, 'Mô hình 3D: ba lực tại một điểm', 'Kéo để xoay · chụm, lăn hoặc nút để phóng · chạm Trái Đất đặt điểm cam.');
     chanTrang(g, GHI_CHU_3);
+    veBang(g, sd);
+    const len = v1.set(0, 1, 0).applyQuaternion(camera.quaternion).clone();   // hướng "lên" của màn hình, trong không gian cảnh
+    const trongKhung = ([x, y, truoc]) => truoc && x >= 0 && x <= W && y >= 0 && y <= 950;
+    const chieu = (v) => mauTrenStage(v);
+    const banKinh = (tam, r) => { const a = chieu(tam), b = chieu(v2.copy(tam).addScaledVector(len, r)); return Math.hypot(b[0] - a[0], b[1] - a[1]); };
+    const pTD = chieu(tamTD), rTD = banKinh(tamTD, 1), pMT = chieu(moon.position), rMT = banKinh(moon.position, 0.3);
+    const pCM = chieu(CM), pCam = chieu(diemCam.position);
+    if (trongKhung(pCam)) vatCan(pCam[0], pCam[1], 14);
+    if (trongKhung(pCM)) vatCan(pCM[0], pCM[1], 10);
+    if (trongKhung(pMT)) vatCan(pMT[0], pMT[1], rMT + 2);
+    const oThienThe = { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', khoa: true };
+    const mauChu = { fc: MAU.luc, fg: MAU.do, ft: MAU.ftChu }, ten = { fc: 'Fc', fg: 'Fg', ft: 'Ft' };
+    for (const k of ['fc', 'fg', 'ft']) {
+      if (!st3[k]) continue;
+      const d = chieu(dinh[k]);
+      if (!trongKhung(d)) continue;
+      // hướng mũi tên trên màn hình: từ điểm cam tới đầu nhãn; ứng viên ở đầu mũi tên rồi lệch hai bên
+      let hx = d[0] - pCam[0], hy = d[1] - pCam[1]; const l = Math.hypot(hx, hy) || 1; hx /= l; hy /= l;
+      const c = { can: 'center', goc: 'middle' }, ds = [[d[0], d[1], c]];
+      // ứng viên: đầu mũi tên, rồi lệch dần sang hai bên và ra xa (3 vòng × 7 hướng)
+      for (const r of [30, 60, 95]) for (const goc of [1.57, -1.57, 0, 0.79, -0.79, 2.36, -2.36]) {
+        const ca = Math.cos(goc), sa = Math.sin(goc);
+        ds.push([d[0] + (hx * ca - hy * sa) * r, d[1] + (hy * ca + hx * sa) * r, c]);
+      }
+      chuTranh(g, ten[k], ds, { co: 30, dam: 700, mau: mauChu[k], vien: '#FFFFFF', khoa: true });
+    }
+    if (trongKhung(pCM)) chuTranh(g, 'CM', quanh(pCM[0], pCM[1], 16, '25430167'), { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true });
+    if (trongKhung(pMT)) chuTranh(g, 'Mặt Trăng', quanh(pMT[0], pMT[1], rMT + 8, '32014567'), oThienThe);
+    if (trongKhung(pTD)) {
+      const [x, y] = pTD, r = rTD + 10;
+      chuTranh(g, 'Trái Đất', [[x, y - r, { can: 'center', goc: 'bottom' }], [x, y + r, { can: 'center', goc: 'top' }],
+        [x - r * 0.75, y - r * 0.75, { can: 'right', goc: 'bottom' }], [x + r * 0.75, y - r * 0.75, { can: 'left', goc: 'bottom' }],
+        [x - r, y, { can: 'right', goc: 'middle' }]], oThienThe);
+      if (st3.vanh) chuTranh(g, 'vành đai θ = 90°', [[x, y + r, { can: 'center', goc: 'top' }], [x, y - r - 40, { can: 'center', goc: 'bottom' }],
+        [x - r * 0.75, y + r * 0.75, { can: 'right', goc: 'top' }], [x + r * 0.75, y + r * 0.75, { can: 'left', goc: 'top' }]],
+      { co: 30, mau: MAU.slate, vien: '#FFFFFF' });
+    }
   },
 };

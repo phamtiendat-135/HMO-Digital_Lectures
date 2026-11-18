@@ -1,5 +1,5 @@
 // Cảnh 5: xích vĩ Mặt Trăng làm hai lần nước lớn trong ngày không bằng nhau (bất đẳng nhật triều).
-import { tt, MAU, T_THANG_SAO, T_TRIEU, D2R, TAU, vn, gioPhut, nen, chu, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
+import { tt, MAU, T_THANG_SAO, T_TRIEU, D2R, TAU, vn, gioPhut, nen, chu, chuTranh, quanh, vatCan, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
 
 const LAP = T_THANG_SAO / 2;     // 327,84 s
 const st = { dmax: 25, diChuyen: true, nhip: 2 };
@@ -41,6 +41,8 @@ export default {
     const h = t * st.nhip, xv = xichVi(h, st.dmax, st.diChuyen), lam = TAU * h / T_TRIEU;
     const bx = Math.cos(xv * D2R), by = -Math.sin(xv * D2R);   // hướng Mặt Trăng trên màn hình
     nen(g);
+    tieuDe(g, 'Xích vĩ Mặt Trăng và bất đẳng nhật triều', 'Múi triều nghiêng theo xích vĩ δ: hai lần nước lớn trong ngày không bằng nhau.');
+    chanTrang(g, 'Nhìn ngang, Mặt Trăng ở bên phải. Không theo tỉ lệ: khoảng cách thu ngắn, bao hình triều phóng đại.');
 
     g.save(); g.translate(CX, CY); g.rotate(-xv * D2R);
     g.beginPath(); g.ellipse(0, 0, R * 1.30, R * 1.02, 0, 0, TAU);
@@ -49,7 +51,7 @@ export default {
 
     doan(g, CX, CY - R * 1.45, CX, CY + R * 1.45, MAU.slate, 2, [9, 7]);
     chu(g, 'Bắc', CX, CY - R * 1.48, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom' });
-    chu(g, 'Nam', CX, CY + R * 1.50, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
+    chu(g, 'Nam', CX, CY + R * 1.46, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
 
     tron(g, CX, CY, R, MAU.ocean, MAU.skyNhat, 3);
     [-60, -30, 0, 30, 60].forEach((vd) => { const y = CY - R * Math.sin(vd * D2R), hw = R * Math.cos(vd * D2R); doan(g, CX - hw, y, CX + hw, y, 'rgba(255,255,255,0.45)', vd === 0 ? 3 : 1.5); });
@@ -73,9 +75,6 @@ export default {
     doan(g, CX, CY, mx, my, MAU.slate, 2, [8, 6]);
     doan(g, CX + R, CY, CX + R * 2.3, CY, MAU.vien, 2, [4, 6]);
     matTrang(g, mx, my, 26);
-    chu(g, 'phía Mặt Trăng', mx + 40, my + 6, { co: 30, mau: MAU.navy, goc: 'middle', vien: MAU.nen });
-    // nhãn ở phía xa Trái Đất: trên đĩa khi Mặt Trăng ở bắc xích đạo, dưới đĩa khi ở nam
-    chu(g, 'Mặt Trăng', mx, xv >= 0 ? my - 36 : my + 36, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: xv >= 0 ? 'bottom' : 'top', khoa: true, vien: MAU.nen });
     g.strokeStyle = MAU.cam; g.lineWidth = 4; g.beginPath(); g.arc(CX, CY, R * 1.66, Math.min(0, -xv * D2R), Math.max(0, -xv * D2R)); g.stroke();
     chu(g, `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`, CX + R * 1.72, CY + (xv >= 0 ? 44 : -40), { co: 36, dam: 700, mau: MAU.camChu, goc: 'middle', khoa: true });
 
@@ -84,8 +83,10 @@ export default {
       const x = CX + R * Math.cos(p.vd * D2R) * Math.cos(lam), y = CY - R * Math.sin(p.vd * D2R), truoc = -Math.sin(lam) > 0;
       g.globalAlpha = truoc ? 1 : 0.32;
       tron(g, x, y, 12, p.mau, '#FFFFFF', 3);
-      tron(g, x + 30, y - 26, 21, 'rgba(255,255,255,0.94)', p.mau, 2);
-      chu(g, p.ten, x + 30, y - 25, { co: 30, dam: 700, mau: p.chu, can: 'center', goc: 'middle' });
+      // nhãn tròn đặt ngang hàng bên phải điểm: các điểm cách nhau ≥ 43 px theo chiều dọc nên nhãn không đè điểm khác
+      tron(g, x + 34, y, 19, 'rgba(255,255,255,0.94)', p.mau, 2);
+      vatCan(x, y, 14); vatCan(x + 34, y, 21);
+      chu(g, p.ten, x + 34, y + 1, { co: 30, dam: 700, mau: p.chu, can: 'center', goc: 'middle' });
       g.globalAlpha = 1;
     });
 
@@ -117,7 +118,9 @@ export default {
     chu(g, gioPhut(goc), x0, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, goc: 'top' });
     chu(g, gioPhut(goc + T_TRIEU), x1, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, can: 'right', goc: 'top' });
 
-    tieuDe(g, 'Xích vĩ Mặt Trăng và bất đẳng nhật triều', 'Múi triều nghiêng theo xích vĩ δ: hai lần nước lớn trong ngày không bằng nhau.');
-    chanTrang(g, 'Nhìn ngang, Mặt Trăng ở bên phải. Không theo tỉ lệ: khoảng cách thu ngắn, bao hình triều phóng đại.');
+    vatCan(mx, my, 28);
+    const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen };
+    chuTranh(g, 'Mặt Trăng', xv >= 0 ? quanh(mx, my, 34, '37620154') : quanh(mx, my, 34, '24501376'), oMT);
+    chuTranh(g, 'phía Mặt Trăng', quanh(mx, my, 34, '04621375'), { co: 30, mau: MAU.navy, vien: MAU.nen });
   },
 };

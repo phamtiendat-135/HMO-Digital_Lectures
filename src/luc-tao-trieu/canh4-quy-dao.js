@@ -1,5 +1,5 @@
 // Cảnh 4: một ngày có hai lần nước lớn. Nhìn từ cực Bắc: Mặt Trăng và điểm P đều quay ngược chiều kim đồng hồ.
-import { MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, vn, gioPhut, nen, chu, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { tt, MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, vn, gioPhut, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
 
 export const GIO_MOI_GIAY = 2;                 // 1 giây hoạt hình = 2 giờ
 const LAP = T_THANG_SAO / GIO_MOI_GIAY;        // một tháng sao
@@ -54,17 +54,14 @@ export default {
       const sx = X(Math.cos(phi) * RE), sy = Y(Math.sin(phi) * RE);
       muiTen(g, sx, sy, sx + fx * K, sy - fy * K, MAU.ft, 4, 14);
       tron(g, sx, sy, 4, MAU.navy);
+      vatCan(sx, sy, 6); vatCanDoan(sx, sy, sx + fx * K, sy - fy * K, 5);
     }
-    chu(g, 'Trái Đất', CX, CY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
 
     const px = X(Math.cos(be) * RE), py = Y(Math.sin(be) * RE);
     const [pfx, pfy] = ftPhang(be, al);
     muiTen(g, px, py, px + pfx * K, py - pfy * K, MAU.camChu, 8, 18);
     tron(g, px, py, 12, MAU.cam, '#FFFFFF', 3);
-    chu(g, 'P', px + Math.cos(be) * 40, py - Math.sin(be) * 40, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });
-
     matTrang(g, mx, my, RMT);
-    chu(g, 'Mặt Trăng', mx, my - RMT - 10, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom', khoa: true, vien: MAU.nen });
 
     // số đọc hai bên hình
     const dung = ftDung(h);
@@ -98,5 +95,15 @@ export default {
 
     tieuDe(g, 'Một ngày có hai lần nước lớn', 'Điểm P quay theo Trái Đất, lần lượt đi qua hai múi triều.');
     chanTrang(g, `Nhìn từ cực Bắc. Không theo tỉ lệ: khoảng cách Trái Đất – Mặt Trăng thu ngắn; vector Ft phóng đại ${PHONG_DAI_FT} lần.`);
+
+    // nhãn di động vẽ sau cùng, chọn chỗ trống: chấm, mũi tên Ft, đĩa Mặt Trăng và chữ đã vẽ là vùng cấm
+    vatCan(px, py, 14); vatCanDoan(px, py, px + pfx * K, py - pfy * K, 7); vatCan(mx, my, RMT + 2);
+    const ra = (r, d) => [px + Math.cos(be + d) * r, py - Math.sin(be + d) * r, { can: 'center', goc: 'middle' }];
+    chuTranh(g, 'P', [ra(40, 0), ra(44, 0.5), ra(44, -0.5), ra(64, 0), ra(60, 0.8), ra(60, -0.8)], { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true });
+    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, '32014567'), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
+    const uvTD = [[CX, CY, { can: 'center', goc: 'middle' }]];
+    for (const r of [1.65, 2.1]) for (let i = 0; i < 12; i++) { const b = i * TAU / 12; uvTD.push([CX + Math.cos(b) * RE * r, CY + Math.sin(b) * RE * r, { can: 'center', goc: 'middle' }]); }
+    chuTranh(g, 'Trái Đất', uvTD,
+      { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true, tuyChon: tt.muc === 'toi-gian' });
   },
 };

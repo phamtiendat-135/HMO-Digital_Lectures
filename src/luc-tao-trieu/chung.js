@@ -43,8 +43,74 @@ export function baLuc(p, u) {
 }
 export const doDai = (v) => Math.hypot(v[0], v[1], v[2] || 0);
 
+/* ---------- xếp nhãn ----------
+ * Mỗi khung hình giữ danh sách hộp đã chiếm: mọi chữ vẽ bằng chu() tự ghi vào, chấm và vùng cấm ghi bằng vatCan().
+ * Nhãn di động vẽ bằng chuTranh(): thử lần lượt các vị trí ứng viên, chọn chỗ chồng ít nhất (hoà thì lấy ứng viên
+ * đứng trước). Kết quả chỉ phụ thuộc hình đang vẽ, tức là hàm của t: ve(t) vẫn thuần.
+ */
+const KE = [];
+/** Bắt đầu khung hình mới (nen() gọi sẵn). */
+export function moiKhung() { KE.length = 0; }
+/** Ghi một chấm tròn (tâm, bán kính) hoặc một hộp [x0, y0, x1, y1] là vùng nhãn không được đè. */
+export function vatCan(x, y, r) { KE.push(r == null ? x : [x - r, y - r, x + r, y + r]); }
+
+/** Ghi một đoạn thẳng (mũi tên, trục) làm vùng cấm: chuỗi chấm bán kính r dọc đoạn. */
+export function vatCanDoan(x1, y1, x2, y2, r = 6) {
+  const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / (r * 1.5)));
+  for (let i = 0; i <= n; i++) vatCan(x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, r);
+}
+
+/** Hộp chữ [x0, y0, x1, y1] mà chu() sẽ vẽ với cùng tham số; null nếu ở mức nhãn hiện tại chữ này bị ẩn. */
+export function hopChu(g, s, x, y, o = {}) {
+  if (tt.muc === 'tat') return null;
+  let co = o.co || 30;
+  if (tt.muc === 'toi-gian') { if (!o.khoa) return null; co = Math.max(60, co * 2); }
+  g.font = `${o.nghieng ? 'italic ' : ''}${o.dam || 600} ${co}px ${FONT}`;
+  const rong = g.measureText(s).width, can = o.can || 'left';
+  let trai = can === 'center' ? x - rong / 2 : can === 'right' ? x - rong : x;
+  trai += Math.max(0, 12 - trai) - Math.max(0, trai + rong - (W - 12));
+  const goc = o.goc || 'alphabetic', tren = goc === 'top' ? y : goc === 'middle' ? y - co * 0.5 : goc === 'bottom' ? y - co : y - co * 0.78;
+  return [trai, tren - co * 0.06, trai + rong, tren + co * 1.02];   // cả dấu thanh tiếng Việt phía trên và chân chữ g, y phía dưới
+}
+const chong = (a, b) => Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+
+/**
+ * Vẽ nhãn ở vị trí ứng viên chồng ít nhất lên những gì đã có trong khung. ds: mảng [x, y, oRieng?] theo thứ tự ưu tiên,
+ * oRieng ghi đè o (thường là can, goc). o.tuyChon: chỉ vẽ nếu có chỗ không chồng chút nào (nhãn thêm ở mức tối giản).
+ * Hộp chạm vào dải đáy (y > dayToiDa, mặc định 950) hoặc ra ngoài sân khấu bị tính là chồng.
+ */
+export function chuTranh(g, s, ds, o = {}) {
+  let tot = null, diemTot = Infinity;
+  const day = o.dayToiDa || 950;
+  for (const [x, y, rieng] of ds) {
+    const oo = rieng ? { ...o, ...rieng } : o, h0 = hopChu(g, s, x, y, oo);
+    if (!h0) return;
+    // điểm phạt: chồng thật (nặng) + chồng vào vùng lề quanh chữ (nhẹ, để nhãn không dính sát nhau)
+    const h = [h0[0] - 10, h0[1] - 6, h0[2] + 10, h0[3] + 6];
+    let d = 0;
+    for (const k of KE) d += 1000 * chong(h0, k) + 20 * chong(h, k);
+    d += 1000 * (Math.max(0, h0[3] - day) + Math.max(0, -h0[1])) * (h0[2] - h0[0]);
+    if (d < diemTot - 0.5) { diemTot = d; tot = [x, y, oo]; }
+  }
+  if (!tot || (o.tuyChon && diemTot >= 1000)) return;
+  chu(g, s, tot[0], tot[1], tot[2]);
+}
+/**
+ * Các vị trí ứng viên quanh điểm (x, y) cách khoảng r. Chỉ số: 0 phải, 1 trái, 2 dưới, 3 trên,
+ * 4 dưới-phải, 5 dưới-trái, 6 trên-phải, 7 trên-trái. thuTu: chuỗi chỉ số theo thứ tự ưu tiên (mặc định '01234567').
+ */
+export function quanh(x, y, r, thuTu = '01234567') {
+  const d = [
+    [x + r, y, { can: 'left', goc: 'middle' }], [x - r, y, { can: 'right', goc: 'middle' }],
+    [x, y + r, { can: 'center', goc: 'top' }], [x, y - r, { can: 'center', goc: 'bottom' }],
+    [x + r * 0.75, y + r * 0.75, { can: 'left', goc: 'top' }], [x - r * 0.75, y + r * 0.75, { can: 'right', goc: 'top' }],
+    [x + r * 0.75, y - r * 0.75, { can: 'left', goc: 'bottom' }], [x - r * 0.75, y - r * 0.75, { can: 'right', goc: 'bottom' }],
+  ];
+  return [...thuTu].map((c) => d[+c]);
+}
+
 /* ---------- vẽ 2D ---------- */
-export function nen(g) { g.setLineDash([]); g.globalAlpha = 1; g.fillStyle = MAU.nen; g.fillRect(0, 0, W, H); }
+export function nen(g) { moiKhung(); g.setLineDash([]); g.globalAlpha = 1; g.fillStyle = MAU.nen; g.fillRect(0, 0, W, H); }
 
 /**
  * Viết chữ theo mức nhãn. o: co (px, mặc định 30), dam, mau, can, goc ('top'|'middle'|'bottom'|'alphabetic'),
@@ -61,6 +127,9 @@ export function chu(g, s, x, y, o = {}) {
   x += Math.max(0, 12 - trai) - Math.max(0, trai + rong - (W - 12));
   if (o.vien) { g.lineWidth = co * 0.2; g.lineJoin = 'round'; g.strokeStyle = o.vien; g.strokeText(s, x, y); }
   g.fillStyle = o.mau || MAU.ink; g.fillText(s, x, y);
+  const tren = g.textBaseline === 'top' ? y : g.textBaseline === 'middle' ? y - co * 0.5 : g.textBaseline === 'bottom' ? y - co : y - co * 0.78;
+  const trai2 = g.textAlign === 'center' ? x - rong / 2 : g.textAlign === 'right' ? x - rong : x;
+  KE.push([trai2, tren - co * 0.06, trai2 + rong, tren + co * 1.02]);
 }
 /** Hệ số phóng nhãn then chốt ở mức tối giản, để tính khoảng cách đặt nhãn. */
 export const heSoNhan = () => (tt.muc === 'toi-gian' ? 2 : 1);

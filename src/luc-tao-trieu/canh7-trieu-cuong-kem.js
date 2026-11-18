@@ -1,5 +1,5 @@
 // Cảnh 7: triều cường và triều kém trong một tuần trăng. Nhìn từ cực Bắc, Mặt Trời ở bên trái.
-import { tt, MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
+import { tt, MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
 
 const LAP = 16;
 const st = { bao: true, thanh: true, duong: true };
@@ -36,13 +36,15 @@ export default {
     const d = TUAN_TRANG * t / LAP, gm = gocTrang(d), gs = Math.PI, bd = bienDo(d);
     const mx = EX + RQ * Math.cos(gm), my = EY - RQ * Math.sin(gm);
     nen(g);
+    tieuDe(g, 'Triều cường và triều kém', 'Sóc, vọng: hai tác động cộng lại. Thượng huyền, hạ huyền: bù nhau.');
+    chanTrang(g, 'Nhìn từ cực Bắc. Không theo tỉ lệ: khoảng cách, kích thước thu gọn; bao triều phóng đại.');
 
     // Mặt Trời
     const gr = g.createRadialGradient(SX, SY, SR * 0.2, SX, SY, SR * 1.9);
     gr.addColorStop(0, '#FFD34D'); gr.addColorStop(0.45, 'rgba(240,180,40,0.55)'); gr.addColorStop(1, 'rgba(240,180,40,0)');
     tron(g, SX, SY, SR * 1.9, gr);
     tron(g, SX, SY, SR, '#F5C043', '#D89A16', 2);
-    chu(g, 'Mặt Trời', SX - 60, SY + SR * 2, { co: 30, dam: 700, mau: MAU.navy, goc: 'top', khoa: true });
+    chu(g, 'Mặt Trời', SX, SY - SR * 1.9, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom', khoa: true });   // phía trên Mặt Trời: Mặt Trăng không bao giờ tới đó
 
     doan(g, SX + SR, SY, EX - R * 1.5, EY, MAU.slate, 2, [9, 7]);
     doan(g, EX, EY, mx, my, MAU.slate, 2, [9, 7]);
@@ -61,7 +63,6 @@ export default {
     g.fillStyle = 'rgba(240,120,0,0.13)'; g.fill(); g.strokeStyle = MAU.cam; g.lineWidth = 4; g.stroke();
 
     tron(g, EX, EY, R, MAU.ocean, MAU.sky, 3);
-    chu(g, 'Trái Đất', EX, EY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
     // mũi tên chỉ chiều tự quay của Trái Đất (ngược chiều kim đồng hồ); vẽ tĩnh vì 29,5 vòng mỗi chu kỳ là quá nhanh để nhìn
     const q = 0.6;
     g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 3; g.beginPath(); g.arc(EX, EY, R * 0.72, -q - 1.5, -q); g.stroke();
@@ -72,8 +73,6 @@ export default {
     tron(g, mx, my, RMT, '#8A93A3');
     g.beginPath(); g.arc(mx, my, RMT, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fillStyle = '#EDF3F8'; g.fill();
     tron(g, mx, my, RMT, null, MAU.slate, 2);
-    const tren = my < EY - RQ * 0.5;   // Mặt Trăng ở phía trên: nhãn đặt bên trên để không đè bao triều
-    chu(g, 'Mặt Trăng', mx, tren ? my - RMT - 8 : my + RMT + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: tren ? 'bottom' : 'top', khoa: true, vien: MAU.nen });
 
     // số đọc và ba thanh biên độ tương đối
     const loai = bd / (1 + TI_SO_MT) > 0.86 ? 'Triều cường' : bd / (1 + TI_SO_MT) < 0.64 ? 'Triều kém' : 'Trung gian';
@@ -86,6 +85,7 @@ export default {
         const y = 644 + i * 56;
         chu(g, `${ten} ${vn(v, 2)}`, 1392, y, { co: 30, dam: 700, mau: mauChu, can: 'right' });
         g.fillStyle = mau; g.fillRect(xb + (262 - wb * v), y + 8, wb * v, 12);
+        vatCan([xb + (262 - wb * v), y + 8, xb + 262, y + 20]);
       });
     }
 
@@ -105,7 +105,12 @@ export default {
       tron(g, xD(d), yB(bd), 9, MAU.navy, '#FFFFFF', 3);
     }
 
-    tieuDe(g, 'Triều cường và triều kém', 'Sóc, vọng: hai tác động cộng lại. Thượng huyền, hạ huyền: bù nhau.');
-    chanTrang(g, 'Nhìn từ cực Bắc. Không theo tỉ lệ: khoảng cách, kích thước thu gọn; bao triều phóng đại.');
+    // nhãn Trái Đất, Mặt Trăng vẽ sau cùng, chọn chỗ trống: đĩa, bao triều, mũi tên và chữ đã vẽ là vùng cấm
+    chu(g, 'Trái Đất', EX, EY, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });
+    vatCan(mx, my, RMT + 2); vatCan(EX, EY, R * 1.42);
+    const ao2 = gm + 0.36, ax = EX + RQ * Math.cos(ao2), ay = EY - RQ * Math.sin(ao2);
+    vatCanDoan(ax, ay, ax - Math.sin(ao2) * 48, ay - Math.cos(ao2) * 48, 8);
+    const thuTu = my < EY - RQ * 0.5 ? '37620154' : '25401376';
+    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, thuTu).concat(quanh(mx, my, RMT + 40, thuTu), quanh(mx, my, RMT + 76, thuTu)), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
   },
 };
