@@ -1,9 +1,9 @@
 // Cảnh 7: triều cường và triều kém trong một tuần trăng. Nhìn từ cực Bắc, Mặt Trời ở bên trái.
-import { tt, MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
+import { tt, MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
 
 const LAP = 16;
 const st = { bao: true, thanh: true, duong: true };
-const SX = 120, SY = 440, SR = 58, EX = 800, EY = 440, R = 110, RQ = R * 2.0, RMT = 33;
+const SX = 120, SY = 460, SR = 58, EX = 830, EY = 460, R = 110, RQ = R * 2.0, RMT = 33;
 const PHA = [
   { ngay: 0, ten: 'Sóc', trieu: 'Triều cường' }, { ngay: TUAN_TRANG / 4, ten: 'Thượng huyền', trieu: 'Triều kém' },
   { ngay: TUAN_TRANG / 2, ten: 'Vọng', trieu: 'Triều cường' }, { ngay: TUAN_TRANG * 3 / 4, ten: 'Hạ huyền', trieu: 'Triều kém' },
@@ -44,14 +44,17 @@ export default {
     gr.addColorStop(0, '#FFD34D'); gr.addColorStop(0.45, 'rgba(240,180,40,0.55)'); gr.addColorStop(1, 'rgba(240,180,40,0)');
     tron(g, SX, SY, SR * 1.9, gr);
     tron(g, SX, SY, SR, '#F5C043', '#D89A16', 2);
-    chu(g, 'Mặt Trời', SX, SY - SR * 1.9, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom', khoa: true });   // phía trên Mặt Trời: Mặt Trăng không bao giờ tới đó
+    // nhãn Mặt Trời ngay trên Mặt Trời (nhãn Mặt Trăng, kể cả cỡ gấp đôi, không vươn tới đây)
+    const toiGian = tt.muc === 'toi-gian';
+    chu(g, 'Mặt Trời', SX, SY - SR * 1.9, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom', khoa: true });
 
     doan(g, SX + SR, SY, EX - R * 1.5, EY, MAU.slate, 2, [9, 7]);
     doan(g, EX, EY, mx, my, MAU.slate, 2, [9, 7]);
     g.setLineDash([6, 8]); g.strokeStyle = 'rgba(84,110,143,0.4)'; g.lineWidth = 2; g.beginPath(); g.arc(EX, EY, RQ, 0, TAU); g.stroke(); g.setLineDash([]);
-    // mũi tên chỉ chiều quỹ đạo, đi trước Mặt Trăng, cùng chiều chuyển động
-    const ao = gm + 0.36;
-    muiTen(g, EX + RQ * Math.cos(ao), EY - RQ * Math.sin(ao), EX + RQ * Math.cos(ao) - Math.sin(ao) * 48, EY - RQ * Math.sin(ao) - Math.cos(ao) * 48, '#B03A5B', 4, 18);
+    // mũi tên chỉ chiều quỹ đạo, đi trước Mặt Trăng, cùng chiều chuyển động; đặt phía trong vòng quỹ đạo
+    // (giữa bao triều và quỹ đạo) để nhãn Mặt Trăng, luôn ở phía ngoài, không bao giờ chạm tới
+    const ao = gm + 0.42, rq = RQ - 42;
+    muiTen(g, EX + rq * Math.cos(ao), EY - rq * Math.sin(ao), EX + rq * Math.cos(ao) - Math.sin(ao) * 44, EY - rq * Math.sin(ao) - Math.cos(ao) * 44, '#B03A5B', 4, 18);
 
     const AL = R * 0.30, AS = AL * TI_SO_MT;
     const bao = (f) => { g.beginPath(); for (let i = 0; i <= 240; i++) { const th = i / 240 * TAU, r = R + f(th); const x = EX + r * Math.cos(th), y = EY - r * Math.sin(th); if (i) g.lineTo(x, y); else g.moveTo(x, y); } g.closePath(); };
@@ -74,18 +77,19 @@ export default {
     g.beginPath(); g.arc(mx, my, RMT, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fillStyle = '#EDF3F8'; g.fill();
     tron(g, mx, my, RMT, null, MAU.slate, 2);
 
-    // số đọc và ba thanh biên độ tương đối
-    const loai = bd / (1 + TI_SO_MT) > 0.86 ? 'Triều cường' : bd / (1 + TI_SO_MT) < 0.64 ? 'Triều kém' : 'Trung gian';
-    chu(g, `Ngày ${vn(d, 1)} · ${tenPha(d)}`, 1392, 220, { co: 30, mau: MAU.slate, can: 'right' });
-    chu(g, loai, 1392, 268, { co: 40, dam: 700, mau: loai === 'Triều cường' ? MAU.camChu : loai === 'Triều kém' ? MAU.ocean : MAU.ftChu, can: 'right', khoa: true });
-    if (st.thanh && tt.muc === 'day-du') {
-      const xb = 1130, wb = 170, hang = [['Mặt Trăng', 1, MAU.ocean, MAU.ocean], ['Mặt Trời', TI_SO_MT, MAU.ft, MAU.ftChu], ['Tổng', bd, MAU.cam, MAU.camChu]];
-      chu(g, 'Biên độ triều tương đối', 1392, 590, { co: 30, mau: MAU.navy, can: 'right' });
+    // Số đọc, xếp ở góc dưới trái (Mặt Trăng và nhãn của nó không bao giờ tới đây).
+    // Loại triều chỉ hai trạng thái, theo pha gần hơn: mỗi trạng thái kéo dài nửa chu kỳ (4 s), không nhấp nháy.
+    const cuong = Math.cos(2 * TAU * d / TUAN_TRANG) >= 0;
+    const loai = cuong ? 'Kỳ triều cường' : 'Kỳ triều kém';
+    chu(g, `Ngày ${vn(d, 1)}`, 48, 540, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, loai, 48, toiGian ? 950 : 592, { co: 40, dam: 700, mau: cuong ? MAU.camChu : MAU.ocean, khoa: true });
+    if (st.thanh && !toiGian) {
+      const wb = 170, hang = [['Mặt Trăng', 1, MAU.ocean, MAU.ocean], ['Mặt Trời', TI_SO_MT, MAU.ft, MAU.ftChu], ['Tổng', bd, MAU.cam, MAU.camChu]];
+      chu(g, 'Biên độ triều tương đối', 48, 642, { co: 30, mau: MAU.navy, vien: null });
       hang.forEach(([ten, v, mau, mauChu], i) => {
-        const y = 644 + i * 56;
-        chu(g, `${ten} ${vn(v, 2)}`, 1392, y, { co: 30, dam: 700, mau: mauChu, can: 'right' });
-        g.fillStyle = mau; g.fillRect(xb + (262 - wb * v), y + 8, wb * v, 12);
-        vatCan([xb + (262 - wb * v), y + 8, xb + 262, y + 20]);
+        const y = 686 + i * 42;
+        chu(g, `${ten} ${vn(v, 2)}`, 48, y, { co: 30, dam: 700, mau: mauChu, vien: null });
+        g.fillStyle = mau; g.fillRect(48, y + 6, wb * v, 9);
       });
     }
 
@@ -105,12 +109,12 @@ export default {
       tron(g, xD(d), yB(bd), 9, MAU.navy, '#FFFFFF', 3);
     }
 
-    // nhãn Trái Đất, Mặt Trăng vẽ sau cùng, chọn chỗ trống: đĩa, bao triều, mũi tên và chữ đã vẽ là vùng cấm
+    // Trái Đất: giữa đĩa. Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ tâm Trái Đất.
     chu(g, 'Trái Đất', EX, EY, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });
-    vatCan(mx, my, RMT + 2); vatCan(EX, EY, R * 1.42);
-    const ao2 = gm + 0.36, ax = EX + RQ * Math.cos(ao2), ay = EY - RQ * Math.sin(ao2);
-    vatCanDoan(ax, ay, ax - Math.sin(ao2) * 48, ay - Math.cos(ao2) * 48, 8);
-    const thuTu = my < EY - RQ * 0.5 ? '37620154' : '25401376';
-    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, thuTu).concat(quanh(mx, my, RMT + 40, thuTu), quanh(mx, my, RMT + 76, thuTu)), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
+    // Mức tối giản (chữ to gấp đôi): khi Mặt Trăng ở phía Mặt Trời, hướng nhãn nghiêng lên/xuống để khỏi chạm nhãn Mặt Trời;
+    // chỉ đổi phía một lần mỗi vòng, lúc Mặt Trăng đi qua đường nối Mặt Trời – Trái Đất.
+    let hx = (mx - EX) / RQ, hy = (my - EY) / RQ;
+    if (toiGian) hy += (hy >= 0 ? 1 : -1) * 1.2 * Math.max(0, -hx);
+    nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, hx, hy, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
   },
 };
