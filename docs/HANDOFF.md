@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 slug; 90 passed / 9 skipped toàn bộ | `anim-3d` xong 26/26 S-xx + 2 việc thêm (Giải thích ≤ 67 tiếng; nút Phóng to/Thu nhỏ ×1,25, giới hạn 3–14). Tam giác tối đa 14.482. **Đang nghiệm thu lần 1** bằng `anim-reviewer` mới. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 | Lần 1 KHÔNG ĐẠT (xem REVIEW_LOG): chiều Mặt Trăng ở cảnh 6 sai; `ve(t)` cảnh 3D không thuần; nhãn đè nhau. **`anim-3d` đang sửa** (đã gửi 3 mục + thêm nhãn "Trái Đất" ở mức tối giản). Sau đó nghiệm thu lần 2 bằng reviewer mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -76,7 +76,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 
 1. **`luc-tao-trieu`:** nút thu phóng xong (82d996d).
-2. **Nghiệm thu `luc-tao-trieu` lần 1** bằng `anim-reviewer` mới. Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
+2. **Nghiệm thu `luc-tao-trieu`:** lần 1 KHÔNG ĐẠT; chờ `anim-3d` sửa rồi nghiệm thu lần 2 bằng `anim-reviewer` mới (kiểm lại cả 3 mục, lặp tua ≥ 5 lần ở cảnh 3 t = 6,1). Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
 3. **`hat-nuoc-quay-vong`:** ĐẠT lần 3, đã merge.
 4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
    - `manifest.json` có thể xung đột: giải bằng `node tools/build.mjs` (build lại toàn bộ);
@@ -96,8 +96,9 @@ Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 1. **Dòng nguồn `luc-tao-trieu`:** "NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science". Spec chỉ đề xuất NASA; Pugh & Woodworth do worker tự thêm.
 2. **Hằng số `luc-tao-trieu` gắn `[CẦN NGUỒN]` nhưng checklist bắt buộc hiển thị:** 384.400 km, 6.371 km, 81,3, 27,32 ngày, 29,53 ngày, 24 h 50 ph, 0,46. Tất cả có trong NASA Moon Fact Sheet.
 3. **Thuật ngữ `luc-tao-trieu`** (phương án đề xuất của spec, chưa duyệt): "nước lớn / nước ròng", "bất đẳng nhật triều", nhìn từ cực Bắc, quay ngược chiều kim đồng hồ.
-4. **Màu Ft `luc-tao-trieu`:** #8A5D0B (5,5:1) thay cho #B07A1C (3,6:1, trượt tiêu chí tương phản). Trưởng nhóm đã chấp nhận tạm.
-5. **Kết hợp Codex/ChatGPT (gói Business), dự kiến sau G2:**
+4. **Chiều quay Mặt Trăng ở cảnh 6 `luc-tao-trieu`:** bản gốc vẽ ngược chiều tự quay Trái Đất; đang sửa cho cùng chiều (ngược chiều kim đồng hồ nhìn từ cực Bắc). Báo TS. Đạt vì là sửa so với bài giảng gốc.
+5. **Màu Ft `luc-tao-trieu`:** #8A5D0B (5,5:1) thay cho #B07A1C (3,6:1, trượt tiêu chí tương phản). Trưởng nhóm đã chấp nhận tạm.
+6. **Kết hợp Codex/ChatGPT (gói Business), dự kiến sau G2:**
    - Codex review chéo PR, hoặc làm một slug riêng ở chặng 4, kèm `AGENTS.md` trỏ tới STANDARDS;
    - ChatGPT dùng cho phác cảnh và ảnh truyền thông; không dùng cho số liệu hay bản đồ.
 

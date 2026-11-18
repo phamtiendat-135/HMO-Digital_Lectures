@@ -16,11 +16,11 @@ Ngày: 18/11/2026. Gửi: TS. Phạm Tiến Đạt. Nhánh: `claude/relaxed-meit
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2, Preact + SVG | 137.906 B (500 KB) | 15/15 | lần 1 trượt 4 mục, lần 2 đạt | approved |
 | `hat-nuoc-quay-vong` | T2, Canvas 2D | 117.506 B (500 KB) | 15/15 | lần 1 trượt (tương phản chữ), lần 2 trượt (dấu nặng "Độ" bị che), lần 3 đạt | approved |
-| `luc-tao-trieu` | T3, three.js + dự phòng 2D | 636.686 B (1,5 MB) | 18/18 (có test dự phòng 2D) | [chờ] | [chờ] |
+| `luc-tao-trieu` | T3, three.js + dự phòng 2D | 636.686 B (1,5 MB) | 18/18 (có test dự phòng 2D) | lần 1 trượt 3 mục, [chờ lần 2] | [chờ] |
 
 Toàn bộ test trên nhánh chính sau khi merge 2 pilot: 87 đạt, 12 bỏ qua (test chỉ dành cho laptop, cho màn cảm ứng, hoặc cho 3D).
 
-**Cảnh 3D của `luc-tao-trieu`:** tối đa 14.482 tam giác (ngưỡng 80.000). Theo đo của worker: mặc định 14.050; bật hoạt hoạ và Trái Đất bán trong suốt 14.482; phóng gần nhất 9.812. Số đo của reviewer: [chờ].
+**Cảnh 3D của `luc-tao-trieu`:** tối đa 14.482 tam giác (ngưỡng 80.000). Theo đo của worker: mặc định 14.050; bật hoạt hoạ và Trái Đất bán trong suốt 14.482; phóng gần nhất 9.812. Reviewer lần 1 đo lại: mặc định 14.050; tắt vành 8.962; bật hoạt hoạ 14.482; phóng gần nhất 9.812; gần nhất + hoạt hoạ 13.010.
 
 **Reviewer bắt được những gì** (lý do nghiệm thu nhiều vòng là đáng):
 - `kenh-sofar`: hai đoạn Giải thích quá dài (83 và 76 tiếng); tên cảnh sai ở khung cuối mỗi cảnh; thumbnail chụp sai khung; "86 bar" phải là 87 bar (tính lại: 860 m × 1.034,7 kg/m³ × 9,78 m/s² = 87,0 bar).
@@ -63,6 +63,7 @@ Mỗi animation là **một file HTML tự chứa**: mở được cả khi khô
 | 1 | `luc-tao-trieu` | Dòng nguồn | "NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science". Spec chỉ đề xuất NASA; Pugh & Woodworth do worker thêm. |
 | 2 | `luc-tao-trieu` | Hằng số gắn `[CẦN NGUỒN]` nhưng checklist bắt buộc hiển thị: 384.400 km, 6.371 km, 81,3, 27,32 ngày, 29,53 ngày, 24 h 50 ph, 0,46 | Đang hiển thị; tất cả có trong NASA Moon Fact Sheet |
 | 3 | `luc-tao-trieu` | Thuật ngữ | "nước lớn / nước ròng", "bất đẳng nhật triều", nhìn từ cực Bắc, quay ngược chiều kim đồng hồ |
+| 4a | `luc-tao-trieu` | Chiều quay Mặt Trăng ở cảnh 6 | Bản gốc vẽ Mặt Trăng quay ngược chiều tự quay Trái Đất (sai). Đang sửa: cùng chiều, ngược chiều kim đồng hồ nhìn từ cực Bắc, khớp cảnh 1, 4, 7. Đây là sửa so với bài giảng gốc. |
 | 4 | `luc-tao-trieu` | Màu chữ Ft | #8A5D0B (tương phản 5,5:1) thay cho #B07A1C của spec (3,6:1, không đạt 4,5:1) |
 | 5 | `hat-nuoc-quay-vong` | Tên giáo trình cho Bài 5 | Chưa có, nên dòng nguồn không ghi tên giáo trình |
 | 6 | `kenh-sofar` | C-2 độ sâu đáy tại 12,0°N 114,5°E; C-3 cột độ muối của phao 2902696; C-4 câu trích dẫn Argo và DOI GDAC | Chưa có nguồn, nên không hiển thị. C-3: nếu có file phao gốc, thêm được cột S vào bảng 13 mức. |
