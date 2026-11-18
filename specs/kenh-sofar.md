@@ -128,7 +128,7 @@ Không áp dụng (T2).
 
 - **kenh-sofar-q2** (hiểu). Vì sao bên dưới trục SOFAR tốc độ âm lại tăng theo độ sâu?
   A. Vì nước ấm lên  B. Vì độ muối giảm mạnh  **C. Vì áp suất tăng trong khi nhiệt độ gần như không đổi**  D. Vì mật độ giảm
-  Giải thích: từ 1.140 m xuống 2.000 m nhiệt độ chỉ giảm 3,7 → 2,5 °C, còn áp suất tăng thêm khoảng 86 bar, làm c tăng từ 1.483,5 lên 1.492,5 m/s.
+  Giải thích: từ 1.140 m xuống 2.000 m nhiệt độ chỉ giảm 3,7 → 2,5 °C, còn áp suất tăng thêm khoảng 87 bar, làm c tăng từ 1.483,5 lên 1.492,5 m/s.
 
 - **kenh-sofar-q3** (vận dụng). Một tia âm rời trục SOFAR (c = 1.483,5 m/s) với góc 4° so với phương ngang. Tia quay đầu ở nơi tốc độ âm bằng bao nhiêu? (cos 4° = 0,99756)
   A. 1.479,9 m/s  B. 1.483,5 m/s  **C. 1.487,1 m/s**  D. 1.542,4 m/s
