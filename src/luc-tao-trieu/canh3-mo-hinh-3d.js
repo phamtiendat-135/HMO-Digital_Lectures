@@ -86,7 +86,6 @@ function thuPhong(k) {
   yeuCau();
 }
 
-const mauTrenStage = (v) => { v1.copy(v).project(camera); return [(v1.x + 1) / 2 * W, (1 - v1.y) / 2 * H, v1.z < 1]; };
 function tiaTu(ev) {
   const r = cvGL.getBoundingClientRect();
   ndc.set((ev.clientX - r.left) / r.width * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
@@ -113,7 +112,11 @@ function ganChuot() {
     // chỉ bắt điểm cam khi nó ở nửa cầu quay về phía camera, cho lố qua mép khoảng 17° (điểm ở mặt khuất trùng hình với tâm Trái Đất)
     v2.copy(camera.position).sub(diemCam.position).normalize();
     const thay = v2.dot(v1.copy(diemCam.position).sub(tamTD)) > -0.3;
-    if (thay && Math.hypot(dx, dy) <= 44) { dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null; }
+    // Bán kính bắt (S-21): tối đa 44 px CSS nhưng không quá 0,45 lần khoảng cách trên màn hình từ điểm cam tới tâm Trái Đất,
+    // nên chạm ở tâm Trái Đất (hoặc gần tâm hơn gần điểm cam) luôn là xoay camera, kể cả khi hai điểm chiếu sát nhau.
+    v1.copy(tamTD).project(camera);
+    const kTam = Math.hypot(r.left + (v1.x + 1) / 2 * r.width - ev.clientX - dx, r.top + (1 - v1.y) / 2 * r.height - ev.clientY - dy);
+    if (thay && Math.hypot(dx, dy) <= Math.min(44, 0.45 * kTam)) { dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null; }
     else cham = { x: ev.clientX, y: ev.clientY, t: ev.timeStamp };
   });
   cvGL.addEventListener('pointermove', (ev) => { if (dangKeo && ev.isPrimary) datDiem(ev, true); });
