@@ -1,9 +1,9 @@
 // Cảnh 6: nhìn ngang mặt phẳng xích đạo, xích vĩ Mặt Trăng thay đổi trong một tháng sao.
-import { MAU, D2R, TAU, tt, vn, kep, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
+import { W, MAU, D2R, TAU, tt, vn, kep, nen, chu, nhanNgoai, trongCung, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
 
 const LAP = 16.39;               // một tháng sao 655,68 h ở nhịp 1 s = 40 h
 const st = { i: 25, bao: true, vet: true };
-const CX = 720, CY = 430, R = 92, RO = 470;
+const CX = 720, CY = 430, R = 92, RO = 395;
 
 /**
  * Vị trí Mặt Trăng: x sang phải (trong mặt phẳng xích đạo), y theo trục Trái Đất, z về phía người xem.
@@ -34,12 +34,12 @@ export default {
   khiDoi(id, v) { if (id === 'c6-i') st.i = v; else if (id === 'c6-bao') st.bao = v; else if (id === 'c6-vet') st.vet = v; },
   ve(g, t) {
     const psi = TAU * t / LAP, m = viTri(psi, st.i), xv = xichVi(psi, st.i);
-    const mx = CX + m.x * RO, my = CY - m.y * RO, sau = m.z < 0, rm = R * 0.42;
+    const mx = CX + m.x * RO, my = CY - m.y * RO, sau = m.z < 0, rm = R * 0.32;
     nen(g);
     tieuDe(g, 'Xích vĩ thay đổi trong một tháng', 'Mặt Trăng lên phía bắc rồi xuống phía nam xích đạo, mỗi tháng một vòng.');
     chanTrang(g, 'Nhìn ngang mặt phẳng xích đạo. Không theo tỉ lệ: khoảng cách thu ngắn. Nửa quỹ đạo phía sau Trái Đất vẽ nhạt hơn.');
 
-    doan(g, CX - RO * 1.12, CY, CX + RO * 1.12, CY, MAU.vien, 2, [12, 9]);
+    doan(g, 12, CY, W - 12, CY, MAU.vien, 2, [12, 9]);
 
     if (st.vet) for (let nua = 0; nua < 2; nua++) {
       g.beginPath();
@@ -78,11 +78,12 @@ export default {
     if (!sau) veTrang();
 
     doan(g, CX, CY, mx, my, MAU.cam, 3);
-    chu(g, sau ? 'Mặt Trăng ở phía sau Trái Đất' : 'Mặt Trăng ở phía trước Trái Đất', 48, 230, { co: 30, mau: MAU.slate });
+    // chú thích trạng thái đặt cùng hàng tiêu đề đồ thị (Mặt Trăng không bao giờ xuống tới đây)
+    chu(g, sau ? 'Mặt Trăng ở phía sau Trái Đất' : 'Mặt Trăng ở phía trước Trái Đất', 1392, 772, { co: 30, mau: MAU.slate, can: 'right', vien: null });
 
     // đồ thị δ trong một tháng
     const x0 = 130, x1 = 1392, y0 = 790, y1 = 960, yD = (d) => (y0 + y1) / 2 - d / 30 * ((y1 - y0) / 2);
-    chu(g, 'Xích vĩ δ trong một tháng sao', 48, 772, { co: 30, mau: MAU.navy });
+    chu(g, 'Xích vĩ δ trong một tháng sao', 48, 772, { co: 30, mau: MAU.navy, vien: null });
     g.fillStyle = '#FFFFFF'; g.fillRect(x0, y0, x1 - x0, y1 - y0);
     doan(g, x0, yD(st.i), x1, yD(st.i), MAU.vien, 1); doan(g, x0, yD(-st.i), x1, yD(-st.i), MAU.vien, 1);
     doan(g, x0, yD(0), x1, yD(0), MAU.slate, 2);
@@ -92,26 +93,33 @@ export default {
     const xp = x0 + (x1 - x0) * t / LAP;
     doan(g, xp, y0, xp, y1, MAU.navy, 3);
     tron(g, xp, yD(xv), 9, MAU.cam, '#FFFFFF', 3);
-    chu(g, `+${st.i}°`, x0 - 10, yD(st.i), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle' });
-    chu(g, '0°', x0 - 10, yD(0), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle' });
-    chu(g, `−${st.i}°`, x0 - 10, yD(-st.i), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle' });
-    chu(g, 'ngày 0', x0, y1 + 4, { co: 30, mau: MAU.slate, goc: 'top' });
+    chu(g, `+${st.i}°`, x0 - 10, yD(st.i), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle', vien: null });
+    chu(g, '0°', x0 - 10, yD(0), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle', vien: null });
+    chu(g, `−${st.i}°`, x0 - 10, yD(-st.i), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle', vien: null });
+    chu(g, 'ngày 0', x0, y1 + 4, { co: 30, mau: MAU.slate, goc: 'top', vien: null });
     chu(g, `ngày ${vn(27.32 * t / LAP, 1)}`, kep(xp, x0 + 200, x1 - 260), y1 + 4, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
-    chu(g, '27,3', x1, y1 + 4, { co: 30, mau: MAU.slate, can: 'right', goc: 'top' });
+    chu(g, '27,3', x1, y1 + 4, { co: 30, mau: MAU.slate, can: 'right', goc: 'top', vien: null });
 
-    // nhãn quanh hình vẽ sau cùng, chọn chỗ trống: đĩa Mặt Trăng, Trái Đất, đường nối và chữ đã vẽ là vùng cấm
-    vatCan(mx, my, rm + 2); vatCan(CX, CY, R + 2); vatCanDoan(CX, CY, mx, my, 4);
-    chuTranh(g, `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`, [[1392, 230, { can: 'right' }], [1392, 745, { can: 'right' }], [48, 300, { can: 'left' }]],
-      { co: 40, dam: 700, mau: MAU.camChu, khoa: true });
-    const oCuc = { co: 30, dam: 700, mau: MAU.navy, vien: MAU.nen };
-    chuTranh(g, 'Bắc', [[CX, CY - R * 1.74, { can: 'center', goc: 'bottom' }], [CX + 14, CY - R * 1.55, { can: 'left', goc: 'middle' }], [CX - 14, CY - R * 1.55, { can: 'right', goc: 'middle' }]], oCuc);
-    chuTranh(g, 'Nam', [[CX, CY + R * 1.76, { can: 'center', goc: 'top' }], [CX + 14, CY + R * 1.55, { can: 'left', goc: 'middle' }], [CX - 14, CY + R * 1.55, { can: 'right', goc: 'middle' }]], oCuc);
-    const xa = RO * 1.12;
-    chuTranh(g, 'mặt phẳng xích đạo', [[CX - xa, CY - 10, { can: 'left', goc: 'bottom' }], [CX - xa, CY + 10, { can: 'left', goc: 'top' }],
-      [CX + xa, CY - 10, { can: 'right', goc: 'bottom' }], [CX + xa, CY + 10, { can: 'right', goc: 'top' }]], { co: 30, dam: 400, nghieng: true, mau: MAU.slate, vien: MAU.nen });
-    chuTranh(g, 'Trái Đất', [[CX - R * 1.2, CY + R * 1.4, { can: 'right', goc: 'middle' }], [CX + R * 1.2, CY + R * 1.4, { can: 'left', goc: 'middle' }],
-      [CX - R * 1.2, CY - R * 1.4, { can: 'right', goc: 'middle' }], [CX + R * 1.2, CY - R * 1.4, { can: 'left', goc: 'middle' }]], { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
-    chuTranh(g, 'Mặt Trăng', quanh(mx, my, rm + 8, m.y > 0 ? '37620154' : '25413076'), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
-
+    // Nhãn đặt theo quy tắc cố định:
+    // δ ở góc trên phải (mức tối giản: chữ to, đặt trong khung đồ thị, nằm trên nét phụ)
+    const oDelta = { co: 40, dam: 700, mau: MAU.camChu, khoa: true, can: 'right' };
+    const chuDelta = `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`;
+    if (tt.muc === 'toi-gian') chu(g, chuDelta, 1380, 945, oDelta); else chu(g, chuDelta, 1392, 200, oDelta);
+    // Bắc, Nam trong đĩa Trái Đất, sát hai cực: với mọi độ nghiêng 18°–28°, Mặt Trăng không đè lên trong đĩa
+    const oCuc = { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy };
+    chu(g, 'Bắc', CX, CY - R + 13, { ...oCuc, can: 'center', goc: 'top' });
+    chu(g, 'Nam', CX, CY + R - 13, { ...oCuc, can: 'center', goc: 'bottom' });
+    // mặt phẳng xích đạo: ở đầu đường kẻ phía không có Mặt Trăng; sang đầu phải khi Mặt Trăng đi qua đầu trái (ψ 120°–240°)
+    const oXD = { co: 30, dam: 400, nghieng: true, mau: MAU.slate, goc: 'bottom' };
+    if (trongCung(psi, 120, 240)) chu(g, 'mặt phẳng xích đạo', W - 16, CY - 10, { ...oXD, can: 'right' });
+    else chu(g, 'mặt phẳng xích đạo', 16, CY - 10, oXD);
+    // Trái Đất: bên phải hoặc bên trái đĩa, phía không có Mặt Trăng; đổi phía khi Mặt Trăng ở đỉnh/đáy (ψ = 90°, 270°)
+    const traiTrang = trongCung(psi, 90, 270);   // Mặt Trăng ở nửa trái
+    chu(g, 'Trái Đất', traiTrang ? CX + R + 14 : CX - R - 14, CY, { co: 30, dam: 700, mau: MAU.navy, khoa: true, can: traiTrang ? 'left' : 'right', goc: 'middle' });
+    // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ tâm Trái Đất. Mức tối giản (chữ to gấp đôi): ngay trên hoặc dưới
+    // đĩa, phía xa xích đạo; đổi phía lúc Mặt Trăng cắt xích đạo ở hai đầu quỹ đạo (ψ = 0°, 180°).
+    const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true };
+    if (tt.muc === 'toi-gian') nhanNgoai(g, 'Mặt Trăng', mx, my, rm, 0, trongCung(psi, 0, 180) ? -1 : 1, 8, oMT);
+    else nhanNgoai(g, 'Mặt Trăng', mx, my, rm, mx - CX, my - CY, 8, oMT);
   },
 };
