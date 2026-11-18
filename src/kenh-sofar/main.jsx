@@ -350,5 +350,3 @@ HMO.dangKy({
   datNhan(muc) { st.muc = muc; },
   huy() { render(null, goc); goc.remove(); },
 });
-// Dùng cho kiểm thử: giá trị ô góc tia ở khung hình vừa vẽ.
-window.__sofar = { goc: () => st.goc, cOf, ve: (t) => render(<Piece T={t} />, goc) };
