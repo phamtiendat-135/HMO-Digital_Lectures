@@ -297,8 +297,9 @@ function veNhanNuoc(c, sc, st) {
   if (sc.deep && ly.wave > 0.02) {
     const yL2 = ys + (L_SAU / 2) * s, chu = 'Độ sâu tác động của sóng (L/2): chuyển động chỉ còn 4%';
     c.save(); c.globalAlpha = ly.wave; c.font = font(700, 30); c.fillStyle = '#FFFFFF'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
-    c.fillText(chu, W - 24, yL2 - 26);
-    chiem.push({ x0: W - 28 - c.measureText(chu).width, y0: yL2 - 56, x1: W, y1: yL2 - 16 }); c.restore();
+    // Đường chân ở yL2 − 36: dấu dưới (dấu nặng của "Độ") kết thúc trên mép nhãn "4%" (yL2 − 23) ít nhất 5 px
+    c.fillText(chu, W - 24, yL2 - 36);
+    chiem.push({ x0: W - 28 - c.measureText(chu).width, y0: yL2 - 68, x1: W, y1: yL2 - 26 }); c.restore();
   }
   // Nhãn độ sâu (lề trái) và nhãn % / elip / sát đáy cạnh cột hạt đỏ
   if (ly.depth > 0.02) {
