@@ -1,6 +1,6 @@
 # HANDOFF: Kho học liệu số HMO (chuyển sang phiên mới)
 
-Cập nhật: 18/11/2026 (chiều, phiên điều phối thứ hai). Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
+Cập nhật: 18/11/2026, 17:10 UTC (cuối phiên điều phối thứ hai, viết để phiên mới bắt đầu ngày 19/11). Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
 
 Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **Không hỏi lại những gì đã chốt ở mục 3.**
 
@@ -14,7 +14,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
   - Sinh viên năm 1–3 tự học trên điện thoại Android tầm trung (màn dọc 360–430 px, mạng 4G).
   - Giảng viên trình chiếu trên máy chiếu 4:3 (1024×768).
 - Quy trình gồm 4 cổng bắt buộc dừng lại chờ duyệt: G0 (thiết kế) → G1 (spec + phân tầng) → **G2 (3 pilot)** → G3 (trang kho + sổ điểm). Ngoài 4 cổng này thì làm tiếp, không hỏi lặt vặt.
-- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.** 2/3 pilot đã approved (`kenh-sofar`, `hat-nuoc-quay-vong`); `luc-tao-trieu` đang nghiệm thu lần 1.
+- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.** 2/3 pilot đã approved (`kenh-sofar`, `hat-nuoc-quay-vong`). `luc-tao-trieu` trượt nghiệm thu lần 1 và 2; worker đã viết lại xong nhãn cả 7 cảnh và bản 2D, đang tự kiểm. Còn đúng 1 việc trước G2: nghiệm thu lần 3 rồi merge.
 
 ## 2. Tài liệu phải đọc trước khi làm
 
@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 33fbd49 | 641.207 B | 18/18; 90 passed / 9 skipped toàn bộ | Lần 1 KHÔNG ĐẠT. `anim-3d` sửa xong 3 mục (80dca69, 1b70cd0, e383e9e, 33fbd49): chiều Mặt Trăng cảnh 6; `ve(t)` cảnh 3D; bộ xếp nhãn tránh đè (0 chỗ đè, trước 58). **Đang nghiệm thu lần 2**; reviewer đo thêm nhãn nhảy chỗ khi phát (bộ xếp nhãn chọn chỗ theo từng khung): tối đa 1 lần / 2 s, không lật A→B→A trong 1 s. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 52652d6 (đã push, worktree sạch) | 625 KB | 18/18 luc; toàn bộ 105 đạt, 12 bỏ qua | Lần 1 và 2 KHÔNG ĐẠT. `anim-3d` đã viết lại nhãn cả 7 cảnh và bản 2D, **tự kiểm xong** (21:25 UTC): 0 nhảy chỗ vi phạm; 1 chồng cấm còn lại (cảnh 3 bản 3D, góc ban đầu, nhãn "Trái Đất" đè đĩa Mặt Trăng 12,2 px trong 0,2 s quanh t ≈ 3,07; worker giữ vì hai cách sửa khác gây lỗi lớn hơn); tương phản nhỏ nhất 4,86; `ve(t)` thuần; tam giác tối đa 14.482. **Nghiệm thu lần 3 đang chạy** (reviewer mới, scratchpad `review-luc-3/ghichu.md`). |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -69,27 +69,48 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 - Thông báo "đang hiển thị bản 2D" tự ẩn sau 6 s; có test tự động chạy bản dự phòng 2D cho mọi animation 3D (5c60c96).
 - STANDARDS mục 3: "40–60 từ" = **tối đa 67 tiếng** theo `split(/\s+/)` (db254d1).
 - STANDARDS mục 4: cảnh có `dieuKhien` thì từ y = 900 trở xuống chỉ đặt nội dung hiện suốt cảnh.
+- STANDARDS mục 4: **quy tắc đặt nhãn trên hình động** (1519f8d): nhãn gắn ổn định theo hình học, không dò chỗ theo khung; cấm chồng chữ và vật chính; được chồng nét phụ nếu có viền sáng ≥ 4 px.
 - Spec kenh-sofar câu 2: 87 bar, không phải 86 (759aa9d).
 
 ## 6. Việc tiếp theo, theo thứ tự (chặng 3 → G2)
 
-Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
+Mọi việc khác của chặng 3 đã xong. Phiên mới làm đúng 5 bước sau.
 
-1. **`luc-tao-trieu`:** nút thu phóng xong (82d996d).
-2. **Nghiệm thu `luc-tao-trieu`:** lần 1 KHÔNG ĐẠT; chờ `anim-3d` sửa rồi nghiệm thu lần 2 bằng `anim-reviewer` mới (kiểm lại cả 3 mục, lặp tua ≥ 5 lần ở cảnh 3 t = 6,1). Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
-3. **`hat-nuoc-quay-vong`:** ĐẠT lần 3, đã merge.
-4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
-   - `manifest.json` có thể xung đột: giải bằng `node tools/build.mjs` (build lại toàn bộ);
-   - cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`;
-   - chạy `npm test`, push.
-5. Viết tóm tắt G2 cho TS. Đạt gồm:
-   - dung lượng từng file;
-   - số tam giác cảnh 3D;
-   - các mục kiểm tay: fps máy thật, máy chiếu, ρ/→/≈/√ trên Windows và Android;
-   - cách mở trên điện thoại;
-   - các điểm chờ quyết ở mục 6b.
+**Bước 0. Kiểm tình trạng.** Agent `anim-3d` của phiên cũ không còn (agent chạy nền chết theo phiên), nên không gửi SendMessage cho nó được.
+```bash
+git fetch origin anim/luc-tao-trieu
+git log --oneline -5 origin/anim/luc-tao-trieu    # 5b5a98a trở lên
+```
+Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay đổi ở `src/` chưa commit thì xem diff; hợp lý thì commit WIP rồi push. Nếu worktree mất: tạo lại theo mục 11.
 
-   Push, rồi **DỪNG ở G2**.
+**Bước 1. Hoàn tất tự kiểm: ĐÃ XONG (52652d6), bỏ qua bước này.** (Chỉ cần nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi "đã quét"/"tự kiểm xong". Giao việc: *không viết lại nhãn nữa*; chỉ kiểm và sửa lỗi nhỏ nếu có:
+- quét nhảy nhãn ở 1/30 s, cả 7 cảnh và bản 2D, 3 khung, 2 mức nhãn (≤ 1 lần nhảy/ẩn mỗi 2 s; 0 lần lật A→B→A trong 1 s);
+- quét chồng cấm (chữ–chữ, chữ trên vật chính, điểm có tên, đầu mũi tên; bảng/tiêu đề/dải đáy che vật chính);
+- tương phản p5 ≥ 4,5:1 cho mọi chữ không có viền sáng ≥ 4 px;
+- `ve(t)` thuần: tua ≥ 5 lần ở cảnh 3, t = 6,1, ảnh giống hệt;
+- 3 lệnh: `node tools/build.mjs luc-tao-trieu`, `npx playwright test -g "luc-tao-trieu"`, `node tools/build.mjs --test && npx playwright test`;
+- đếm tam giác; chụp ảnh khung mở đầu và giữa mỗi cảnh.
+Commit, push, báo cáo theo STANDARDS mục 8.)
+
+**Bước 2. Nghiệm thu lần 3 (agent `anim-reviewer` MỚI, không dùng lại reviewer cũ).** Đã giao lúc 21:27 UTC ngày 18/11. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
+- slug `luc-tao-trieu`, nhánh `anim/luc-tao-trieu`, worktree `../wt/luc-tao-trieu`;
+- kiểm lại 2 mục trượt lần 2 (nhảy nhãn; chồng cấm) theo đúng STANDARDS mục 4 bản mới, **và** toàn bộ S-01…S-26, checklist 10 mục, `ve(t)`, dự phòng 2D, số tam giác, mọi số khoa học;
+- quyết định đã chốt: màu Ft #8A5D0B; dòng nguồn chờ TS. Đạt; cảnh 5 mức tối giản không cần nhãn "Trái Đất"; chiều Mặt Trăng cùng chiều tự quay Trái Đất;
+- các thay đổi worker tự làm khi viết lại nhãn, reviewer phải xét có làm mất nội dung spec không: cảnh 1 bỏ số 1–8; cảnh 5 bỏ nhãn trùng "phía Mặt Trăng"; cảnh 4 thu nhỏ quỹ đạo vừa khung; cảnh 3 bản 2D chuyển tên lực và CM vào bảng số/chú giải;
+- công cụ tham khảo: bộ quét của reviewer lần 2 (`r2-quet.cjs`, `chung2.cjs` trong scratchpad cũ, có thể đã mất; nếu mất thì tự viết lại);
+- ghi kết quả dở vào `ghichu.md` trong scratchpad sau mỗi bước.
+
+**Bước 3. Nếu ĐẠT:** merge `anim/luc-tao-trieu` vào `claude/relaxed-meitner-q01202`:
+- `manifest.json` xung đột thì `git checkout --theirs manifest.json && node tools/build.mjs` (build lại toàn bộ);
+- `audit/STATUS.md` → approved, kèm dung lượng; `audit/REVIEW_LOG.md` thêm dòng lần 3;
+- `npm test` (lần trước: 87 đạt, 12 bỏ qua; sau merge sẽ thêm test của luc);
+- push.
+
+Nếu KHÔNG ĐẠT: giao lại `anim-3d` đúng các mục trượt, rồi lặp bước 2. Nếu sau lần 4 vẫn trượt chỉ vì nhãn, báo TS. Đạt trước khi chạy tiếp, vì đó là dấu hiệu quy tắc nhãn cần nới.
+
+**Bước 4. Hoàn tất `docs/G2_TOM_TAT.md`:** bỏ dòng "NHÁP"; điền các ô `[chờ]` của luc (dung lượng, test, số vòng nghiệm thu, tam giác đo lại); thêm vào mục 2 "Reviewer bắt được những gì" các lỗi của luc (chiều Mặt Trăng ngược ở bản gốc; camera trôi do `controls.update()`; nhãn nhảy 271 lần/chu kỳ). Cập nhật HANDOFF, push, rồi **DỪNG ở G2**, trình TS. Đạt: link tóm tắt G2, hướng dẫn bật GitHub Pages (mục 3 của tóm tắt), 7 điểm chờ quyết.
+
+**Bài học cho chặng 4** (5 animation T2): giao worker kèm quy tắc nhãn STANDARDS mục 4 ngay từ đầu và yêu cầu nộp bộ quét nhảy nhãn + tương phản cùng bản đầu tiên. Ở chặng 3, luc mất 2 vòng nghiệm thu chỉ vì nhãn.
 
 ## 6b. Điểm chờ TS. Đạt quyết ở G2
 
@@ -107,7 +128,7 @@ Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 - Bốn agent giữ nguyên vai trò. `anim-3d` và `anim-reviewer` đổi sang cùng model với `anim-2d` (alias trong frontmatter), bỏ hẳn model cũ vì model đó đòi usage credits và làm cả 3 agent dừng ngay lúc khởi động. `anim-label` giữ nguyên.
 - Nếu `subagent_type: anim-*` báo không tìm thấy (phiên khởi động trước khi có `.claude/agents/`), dùng `general-purpose`, chép nguyên văn phần thân file định nghĩa agent vào đầu prompt và đặt `model` đúng như frontmatter.
 
-**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên này đã chạm hạn mức 5 giờ một lần (05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Container cũng đã khởi động lại một lần và làm mất 2 reviewer đang chạy: dặn reviewer ghi kết quả dở vào `ghichu.md` trong thư mục scratchpad của nó sau mỗi bước. Worktree `../wt/*` và scratchpad vẫn còn sau khi container khởi động lại. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
+**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên 18/11 đã chạm hạn mức 5 giờ 5 lần (lần đầu 05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Container cũng đã khởi động lại một lần và làm mất 2 reviewer đang chạy: dặn reviewer ghi kết quả dở vào `ghichu.md` trong thư mục scratchpad của nó sau mỗi bước. Worktree `../wt/*` và scratchpad vẫn còn sau khi container khởi động lại. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
 
 ## 7. Các chặng sau G2
 
