@@ -5,8 +5,13 @@ const LAP = 16.39;               // một tháng sao 655,68 h ở nhịp 1 s = 4
 const st = { i: 25, bao: true, vet: true };
 const CX = 720, CY = 430, R = 92, RO = 470;
 
-/** Vị trí Mặt Trăng: x sang phải (trong mặt phẳng xích đạo), y theo trục Trái Đất, z về phía người xem. */
-export const viTri = (psi, i) => ({ x: Math.cos(psi), y: Math.sin(i * D2R) * Math.sin(psi), z: Math.cos(i * D2R) * Math.sin(psi) });
+/**
+ * Vị trí Mặt Trăng: x sang phải (trong mặt phẳng xích đạo), y theo trục Trái Đất, z về phía người xem.
+ * Nhìn từ cực Bắc, Mặt Trăng quay ngược chiều kim đồng hồ như Trái Đất tự quay: từ bên phải (ψ = 0) nó đi ra
+ * phía sau (z < 0), rồi đi qua phía trước từ trái sang phải, cùng chiều mũi tên tự quay ở mặt trước Trái Đất.
+ * (Bản gốc đặt z = +cos i·sin ψ nên Mặt Trăng đi ngược chiều; đã sửa.)
+ */
+export const viTri = (psi, i) => ({ x: Math.cos(psi), y: Math.sin(i * D2R) * Math.sin(psi), z: -Math.cos(i * D2R) * Math.sin(psi) });
 export const xichVi = (psi, i) => Math.asin(Math.sin(i * D2R) * Math.sin(psi)) / D2R;
 /**
  * Bao hình triều nhìn ngang: nghiêng theo xích vĩ δ (không vượt quá δ), trục dài co lại theo
@@ -37,7 +42,7 @@ export default {
 
     if (st.vet) for (let nua = 0; nua < 2; nua++) {
       g.beginPath();
-      for (let k = 0; k <= 180; k++) { const q = viTri((nua ? 0 : Math.PI) + k / 180 * Math.PI, st.i), x = CX + q.x * RO, y = CY - q.y * RO; if (k) g.lineTo(x, y); else g.moveTo(x, y); }
+      for (let k = 0; k <= 180; k++) { const q = viTri((nua ? Math.PI : 0) + k / 180 * Math.PI, st.i), x = CX + q.x * RO, y = CY - q.y * RO; if (k) g.lineTo(x, y); else g.moveTo(x, y); }
       g.strokeStyle = nua ? 'rgba(84,110,143,0.85)' : 'rgba(84,110,143,0.28)'; g.lineWidth = 3; g.stroke();
     }
     const veTrang = () => {
