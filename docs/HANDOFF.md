@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 | Lần 1 KHÔNG ĐẠT (xem REVIEW_LOG): chiều Mặt Trăng ở cảnh 6 sai; `ve(t)` cảnh 3D không thuần; nhãn đè nhau. **`anim-3d` đang sửa** (đã gửi 3 mục + thêm nhãn "Trái Đất" ở mức tối giản). Sau đó nghiệm thu lần 2 bằng reviewer mới. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ e383e9e (WIP) | ≈ 637 KB | 18/18 (trước đợt sửa) | Lần 1 KHÔNG ĐẠT. `anim-3d` đã sửa mục 1 chiều Mặt Trăng cảnh 6 (80dca69) và mục 2 `ve(t)` cảnh 3D (1b70cd0); mục 3 nhãn đè + nhãn "Trái Đất" tối giản đang làm, phần dở lưu ở WIP e383e9e (worker chạm hạn mức lần 2, hồi 10:50 UTC, đã gửi tiếp). Xong thì nghiệm thu lần 2 bằng reviewer mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
