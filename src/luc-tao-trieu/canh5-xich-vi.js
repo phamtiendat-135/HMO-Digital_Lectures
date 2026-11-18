@@ -1,5 +1,5 @@
 // Cảnh 5: xích vĩ Mặt Trăng làm hai lần nước lớn trong ngày không bằng nhau (bất đẳng nhật triều).
-import { tt, MAU, T_THANG_SAO, T_TRIEU, D2R, TAU, vn, gioPhut, nen, chu, chuTranh, quanh, vatCan, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
+import { tt, MAU, T_THANG_SAO, T_TRIEU, D2R, TAU, vn, gioPhut, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang } from './chung.js';
 
 const LAP = T_THANG_SAO / 2;     // 327,84 s
 const st = { dmax: 25, diChuyen: true, nhip: 2 };
@@ -76,7 +76,8 @@ export default {
     doan(g, CX + R, CY, CX + R * 2.3, CY, MAU.vien, 2, [4, 6]);
     matTrang(g, mx, my, 26);
     g.strokeStyle = MAU.cam; g.lineWidth = 4; g.beginPath(); g.arc(CX, CY, R * 1.66, Math.min(0, -xv * D2R), Math.max(0, -xv * D2R)); g.stroke();
-    chu(g, `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`, CX + R * 1.72, CY + (xv >= 0 ? 44 : -40), { co: 36, dam: 700, mau: MAU.camChu, goc: 'middle', khoa: true });
+    // δ đặt cố định ở góc trên trái (không nằm trên đường đi của Mặt Trăng như trước)
+    chu(g, `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`, 48, tt.muc === 'toi-gian' ? 222 : 238, { co: 36, dam: 700, mau: MAU.camChu, khoa: true });
 
     // bốn điểm quan trắc quay theo Trái Đất; góc giờ 0 = ngay dưới Mặt Trăng (mép phải)
     DIEM.forEach((p) => {
@@ -85,21 +86,20 @@ export default {
       tron(g, x, y, 12, p.mau, '#FFFFFF', 3);
       // nhãn tròn đặt ngang hàng bên phải điểm: các điểm cách nhau ≥ 43 px theo chiều dọc nên nhãn không đè điểm khác
       tron(g, x + 34, y, 19, 'rgba(255,255,255,0.94)', p.mau, 2);
-      vatCan(x, y, 14); vatCan(x + 34, y, 21);
       chu(g, p.ten, x + 34, y + 1, { co: 30, dam: 700, mau: p.chu, can: 'center', goc: 'middle' });
       g.globalAlpha = 1;
     });
 
-    chu(g, 'Trái Đất tự quay', 48, 520, { co: 30, mau: MAU.slate });
-    chu(g, 'từ tây sang đông', 48, 558, { co: 30, mau: MAU.slate });
-    chu(g, 'Ngày trong chu kỳ', 1392, 480, { co: 30, mau: MAU.slate, can: 'right' });
-    chu(g, `${vn(ngayTrongChuKy(h), 1)} / 27,3`, 1392, 524, { co: 40, dam: 700, mau: MAU.navy, can: 'right' });
-    chu(g, 'Ngày triều ' + gioPhut(T_TRIEU), 1392, 570, { co: 30, mau: MAU.slate, can: 'right' });
+    chu(g, 'Trái Đất tự quay', 48, 520, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, 'từ tây sang đông', 48, 558, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, 'Ngày trong chu kỳ', 1392, 480, { co: 30, mau: MAU.slate, can: 'right', vien: null });
+    chu(g, `${vn(ngayTrongChuKy(h), 1)} / 27,3`, 1392, 528, { co: 40, dam: 700, mau: MAU.navy, can: 'right', vien: null });
+    chu(g, 'Ngày triều ' + gioPhut(T_TRIEU), 1392, 574, { co: 30, mau: MAU.slate, can: 'right', vien: null });
 
     // bốn đường cong mực triều trong một ngày triều
     const x0 = 560, x1 = 1392, yT = 656, bH = 80, goc = Math.floor(h / T_TRIEU) * T_TRIEU;
     const xvTai = (hh) => xichVi(hh, st.dmax, st.diChuyen);
-    chu(g, 'Mực triều tại 4 điểm trong một ngày triều', 48, 640, { co: 30, mau: MAU.navy });
+    chu(g, 'Mực triều tại 4 điểm trong một ngày triều', 48, 640, { co: 30, mau: MAU.navy, vien: null });
     g.fillStyle = '#FFFFFF'; g.fillRect(x0, yT, x1 - x0, bH * 4);
     const xp = x0 + (x1 - x0) * (h - goc) / T_TRIEU;
     DIEM.forEach((p, i) => {
@@ -110,17 +110,16 @@ export default {
       for (let k = 0; k <= 260; k++) { const hk = goc + k / 260 * T_TRIEU, x = x0 + (x1 - x0) * k / 260, y = yM - eta(p.vd, TAU * hk / T_TRIEU, xvTai(hk)) * bd; if (k) g.lineTo(x, y); else g.moveTo(x, y); }
       g.strokeStyle = p.mau; g.lineWidth = 4; g.lineJoin = 'round'; g.stroke();
       tron(g, xp, yM - eta(p.vd, lam, xv) * bd, 8, p.mau, '#FFFFFF', 3);
-      chu(g, p.nhan, 48, yT + i * bH + 34, { co: 30, dam: 700, mau: p.chu });
+      chu(g, p.nhan, 48, yT + i * bH + 34, { co: 30, dam: 700, mau: p.chu, vien: null });
       if (tt.muc === 'toi-gian') chu(g, p.ten, x0 - 24, yT + i * bH + bH / 2, { co: 30, dam: 700, mau: p.chu, can: 'right', goc: 'middle', khoa: true });
-      chu(g, cheDo(p.vd, xv), 48, yT + i * bH + 70, { co: 30, dam: 400, mau: MAU.ink });
+      chu(g, `${p.ten}: ${cheDo(p.vd, xv)}`, 48, yT + i * bH + 70, { co: 30, dam: 400, mau: MAU.ink, vien: null });
     });
     doan(g, xp, yT, xp, yT + bH * 4, MAU.navy, 3);
-    chu(g, gioPhut(goc), x0, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, goc: 'top' });
-    chu(g, gioPhut(goc + T_TRIEU), x1, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, can: 'right', goc: 'top' });
+    // trục giờ tính từ đầu ngày triều đang xem (nhãn đứng yên, không nhảy khi sang ngày triều mới)
+    chu(g, '0 h', x0, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, goc: 'top', vien: null });
+    chu(g, gioPhut(T_TRIEU), x1, yT + bH * 4 + 4, { co: 30, mau: MAU.slate, can: 'right', goc: 'top', vien: null });
 
-    vatCan(mx, my, 28);
-    const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen };
-    chuTranh(g, 'Mặt Trăng', xv >= 0 ? quanh(mx, my, 34, '37620154') : quanh(mx, my, 34, '24501376'), oMT);
-    chuTranh(g, 'phía Mặt Trăng', quanh(mx, my, 34, '04621375'), { co: 30, mau: MAU.navy, vien: MAU.nen });
+    // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ tâm Trái Đất (đĩa Mặt Trăng đã tự chỉ "phía Mặt Trăng" của bao hình triều)
+    nhanNgoai(g, 'Mặt Trăng', mx, my, 26, bx, by, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
   },
 };
