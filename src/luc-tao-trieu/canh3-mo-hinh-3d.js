@@ -60,6 +60,22 @@ function taoMuiTen(mau) {
   nhom.add(than, dau); nhom.userData = { than, dau };
   return nhom;
 }
+/**
+ * Đẩy nhãn (tâm p, nửa rộng nw, nửa cao nh) tiếp theo hướng u cho tới khi vượt qua các đĩa vật chính `vat` ([x, y, r]) nằm
+ * phía sau nó (gần gốc hơn theo u). Lượng đẩy của mỗi đĩa giảm liên tục về 0 khi đĩa lệch ngang khỏi hộp chữ hoặc khi đĩa
+ * đã ở phía trước nhãn, nên vị trí là hàm liên tục của hình, không có phương án rời rạc.
+ */
+function dayQua(p, ux, uy, nw, nh, vat) {
+  const l = Math.hypot(ux, uy) || 1; ux /= l; uy /= l;
+  const tua = Math.abs(ux) * nw + Math.abs(uy) * nh, ngang = Math.abs(uy) * nw + Math.abs(ux) * nh;
+  let day = 0;
+  for (const [x, y, r] of vat) {
+    const a = (x - p[0]) * ux + (y - p[1]) * uy, b = Math.abs((x - p[0]) * uy - (y - p[1]) * ux);
+    const wNgang = Math.max(0, Math.min(1, 1 - (b - ngang - r) / 40)), wSau = Math.max(0, Math.min(1, 1 - a / 30));
+    day = Math.max(day, Math.max(0, a + r + 8 + tua) * wNgang * wSau);
+  }
+  return [p[0] + ux * day, p[1] + uy * day];
+}
 function datMuiTen(m, goc, vec, dai) {
   const dau = kep(dai * 0.34, 0.04, 0.2), than = Math.max(dai - dau, 0.002), r = kep(dai * 0.045, 0.008, 0.028);
   m.userData.than.scale.set(r, than, r); m.userData.than.position.y = than / 2;
@@ -245,6 +261,13 @@ export default {
     // để hướng vẫn xác định và đổi liên tục cả khi Mặt Trăng đi ngay sau/trước Trái Đất
     const dx = (pMT[0] - pTD[0]) / rTD, dy = (pMT[1] - pTD[1]) / rTD;
     const oThienThe = { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', khoa: true };
+    // vật chính cần né: đĩa Mặt Trăng và đầu ba mũi tên tại điểm cam (hình chiếu tâm khối nón, bán kính theo cỡ khối)
+    const vatChinh = [[pMT[0], pMT[1], rMT]];
+    for (const k of ['fc', 'fg', 'ft']) {
+      const d = this.mt[k].userData.dau; if (!this.mt[k].visible) continue;
+      const w = d.getWorldPosition(v2), c = chieu(w), rr = banKinh(w.clone(), Math.max(d.scale.x, d.scale.y / 2));
+      vatChinh.push([c[0], c[1], rr]);
+    }
     // Nhãn Mặt Trăng (mức đầy đủ): ngoài đĩa Mặt Trăng theo hướng (dx, dy + 0,8), gần mép sân khấu hoặc bảng số thì bẻ dần
     // xuống (mep, tranh). Khi Mặt Trăng đi trước/sau Trái Đất, nhãn được đẩy tiếp theo cùng hướng cho tới ngoài đĩa Trái Đất,
     // với lượng đẩy giảm liên tục theo khoảng lệch ngang: nhãn không ẩn/hiện và không nằm trên đĩa Trái Đất.
@@ -258,10 +281,19 @@ export default {
       const tamNgang = rTD + 10 + Math.abs(uy) * nw + Math.abs(ux) * nh;                 // bề ngang vùng ảnh hưởng
       const he = Math.max(0, Math.min(1, 1 - (ngang - tamNgang) / 80));
       const day = Math.max(0, can - doc) * he;
-      p = [p[0] + ux * day, p[1] + uy * day];
+      p = dayQua([p[0] + ux * day, p[1] + uy * day], ux, uy, nw, nh, vatChinh.slice(1));   // rồi qua các đầu mũi tên
       chu(g, 'Mặt Trăng', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
     }
-    // Trái Đất (mức đầy đủ): phía đối diện Mặt Trăng, nghiêng lên và sang trái (tránh bảng số)
-    if (!toiGian && trongKhung(pTD)) nhanNgoai(g, 'Trái Đất', pTD[0], pTD[1], rTD, -dx - 0.5, -dy - 0.8, 10, oThienThe);
+    // Trái Đất (mức đầy đủ): phía đối diện điểm cam (các mũi tên tại điểm cam dài tối đa một bán kính, nên không vươn tới
+    // đó), lệch thêm khỏi hướng Mặt Trăng, cộng một vector lệch độ dài 1,2 chỉ xuống-trái (xa bảng số); khi Mặt Trăng chiếu gần
+    // đĩa Trái Đất (nhãn của nó khi đó bị đẩy xuống dưới đĩa) vector lệch quay dần qua trái lên trên-trái; mọi thành phần đổi liên tục theo hình chiếu.
+    if (!toiGian && trongKhung(pTD)) {
+      const pP = chieu(diemCam.position), cx = (pP[0] - pTD[0]) / rTD, cy = (pP[1] - pTD[1]) / rTD;
+      const dm = Math.max(1, Math.hypot(dx, dy));
+      const gan = Math.max(0, Math.min(1, (1.5 - Math.hypot(dx, dy)) / 1.5)), lx = -Math.sqrt(1 - (0.9 * (1 - 2 * gan)) ** 2) * 1.2, ly = 0.9 * (1 - 2 * gan) * 1.2;
+      const ux = -cx - 0.5 * dx / dm + lx, uy = -cy - 0.5 * dy / dm + ly, k = kichThuoc(g, 'Trái Đất', oThienThe);
+      const p = dayQua(viTriNgoai(g, 'Trái Đất', pTD[0], pTD[1], rTD, ux, uy, 10, oThienThe), ux, uy, k[0] / 2 + 5, k[1] * 0.6 + 5, vatChinh.slice(1));
+      chu(g, 'Trái Đất', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
+    }
   },
 };
