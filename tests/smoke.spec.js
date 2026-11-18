@@ -88,6 +88,23 @@ for (const a of danhSach()) {
       }
     });
 
+    test('không có WebGL2: chuyển sang bản 2D, báo 6 s rồi ẩn, đi được mọi cảnh', async ({ page }) => {
+      test.skip(a.loai !== '3D', 'chỉ áp dụng cho animation 3D');
+      const gac = await canhGac(page);
+      await page.addInitScript(() => {
+        const goc = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function (loai, ...x) { return loai === 'webgl2' ? null : goc.call(this, loai, ...x); };
+      });
+      await page.goto(url(a.tep));
+      await page.waitForFunction(() => window.HMO && window.HMO.trangThai().idCanh);
+      await expect(page.locator('#hmo-thong-bao')).toContainText('bản 2D');
+      const soCanh = await page.evaluate(() => { let n = 0; while (true) { window.HMO.denCanh(n + 1); if (window.HMO.trangThai().iCanh !== n + 1) break; n++; } return n + 1; });
+      expect(soCanh).toBeGreaterThan(0);
+      await page.waitForTimeout(300);
+      expect(gac.loi, 'lỗi console ở bản 2D').toEqual([]);
+      await expect(page.locator('#hmo-thong-bao')).toBeHidden({ timeout: 7500 });
+    });
+
     test('không có từ cấm, không còn móc gỡ lỗi window.__; dung lượng trong ngưỡng', async ({ page }) => {
       const ma = fs.readFileSync(a.tep, 'utf8');
       await canhGac(page);
