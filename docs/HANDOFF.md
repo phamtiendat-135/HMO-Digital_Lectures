@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 33fbd49 | 641.207 B | 18/18; 90 passed / 9 skipped toàn bộ | Lần 1 KHÔNG ĐẠT. `anim-3d` sửa xong 3 mục (80dca69, 1b70cd0, e383e9e, 33fbd49): chiều Mặt Trăng cảnh 6; `ve(t)` cảnh 3D; bộ xếp nhãn tránh đè (0 chỗ đè, trước 58). **Đang nghiệm thu lần 2**; reviewer đo thêm nhãn nhảy chỗ khi phát (bộ xếp nhãn chọn chỗ theo từng khung): tối đa 1 lần / 2 s, không lật A→B→A trong 1 s. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 4c582c5 | 641.207 B | 18/18 | Lần 1 và 2 KHÔNG ĐẠT. Mục chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2. Còn: nhãn nhảy chỗ (bộ dò `chuTranh` theo từng khung) và vài chỗ chồng loại cấm. Trưởng nhóm chốt **quy tắc đặt nhãn mới ở STANDARDS mục 4** (ổn định, cấm/được chồng, halo) và giao `anim-3d` viết lại cách đặt nhãn. Xong thì nghiệm thu lần 3 bằng reviewer mới, dùng bộ quét `review-luc-2/r2-quet.cjs` làm tham khảo. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -69,6 +69,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 - Thông báo "đang hiển thị bản 2D" tự ẩn sau 6 s; có test tự động chạy bản dự phòng 2D cho mọi animation 3D (5c60c96).
 - STANDARDS mục 3: "40–60 từ" = **tối đa 67 tiếng** theo `split(/\s+/)` (db254d1).
 - STANDARDS mục 4: cảnh có `dieuKhien` thì từ y = 900 trở xuống chỉ đặt nội dung hiện suốt cảnh.
+- STANDARDS mục 4: **quy tắc đặt nhãn trên hình động** (1519f8d): nhãn gắn ổn định theo hình học, không dò chỗ theo khung; cấm chồng chữ và vật chính; được chồng nét phụ nếu có viền sáng ≥ 4 px.
 - Spec kenh-sofar câu 2: 87 bar, không phải 86 (759aa9d).
 
 ## 6. Việc tiếp theo, theo thứ tự (chặng 3 → G2)
