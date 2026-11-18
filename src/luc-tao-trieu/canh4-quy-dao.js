@@ -55,7 +55,7 @@ export default {
       muiTen(g, sx, sy, sx + fx * K, sy - fy * K, MAU.ft, 4, 14);
       tron(g, sx, sy, 4, MAU.navy);
     }
-    chu(g, 'Trái Đất', CX, CY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
+    chu(g, 'Trái Đất', CX, CY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
 
     const px = X(Math.cos(be) * RE), py = Y(Math.sin(be) * RE);
     const [pfx, pfy] = ftPhang(be, al);

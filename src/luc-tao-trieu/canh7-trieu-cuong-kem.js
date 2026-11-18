@@ -1,5 +1,5 @@
 // Cảnh 7: triều cường và triều kém trong một tuần trăng. Nhìn từ cực Bắc, Mặt Trời ở bên trái.
-import { MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
+import { tt, MAU, TUAN_TRANG, TI_SO_MT, TAU, vn, nen, chu, tieuDe, chanTrang, tron, doan, muiTen } from './chung.js';
 
 const LAP = 16;
 const st = { bao: true, thanh: true, duong: true };
@@ -61,7 +61,7 @@ export default {
     g.fillStyle = 'rgba(240,120,0,0.13)'; g.fill(); g.strokeStyle = MAU.cam; g.lineWidth = 4; g.stroke();
 
     tron(g, EX, EY, R, MAU.ocean, MAU.sky, 3);
-    chu(g, 'Trái Đất', EX, EY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
+    chu(g, 'Trái Đất', EX, EY, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
     // mũi tên chỉ chiều tự quay của Trái Đất (ngược chiều kim đồng hồ); vẽ tĩnh vì 29,5 vòng mỗi chu kỳ là quá nhanh để nhìn
     const q = 0.6;
     g.strokeStyle = 'rgba(255,255,255,0.9)'; g.lineWidth = 3; g.beginPath(); g.arc(EX, EY, R * 0.72, -q - 1.5, -q); g.stroke();
@@ -78,7 +78,7 @@ export default {
     const loai = bd / (1 + TI_SO_MT) > 0.86 ? 'Triều cường' : bd / (1 + TI_SO_MT) < 0.64 ? 'Triều kém' : 'Trung gian';
     chu(g, `Ngày ${vn(d, 1)} · ${tenPha(d)}`, 1392, 220, { co: 30, mau: MAU.slate, can: 'right' });
     chu(g, loai, 1392, 268, { co: 40, dam: 700, mau: loai === 'Triều cường' ? MAU.camChu : loai === 'Triều kém' ? MAU.ocean : MAU.ftChu, can: 'right', khoa: true });
-    if (st.thanh) {
+    if (st.thanh && tt.muc === 'day-du') {
       const xb = 1130, wb = 170, hang = [['Mặt Trăng', 1, MAU.ocean, MAU.ocean], ['Mặt Trời', TI_SO_MT, MAU.ft, MAU.ftChu], ['Tổng', bd, MAU.cam, MAU.camChu]];
       chu(g, 'Biên độ triều tương đối', 1392, 490, { co: 30, mau: MAU.navy, can: 'right' });
       hang.forEach(([ten, v, mau, mauChu], i) => {

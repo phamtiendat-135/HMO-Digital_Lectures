@@ -48,8 +48,8 @@ export default {
     g.restore();
 
     doan(g, CX, CY - R * 1.45, CX, CY + R * 1.45, MAU.slate, 2, [9, 7]);
-    chu(g, 'B', CX, CY - R * 1.48, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom' });
-    chu(g, 'N', CX, CY + R * 1.50, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
+    chu(g, 'Bắc', CX, CY - R * 1.48, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom' });
+    chu(g, 'Nam', CX, CY + R * 1.50, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
 
     tron(g, CX, CY, R, MAU.ocean, MAU.skyNhat, 3);
     [-60, -30, 0, 30, 60].forEach((vd) => { const y = CY - R * Math.sin(vd * D2R), hw = R * Math.cos(vd * D2R); doan(g, CX - hw, y, CX + hw, y, 'rgba(255,255,255,0.45)', vd === 0 ? 3 : 1.5); });

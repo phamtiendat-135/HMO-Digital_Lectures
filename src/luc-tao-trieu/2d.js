@@ -74,7 +74,7 @@ export default {
 
     veBang(g, sd);
     tieuDe(g, 'Ba lực tại một điểm (bản 2D)', 'Kéo điểm cam quanh Trái Đất, hoặc chạm lên Trái Đất để đặt điểm.');
-    if (this.tuBao) chu(g, 'Thiết bị không hỗ trợ đồ hoạ 3D – đang hiển thị bản 2D.', 48, 1002, { co: 24, dam: 600, mau: MAU.camChu });
+    if (this.tuBao) chu(g, 'Thiết bị không hỗ trợ đồ hoạ 3D – đang hiển thị bản 2D.', 48, 996, { co: 30, dam: 600, mau: MAU.camChu });
     chanTrang(g, GHI_CHU_3.replace(' Lục địa vẽ giản lược.', ' Lát cắt nhìn từ cực Bắc.'));
   },
 };

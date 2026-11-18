@@ -37,7 +37,7 @@ export default {
     chu(g, 'Mặt Trăng', mx, my + RMT + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top', khoa: true, vien: MAU.nen });
 
     tron(g, ex, ey, R, 'rgba(27,78,143,0.88)', MAU.sky, 3);
-    chu(g, 'Trái Đất', ex - R * 0.1, ey + R * 0.66, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
+    chu(g, 'Trái Đất', ex - R * 0.1, ey + R * 0.66, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
 
     tron(g, CX, CY, 9, MAU.navy, '#FFFFFF', 2.5);
     chu(g, 'CM', CX - ux * 40 * k, CY - uy * 36 * k, { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true });

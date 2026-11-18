@@ -43,7 +43,9 @@ export default {
     const veTrang = () => {
       matTrang(g, mx, my, rm);
       if (sau) tron(g, mx, my, rm, 'rgba(247,250,253,0.45)');
-      chu(g, 'Mặt Trăng', mx, my + rm + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top', khoa: true, vien: MAU.nen });
+      // nhãn đặt phía ngoài so với Trái Đất: trên Mặt Trăng khi nó ở bắc xích đạo, dưới khi ở nam
+      const tren = m.y > 0;
+      chu(g, 'Mặt Trăng', mx, tren ? my - rm - 8 : my + rm + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: tren ? 'bottom' : 'top', khoa: true, vien: MAU.nen });
     };
     if (sau) veTrang();
 
@@ -55,8 +57,8 @@ export default {
       g.restore(); g.setLineDash([]);
     }
     doan(g, CX, CY - R * 1.7, CX, CY + R * 1.7, MAU.slate, 2, [9, 7]);
-    chu(g, 'B', CX, CY - R * 1.74, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom' });
-    chu(g, 'N', CX, CY + R * 1.76, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
+    chu(g, 'Bắc', CX, CY - R * 1.74, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom' });
+    chu(g, 'Nam', CX, CY + R * 1.76, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top' });
     tron(g, CX, CY, R, MAU.ocean, MAU.skyNhat, 3);
     doan(g, CX - R, CY, CX + R, CY, 'rgba(255,255,255,0.55)', 3);
     // mũi tên tự quay tây → đông: chuyển động trang trí (Trái Đất quay 27 vòng trong một chu kỳ, không vẽ đúng nhịp)

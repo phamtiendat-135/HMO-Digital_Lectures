@@ -3,7 +3,7 @@ import { MAU, TI_SO_CM, TAU, nghin, CM_KM, nen, chu, tieuDe, chanTrang, tron, do
 
 const LAP = 7, N = 8;
 const st = { ma: true, duong: true, trang: true };
-const CX = 720, CY = 600, R = 150, RC = R * TI_SO_CM, RM = R * 2.3, RMT = 24;
+const CX = 720, CY = 575, R = 150, RC = R * TI_SO_CM, RM = R * 2.3, RMT = 24;
 
 // Ba điểm mẫu: độ lệch so với tâm Trái Đất, tính bằng bán kính Trái Đất (y hướng lên).
 const DIEM = [
@@ -60,7 +60,7 @@ export default {
     // Trái Đất hiện thời: chỉ tịnh tiến, đường xích đạo giữ nguyên hướng.
     tron(g, ex, ey, R, 'rgba(27,78,143,0.88)', MAU.navy, 3);
     doan(g, ex - R, ey, ex + R, ey, 'rgba(255,255,255,0.4)', 2);
-    chu(g, 'Trái Đất', ex, ey + R * 0.52, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
+    chu(g, 'Trái Đất', ex, ey + R * 0.52, { co: 30, dam: 700, mau: '#FFFFFF', can: 'center', goc: 'middle' });
     DIEM.forEach((m) => {
       const x = ex + m.lech[0] * R, y = ey - m.lech[1] * R;
       m.ve(g, x, y, R * 0.085);
