@@ -36,6 +36,7 @@ HMO.dangKy({
 
 - **`t`**: với cảnh có giờ, `t` chạy từ `batDau` đến `ketThuc`; với cảnh tự do, `t` chạy vòng trong `[0, lap)`.
 - **`ve(t, idCanh)` là hàm thuần**: gọi hai lần với cùng `t`, cùng giá trị điều khiển và cùng mức nhãn phải ra cùng một hình, bất kể trước đó đã vẽ gì. Mô phỏng tích luỹ (hạt, tia, nghiệm số) phải tính trước hoặc viết dạng giải tích. Đây là điều kiện để tua lui, đổi tốc độ và test "khung hình đứng yên" hoạt động.
+- **Mở trang luôn ở trạng thái dừng, t = 0**, ở mọi chế độ (Tự học lẫn Trình chiếu). Người xem bấm phát khi đã sẵn sàng; bộ khung lo việc này, animation không tự phát.
 - **Animation không được** tự gọi `requestAnimationFrame`, `setInterval`, không bắt phím, không vẽ nút phát/dừng, thanh tua, nút toàn màn hình, màn hình chờ "Bắt đầu". Bộ khung làm những việc đó.
 - **`moiTruong`** = `{ rong: 1440, cao: 1080, dpr, webgl2, giamChuyenDong }`. Dùng `dpr` này cho độ phân giải canvas (đã giới hạn 1,5 trên laptop, 1,0 trên điện thoại).
 - **Trạng thái ngoài `t`** (góc camera 3D, điểm đang kéo): giữ trong animation, gọi `HMO.yeuCauVe()` sau khi đổi. Cảnh cần tự xử lý chạm trên sân khấu thì đặt `giuCham: true`; khi đó chạm sân khấu không còn là phát/dừng và vuốt không đổi cảnh.

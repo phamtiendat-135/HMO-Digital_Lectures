@@ -7,6 +7,19 @@ const MAU = path.join(GOC, 'dist-test/_mau/index.html');
 const mo = async (page, truyVan = '') => { await page.goto(url(MAU, truyVan)); await page.waitForFunction(() => window.HMO && window.HMO.trangThai().idCanh); };
 const denCuoi = (page) => page.evaluate(() => window.HMO.denCanh(2));
 
+for (const cheDo of ['tu-hoc', 'trinh-chieu']) {
+  test(`mở trang ở trạng thái dừng (${cheDo})`, async ({ page }) => {
+    await canhGac(page); await mo(page, '?che-do=' + cheDo);
+    await page.waitForTimeout(300);
+    expect((await trangThai(page)).dangPhat).toBe(false);
+    const a1 = await page.locator('#hmo-san-khau').screenshot();
+    await page.waitForTimeout(800);
+    const a2 = await page.locator('#hmo-san-khau').screenshot();
+    expect(a1.equals(a2), 'chưa bấm phát mà khung hình đã đổi').toBe(true);
+    expect((await trangThai(page)).t).toBe(0);
+  });
+}
+
 test('tự dừng cuối cảnh có giờ, phát tiếp thì sang cảnh sau', async ({ page }) => {
   await canhGac(page); await mo(page, '?che-do=tu-hoc');
   await page.evaluate(() => { window.HMO.phat(false); window.HMO.tua(3.7); window.HMO.phat(true); });
