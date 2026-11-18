@@ -285,13 +285,12 @@ export default {
       chu(g, 'Mặt Trăng', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
     }
     // Trái Đất (mức đầy đủ): phía đối diện điểm cam (các mũi tên tại điểm cam dài tối đa một bán kính, nên không vươn tới
-    // đó), lệch thêm khỏi hướng Mặt Trăng, cộng một vector lệch độ dài 1,2 chỉ xuống-trái (xa bảng số); khi Mặt Trăng chiếu gần
-    // đĩa Trái Đất (nhãn của nó khi đó bị đẩy xuống dưới đĩa) vector lệch quay dần qua trái lên trên-trái; mọi thành phần đổi liên tục theo hình chiếu.
+    // đó), lệch thêm khỏi hướng Mặt Trăng và nghiêng lên-trái; rồi đẩy tiếp qua các đầu mũi tên. Mọi thành phần đổi liên tục
+    // theo hình chiếu.
     if (!toiGian && trongKhung(pTD)) {
       const pP = chieu(diemCam.position), cx = (pP[0] - pTD[0]) / rTD, cy = (pP[1] - pTD[1]) / rTD;
       const dm = Math.max(1, Math.hypot(dx, dy));
-      const gan = Math.max(0, Math.min(1, (1.5 - Math.hypot(dx, dy)) / 1.5)), lx = -Math.sqrt(1 - (0.9 * (1 - 2 * gan)) ** 2) * 1.2, ly = 0.9 * (1 - 2 * gan) * 1.2;
-      const ux = -cx - 0.5 * dx / dm + lx, uy = -cy - 0.5 * dy / dm + ly, k = kichThuoc(g, 'Trái Đất', oThienThe);
+      const ux = -cx - 0.5 * dx / dm - 0.4, uy = -cy - 0.5 * dy / dm - 0.6, k = kichThuoc(g, 'Trái Đất', oThienThe);
       const p = dayQua(viTriNgoai(g, 'Trái Đất', pTD[0], pTD[1], rTD, ux, uy, 10, oThienThe), ux, uy, k[0] / 2 + 5, k[1] * 0.6 + 5, vatChinh.slice(1));
       chu(g, 'Trái Đất', p[0], p[1], { ...oThienThe, can: 'center', goc: 'middle' });
     }
