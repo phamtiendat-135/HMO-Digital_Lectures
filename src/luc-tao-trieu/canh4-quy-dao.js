@@ -1,5 +1,5 @@
 // Cảnh 4: một ngày có hai lần nước lớn. Nhìn từ cực Bắc: Mặt Trăng và điểm P đều quay ngược chiều kim đồng hồ.
-import { MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, gioPhut, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { tt, MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, gioPhut, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
 
 export const GIO_MOI_GIAY = 2;                 // 1 giây hoạt hình = 2 giờ
 const LAP = T_THANG_SAO / GIO_MOI_GIAY;        // một tháng sao
@@ -60,6 +60,7 @@ export default {
     const [pfx, pfy] = ftPhang(be, al);
     muiTen(g, px, py, px + pfx * K, py - pfy * K, MAU.camChu, 8, 18);
     tron(g, px, py, 12, MAU.cam, '#FFFFFF', 3);
+    if (tt.muc === 'toi-gian') doan(g, CX, 98, CX, CY - RE - 8, MAU.slate, 2, [6, 6]);   // đường dẫn của nhãn Trái Đất (mức tối giản)
     matTrang(g, mx, my, RMT);
 
     // số đọc hai bên hình
@@ -102,7 +103,13 @@ export default {
     nhanNgoai(g, 'P', px, py, 12, -pfx, pfy, 6, oP);
     // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ tâm Trái Đất
     nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, mx - CX, my - CY, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
-    // Trái Đất (mức đầy đủ): giữa đĩa, lệch 30 px về phía xa P để tránh đầu mũi tên Ft khi Ft hướng vào tâm
-    chu(g, 'Trái Đất', CX - Math.cos(be) * 30, CY + Math.sin(be) * 30, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle' });
+    if (tt.muc === 'toi-gian') {
+      // Mức tối giản (S-17): chữ 60 px rộng hơn đĩa và nhãn P có lúc nằm trong đĩa, nên tên Trái Đất đứng yên ở dải trên
+      // cùng (mức này không có tiêu đề), trên tầm với của Mặt Trăng và nhãn của nó; đường dẫn tới mép đĩa vẽ dưới Mặt Trăng.
+      chu(g, 'Trái Đất', CX, 56, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'middle', khoa: true });
+    } else {
+      // Mức đầy đủ: giữa đĩa, lệch 30 px về phía xa P để tránh đầu mũi tên Ft khi Ft hướng vào tâm
+      chu(g, 'Trái Đất', CX - Math.cos(be) * 30, CY + Math.sin(be) * 30, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle' });
+    }
   },
 };

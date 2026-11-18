@@ -80,5 +80,8 @@ export default {
     const oDiem = { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true };
     DIEM.forEach((p, i) => nhanNgoai(g, p.ten, vt[i][0], vt[i][1], 11, -ux + 1.4 * nx, -uy + 1.4 * ny, 5, oDiem));
     nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, -ux, -uy, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
+    // Mức tối giản (S-17): tên Trái Đất ngay trên đĩa, độ lệch cố định so với tâm (trên mọi điểm, mũi tên và nhãn của B).
+    // Mức đầy đủ giữ như cũ: chân trang ghi C là tâm Trái Đất.
+    if (tt.muc === 'toi-gian') chu(g, 'Trái Đất', ex, ey - R - 50, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'middle', khoa: true });
   },
 };

@@ -83,8 +83,15 @@ export default {
     } else chu(g, 'CM', CX, CY + 18, { ...oDiem, can: 'center', goc: 'top' });
     // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ CM, cách mép 8 px
     if (st.trang) nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, mx - CX, my - CY, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
-    // Trái Đất (chỉ mức đầy đủ): trong đĩa, ở nửa không có CM; đổi phía với độ trễ 10° quanh lúc tâm Trái Đất ngang CM
-    const tren = trongCung(a, 10, 190);   // Trái Đất ở phía trên CM: CM nằm ở nửa dưới đĩa, nhãn đặt ở nửa trên
-    chu(g, 'Trái Đất', ex, tren ? ey - R * 0.4 : ey + R * 0.5, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle' });
+    if (toiGian) {
+      // Mức tối giản (S-17): độ lệch cố định so với tâm Trái Đất, phía trên đĩa và trên nhãn B (chữ 60 px rộng gần bằng đĩa,
+      // trong đĩa không đủ chỗ), có đường dẫn tới mép đĩa. Mặt Trăng luôn ở phía đối diện qua CM nên không tới gần nhãn.
+      doan(g, ex, ey - 232, ex, ey - R - 6, MAU.slate, 2, [6, 6]);
+      chu(g, 'Trái Đất', ex, ey - 270, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'middle', khoa: true });
+    } else {
+      // Mức đầy đủ: trong đĩa, ở nửa không có CM; đổi phía với độ trễ 10° quanh lúc tâm Trái Đất ngang CM
+      const tren = trongCung(a, 10, 190);   // Trái Đất ở phía trên CM: CM nằm ở nửa dưới đĩa, nhãn đặt ở nửa trên
+      chu(g, 'Trái Đất', ex, tren ? ey - R * 0.4 : ey + R * 0.5, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle' });
+    }
   },
 };
