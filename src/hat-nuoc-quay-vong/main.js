@@ -190,7 +190,8 @@ function veNuoc(c, sc, st) {
   const s = sc.s, ys = sc.ys, tp = st.tp, ly = st.ly, Ah0 = sc.Ah(0), Av0 = sc.Av(0);
   const nhan = mucNhan === 'day-du';
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
-  c.globalAlpha = 1; c.setLineDash([]);
+  // Đặt lại mọi trạng thái nét: canvas phụ mới tạo (khung hoà đầu tiên) phải vẽ y hệt các lần sau
+  c.globalAlpha = 1; c.setLineDash([]); c.lineDashOffset = 0; c.lineCap = 'round'; c.lineJoin = 'round';
   c.fillStyle = '#FFFFFF'; c.fillRect(0, 0, W, HS);
 
   // Mặt sóng theo đường của các hạt mặt (z0 = 0)
