@@ -59,14 +59,21 @@ function rrect(c, x, y, w, h, r) {
   c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h);
   c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
 }
-// Nhãn nền Navy chữ trắng, 30 px
-function pill(c, text, x, y, alpha, align) {
-  if (alpha < 0.02) return;
-  c.save(); c.globalAlpha = alpha; c.font = font(600, 30);
+// Nhãn nền Navy chữ trắng, 30 px. khungPill: hình chữ nhật nhãn chiếm (để tránh chồng nhau).
+function khungPill(c, text, x, y, align) {
+  c.font = font(600, 30);
   const w = c.measureText(text).width + 20, x0 = align === 'right' ? x - w : x;
-  rrect(c, x0, y - 22, w, 44, 8); c.fillStyle = 'rgba(10,46,92,0.9)'; c.fill();
-  c.fillStyle = '#FFFFFF'; c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillText(text, x0 + 10, y + 1); c.restore();
+  return { x0, y0: y - 23, x1: x0 + w, y1: y + 23 };   // cao 46: dấu của "Ở", "Ặ" vẫn nằm trong nền
 }
+function pill(c, text, x, y, alpha, align) {
+  if (alpha < 0.02) return null;
+  const k = khungPill(c, text, x, y, align);
+  c.save(); c.globalAlpha = alpha; c.font = font(600, 30);
+  rrect(c, k.x0, k.y0, k.x1 - k.x0, k.y1 - k.y0, 8); c.fillStyle = 'rgba(10,46,92,0.9)'; c.fill();
+  c.fillStyle = '#FFFFFF'; c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillText(text, k.x0 + 10, y + 1); c.restore();
+  return k;
+}
+const giao = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
 function arrow(c, x1, y1, x2, y2, head, color, width) {
   const ang = Math.atan2(y2 - y1, x2 - x1);
   c.strokeStyle = color; c.fillStyle = color; c.lineWidth = width; c.lineCap = 'round';
@@ -198,18 +205,10 @@ function veNuoc(c, sc, st) {
   const g = c.createLinearGradient(0, ys - Av0 * s, 0, sc.bedY);
   g.addColorStop(0, MAU.sky); g.addColorStop(1, MAU.ocean); c.fillStyle = g; c.fill();
 
-  // Đáy cát, nhãn đáy, thước tỉ lệ
+  // Đáy cát (nhãn đáy và thước tỉ lệ vẽ trong veNhanNuoc)
   const dayCat = 965;
   c.fillStyle = MAU.cat; c.fillRect(0, sc.bedY, W, dayCat - sc.bedY);
   c.strokeStyle = MAU.vienCat; c.lineWidth = 2.4; c.beginPath(); c.moveTo(0, sc.bedY); c.lineTo(W, sc.bedY); c.stroke();
-  if (nhan) {
-    c.font = font(600, 30); c.fillStyle = MAU.chuCat; c.textBaseline = 'alphabetic'; c.textAlign = 'left';
-    c.fillText(sc.deep ? 'Đáy biển (sâu hơn L/2)' : 'Đáy biển · h = ' + fmt(sc.h, 1) + ' m', 20, sc.bedY + 60);
-    const bw = sc.bar * s, x2 = W - 24, x1 = x2 - bw, yb = sc.bedY + 52;
-    c.strokeStyle = MAU.chuCat; c.lineWidth = 3; c.beginPath();
-    c.moveTo(x1, yb - 8); c.lineTo(x1, yb); c.lineTo(x2, yb); c.lineTo(x2, yb - 8); c.stroke();
-    c.textAlign = 'right'; c.fillText(sc.bar + ' m', x1 - 12, yb + 10); c.textAlign = 'left';
-  }
 
   // Độ sâu tác động của sóng L/2
   let yL2 = 0;
@@ -257,23 +256,6 @@ function veNuoc(c, sc, st) {
     const p = pos(sc, x0r, 0, tp);
     dot(c, p.x * s, ys - p.z * s, 10, MAU.red, '#FFFFFF', 3, ly.red);
   }
-  // Nhãn L/2 (vẽ sau lưới để không bị hạt che)
-  if (yL2 && nhan && ly.wave > 0.02) {
-    c.save(); c.globalAlpha = ly.wave; c.font = font(700, 30); c.fillStyle = '#FFFFFF'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
-    c.fillText('Độ sâu tác động của sóng (L/2): chuyển động chỉ còn 4%', W - 24, yL2 - 26); c.restore();
-  }
-  // Nhãn độ sâu (lề trái) và nhãn % / elip cạnh cột hạt đỏ
-  if (nhan && ly.depth > 0.02) {
-    for (let r = 0; r < sc.rows.length; r++) {
-      const z0 = sc.rows[r], Y = ys - z0 * s;
-      pill(c, sc.rowNames[r], 14, Y, ly.depth);
-      const Xl = (x0r + sc.Ah(z0)) * s + 16;
-      if (sc.deep) pill(c, Math.round(100 * Math.exp(sc.k * z0)) + '%', Xl, Y, ly.depth);
-      // Nhãn elip đặt bên trái quỹ đạo hạt đỏ: đường đi của phao (bên phải) không bao giờ tới đây
-      else if (r === 0) pill(c, 'elip ' + fmt(2 * sc.Ah(0) / sc.E, 1) + ' × ' + fmt(2 * sc.Av(0) / sc.E, 1) + ' m', (x0r - sc.Ah(0)) * s - 16, Y - 2, ly.depth, 'right');
-      else if (r === sc.rows.length - 1) pill(c, 'sát đáy: chỉ tới – lui ' + fmt(2 * sc.Ah(z0) / sc.E, 1) + ' m', Xl, Y - 30, ly.depth);
-    }
-  }
   // Vectơ vận tốc: ở đỉnh hạt tiến cùng chiều sóng, ở chân lùi lại
   if (st.vanToc && ly.grid > 0.02) {
     const sv = (sc.deep ? 36 : 24) / (sc.a * sc.E * OMEGA);
@@ -286,22 +268,77 @@ function veNuoc(c, sc, st) {
       arrow(c, X, Y, X + dx, Y + dy, 8, '#FFFFFF', 2.4);
     }
     c.globalAlpha = 1;
-    if (nhan) {
-      const base = OMEGA * tp, Lp = sc.L * s;
-      const n = Math.ceil(((360 / s - sc.xref) * sc.k - base) / PI2);
-      const xc = (sc.xref + (base + PI2 * n) / sc.k) * s;
-      if (xc < 1200) {
-        pill(c, 'Ở đỉnh: hạt tiến →', xc - 16, ys - Av0 * s + 60, ly.grid, 'right');
-        const xt = xc + Lp / 2 < 1150 ? xc + Lp / 2 : xc - Lp / 2;
-        if (xt > 150) pill(c, '← Ở chân: hạt lùi', xt + 16, ys + Av0 * s + 44, ly.grid);
-      }
-    }
   }
   // Phao: nhấp nhô theo quỹ đạo của hạt mặt, không trôi
   { const p = pos(sc, sc.buoyX0, 0, tp);
     const dX = 1 - Ah0 * sc.k * Math.cos(p.th), dZ = -Av0 * sc.k * Math.sin(p.th);
     buoy(c, p.x * s, ys - p.z * s, Math.atan2(-dZ, dX)); }
-  if (nhan) pill(c, 'mốc ban đầu', xNhanMoc, BT.yMoc, 1);
+  if (nhan) veNhanNuoc(c, sc, st);
+}
+
+/* ===================== NHÃN TRÊN VÙNG NƯỚC ===================== */
+// Vẽ sau mọi hình (hạt, vệt, vectơ, phao) nên không hình nào đè lên chữ. Nhãn cố định không chồng nhau theo bố cục;
+// nhãn chạy theo đỉnh / chân sóng thử lần lượt vài vị trí và chỉ hiện ở vị trí đầu tiên không chạm nhãn nào khác, không chạm phao.
+function veNhanNuoc(c, sc, st) {
+  const s = sc.s, ys = sc.ys, tp = st.tp, ly = st.ly, Ah0 = sc.Ah(0), Av0 = sc.Av(0), x0r = sc.cols[sc.redCol];
+  c.setTransform(dpr, 0, 0, dpr, 0, 0); c.globalAlpha = 1; c.setLineDash([]);
+  const chiem = [];   // hình chữ nhật đã có chữ
+  // Đáy, thước tỉ lệ
+  c.font = font(600, 30); c.fillStyle = MAU.chuCat; c.textBaseline = 'alphabetic'; c.textAlign = 'left';
+  const chuDay = sc.deep ? 'Đáy biển (sâu hơn L/2)' : 'Đáy biển · h = ' + fmt(sc.h, 1) + ' m';
+  c.fillText(chuDay, 20, sc.bedY + 60);
+  chiem.push({ x0: 16, y0: sc.bedY + 30, x1: 24 + c.measureText(chuDay).width, y1: sc.bedY + 70 });
+  { const bw = sc.bar * s, x2 = W - 24, x1 = x2 - bw, yb = sc.bedY + 52;
+    c.strokeStyle = MAU.chuCat; c.lineWidth = 3; c.beginPath();
+    c.moveTo(x1, yb - 8); c.lineTo(x1, yb); c.lineTo(x2, yb); c.lineTo(x2, yb - 8); c.stroke();
+    c.textAlign = 'right'; c.fillText(sc.bar + ' m', x1 - 12, yb + 10); c.textAlign = 'left';
+    chiem.push({ x0: x1 - 100, y0: yb - 30, x1: W, y1: yb + 20 }); }
+  // Độ sâu tác động của sóng L/2
+  if (sc.deep && ly.wave > 0.02) {
+    const yL2 = ys + (L_SAU / 2) * s, chu = 'Độ sâu tác động của sóng (L/2): chuyển động chỉ còn 4%';
+    c.save(); c.globalAlpha = ly.wave; c.font = font(700, 30); c.fillStyle = '#FFFFFF'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
+    c.fillText(chu, W - 24, yL2 - 26);
+    chiem.push({ x0: W - 28 - c.measureText(chu).width, y0: yL2 - 56, x1: W, y1: yL2 - 16 }); c.restore();
+  }
+  // Nhãn độ sâu (lề trái) và nhãn % / elip / sát đáy cạnh cột hạt đỏ
+  if (ly.depth > 0.02) {
+    for (let r = 0; r < sc.rows.length; r++) {
+      const z0 = sc.rows[r], Y = ys - z0 * s;
+      chiem.push(pill(c, sc.rowNames[r], 14, Y, ly.depth));
+      const Xl = (x0r + sc.Ah(z0)) * s + 16;
+      if (sc.deep) chiem.push(pill(c, Math.round(100 * Math.exp(sc.k * z0)) + '%', Xl, Y, ly.depth));
+      // Nhãn elip đặt bên trái quỹ đạo hạt đỏ: đường đi của phao (bên phải) không bao giờ tới đây
+      else if (r === 0) chiem.push(pill(c, 'elip ' + fmt(2 * sc.Ah(0) / sc.E, 1) + ' × ' + fmt(2 * sc.Av(0) / sc.E, 1) + ' m', (x0r - sc.Ah(0)) * s - 16, Y - 2, ly.depth, 'right'));
+      else if (r === sc.rows.length - 1) chiem.push(pill(c, 'sát đáy: chỉ tới – lui ' + fmt(2 * sc.Ah(z0) / sc.E, 1) + ' m', Xl, Y - 30, ly.depth));
+    }
+  }
+  // Mốc ban đầu (đường dẫn đã vẽ trong phần hình)
+  chiem.push(pill(c, 'mốc ban đầu', (sc.buoyX0 + Ah0) * s + 34, BT.yMoc, 1));
+  // Vùng chữ chung của veChu: tiêu đề + phụ đề, bảng bộ đếm, hàng mũi tên năng lượng
+  chiem.push({ x0: 0, y0: 0, x1: W, y1: Y_PHU + DONG_PHU * (BT.soDong - 1) + 14 });
+  chiem.push({ x0: BT.xb - 6, y0: BT.yb - 6, x1: BT.xb + BT.rong + 6, y1: BT.yb + CAO_BANG + 6 });
+  chiem.push({ x0: 24, y0: Y_NANG_LUONG - 22, x1: 580, y1: Y_NANG_LUONG + 24 });
+  // Nhãn đỉnh / chân sóng khi bật vectơ
+  if (st.vanToc && ly.grid > 0.02) {
+    const p = pos(sc, sc.buoyX0, 0, tp), xp = p.x * s, yp = ys - p.z * s;
+    const phao = { x0: xp - 30, y0: yp - 56, x1: xp + 30, y1: yp + 22 };
+    const thu = (text, ung) => {
+      for (const [x, y, align] of ung) {
+        const k = khungPill(c, text, x, y, align);
+        if (k.x0 < 4 || k.x1 > W - 4) continue;
+        if (giao(k, phao) || chiem.some((o) => o && giao(k, o))) continue;
+        chiem.push(pill(c, text, x, y, ly.grid, align)); return;
+      }
+    };
+    const base = OMEGA * tp, Lp = sc.L * s;
+    const n = Math.ceil(((360 / s - sc.xref) * sc.k - base) / PI2);
+    const xc = (sc.xref + (base + PI2 * n) / sc.k) * s, yDinh = ys - Av0 * s, yChan = ys + Av0 * s;
+    if (xc < 1200) {
+      thu('Ở đỉnh: hạt tiến →', [[xc - 16, yDinh + 60, 'right'], [xc + 16, yDinh + 60], [xc - 16, yDinh - 40, 'right'], [xc + 16, yDinh - 40]]);
+      const xt = xc + Lp / 2 < 1150 ? xc + Lp / 2 : xc - Lp / 2;
+      if (xt > 150) thu('← Ở chân: hạt lùi', [[xt + 16, yChan + 44], [xt - 16, yChan + 44, 'right'], [xt + 16, yChan - 44], [xt - 16, yChan - 44, 'right']]);
+    }
+  }
 }
 
 /* ===================== VẼ CHỮ CHUNG (không hoà, không di chuyển) ===================== */
