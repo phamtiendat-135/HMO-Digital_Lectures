@@ -14,6 +14,11 @@ const BUOC = 0.5;                   // 1/8 chu kỳ = 0,5 s hoạt hình
 const HIEN_LOP = 0.4;               // lớp mới hiện trong 0,4 s đầu cảnh
 const BLEND = [48, 49], RAMP = [49, 57]; // cảnh 4: hoà sang vùng nông, rồi đáy nâng dần 16 → 7,8 m
 const FONT = '"Be Vietnam Pro","Segoe UI",Arial,sans-serif';
+// Bố cục phần chữ phía trên mặt nước. Dải sóng cao nhất (H = 3 m, nước nông dần): đỉnh sóng y ≈ 376,
+// hạt và vectơ tới y ≈ 366, phao tới y ≈ 326 (chỉ trong khoảng x 813–1155). Mọi chữ phía trên đặt cao hơn dải đó.
+const Y_PHU = 118, DONG_PHU = 46;   // dòng phụ đề đầu và khoảng cách dòng
+const CAO_BANG = 142;               // bảng bộ đếm 3 dòng
+const Y_NANG_LUONG = 300;           // hàng mũi tên "Hướng truyền năng lượng" (cố định, S-02)
 const MAU = { navy: '#0A2E5C', ocean: '#1B4E8F', sky: '#60C0F0', orange: '#F07800', ink: '#0F1E3A', slate: '#546E8F', red: '#D62828', cat: '#E3CC98', vienCat: '#B8975A', chuCat: '#5A4520' };
 
 // Độ mờ các lớp ở cuối mỗi cảnh; cảnh sau bắt đầu từ giá trị của cảnh trước.
@@ -40,6 +45,7 @@ const NGUON = 'Lý thuyết sóng tuyến tính (Airy); T = 10 s, H = 2 m là gi
 let cv, ctx, off, octx, dpr = 1, giam = false, mucNhan = 'day-du';
 const DK = { H: 2, nong: false, vet: true, vanToc: false, lech: 0 };
 let quangNong = null; // bảng quãng đường đỉnh sóng trong cảnh 4 (tính sẵn)
+let BT = null;        // bố cục chữ của khung đang vẽ (tính lại trong mỗi lần ve, chỉ từ t và điều khiển)
 
 /* ===================== TIỆN ÍCH ===================== */
 const kep = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -84,6 +90,32 @@ function ngatDong(c, text, rong) {
   }
   if (cur) dong.push(cur);
   return dong;
+}
+
+/* ===================== BỐ CỤC CHỮ ===================== */
+// Vị trí bảng bộ đếm và nhãn "mốc ban đầu" theo số dòng phụ đề và nội dung bộ đếm.
+function boTri(c, st, sc) {
+  const [, phuDe] = CHU[st.id];
+  c.font = font(400, 36);
+  const soDong = Math.min(2, ngatDong(c, phuDe, W - 80).length);
+  const d = demSo(st, sc);
+  const rong = Math.max(c.measureText(d[0]).width, c.measureText(d[2]).width, (c.font = font(600, 36), c.measureText(d[1]).width)) + 40;
+  const yb = Y_PHU + DONG_PHU * (soDong - 1) + 30;   // cách đáy phụ đề
+  return { d, soDong, xb: W - 20 - rong, yb, rong, yMoc: yb + CAO_BANG + 30 };
+}
+// Ba dòng bộ đếm
+function demSo(st, sc) {
+  const dH = 2 * sc.Ah(0) / sc.E, dV = 2 * sc.Av(0) / sc.E;
+  let d1;
+  if (st.tuDo) d1 = `Mỗi chu kỳ 10 s, đỉnh sóng đi ${fmtNguyen(sc.C * T)} m`;
+  else {
+    const tSau = st.tc;
+    const quang = st.id === 'nong-dan' ? quangNong[Math.round(kep(tSau, 0, DAI_CANH) * 100)] : C_SAU * TG * tSau;
+    d1 = `Đỉnh sóng đã đi: ${fmtNguyen(quang)} m · ${Math.floor(TG * tSau / T + 0.003)} chu kỳ`;
+  }
+  const ai = st.id === 'phao' ? 'Phao' : 'Hạt đỏ';
+  const d2 = sc.deep ? `${ai}: quay vòng Ø ${fmt(dH, 1)} m` : `${ai}: quay elip ${fmt(dH, 1)} × ${fmt(dV, 1)} m`;
+  return [d1, d2, 'Dịch chuyển thực ≈ 0 m (lý thuyết tuyến tính)'];
 }
 
 /* ===================== TRẠNG THÁI TẠI t ===================== */
@@ -192,11 +224,12 @@ function veNuoc(c, sc, st) {
   for (let i = 2; i < pts.length; i += 2) c.lineTo(pts[i], pts[i + 1]);
   c.strokeStyle = MAU.navy; c.lineWidth = 3.6; c.lineJoin = 'round'; c.stroke();
 
-  // Mốc vị trí ban đầu của phao
-  { const X = sc.buoyX0 * s;
-    c.save(); c.setLineDash([7, 6]); c.strokeStyle = MAU.slate; c.lineWidth = 2;
-    c.beginPath(); c.moveTo(X, ys - 92); c.lineTo(X, ys + 60); c.stroke(); c.restore();
-    if (nhan) { c.font = font(600, 30); c.fillStyle = MAU.slate; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; c.fillText('mốc ban đầu', X + Ah0 * s + 34, ys - 66); } }
+  // Mốc vị trí ban đầu của phao. Có nhãn: đường dẫn lên trên dải sóng rồi rẽ phải tới nhãn (nhãn vẽ sau phao).
+  const xMoc = sc.buoyX0 * s, xNhanMoc = xMoc + Ah0 * s + 34;
+  { c.save(); c.setLineDash([7, 6]); c.strokeStyle = MAU.slate; c.lineWidth = 2; c.beginPath();
+    if (nhan) { c.moveTo(xNhanMoc, BT.yMoc); c.lineTo(xMoc, BT.yMoc); c.lineTo(xMoc, ys + 60); }
+    else { c.moveTo(xMoc, ys - 92); c.lineTo(xMoc, ys + 60); }
+    c.stroke(); c.restore(); }
 
   // Lưới hạt nước
   const dim = 1 - 0.7 * ly.focus, x0r = sc.cols[sc.redCol];
@@ -267,6 +300,7 @@ function veNuoc(c, sc, st) {
   { const p = pos(sc, sc.buoyX0, 0, tp);
     const dX = 1 - Ah0 * sc.k * Math.cos(p.th), dZ = -Av0 * sc.k * Math.sin(p.th);
     buoy(c, p.x * s, ys - p.z * s, Math.atan2(-dZ, dX)); }
+  if (nhan) pill(c, 'mốc ban đầu', xNhanMoc, BT.yMoc, 1);
 }
 
 /* ===================== VẼ CHỮ CHUNG (không hoà, không di chuyển) ===================== */
@@ -275,10 +309,10 @@ function veChu(c, st, sc) {
   c.globalAlpha = 1; c.textBaseline = 'alphabetic'; c.textAlign = 'left';
   const [tieuDe, phuDe] = CHU[st.id];
 
-  // Mũi tên hướng truyền năng lượng: cố định ở góc trên trái vùng nước
-  const ya = 372;
-  arrow(c, 36, ya, 250, ya, 26, MAU.orange, 8);
-  if (mucNhan === 'day-du') { c.font = font(700, 30); c.fillStyle = MAU.navy; c.fillText('Hướng truyền năng lượng', 268, ya + 11); }
+  // Mũi tên hướng truyền năng lượng: cố định ở góc trên trái, trên dải sóng cao nhất, nền trắng
+  const ya = Y_NANG_LUONG;
+  arrow(c, 36, ya, 170, ya, 26, MAU.orange, 8);
+  if (mucNhan === 'day-du') { c.font = font(700, 30); c.fillStyle = MAU.navy; c.fillText('Hướng truyền năng lượng', 188, ya + 11); }
 
   if (mucNhan === 'tat') return;
   if (mucNhan === 'toi-gian') {
@@ -291,31 +325,19 @@ function veChu(c, st, sc) {
   const aPhu = st.id === 'phao' ? (giam ? (st.tc >= 7 ? 1 : 0) : em((st.tc - 7) / HIEN_LOP)) : 1;
   if (aPhu > 0.02) {
     c.globalAlpha = aPhu; c.font = font(400, 36); c.fillStyle = MAU.ink;
-    ngatDong(c, phuDe, W - 80).slice(0, 2).forEach((d, i) => c.fillText(d, 40, 118 + i * 46));
+    ngatDong(c, phuDe, W - 80).slice(0, 2).forEach((d, i) => c.fillText(d, 40, Y_PHU + i * DONG_PHU));
     c.globalAlpha = 1;
   }
 
-  // Bộ đếm
-  const dH = 2 * sc.Ah(0) / sc.E, dV = 2 * sc.Av(0) / sc.E;
-  let d1;
-  if (st.tuDo) d1 = `Mỗi chu kỳ 10 s, đỉnh sóng đi ${fmtNguyen(sc.C * T)} m`;
-  else {
-    const tSau = st.tc;
-    const quang = st.id === 'nong-dan' ? quangNong[Math.round(kep(tSau, 0, DAI_CANH) * 100)] : C_SAU * TG * tSau;
-    d1 = `Đỉnh sóng đã đi: ${fmtNguyen(quang)} m · ${Math.floor(TG * tSau / T + 0.003)} chu kỳ`;
-  }
-  const ai = st.id === 'phao' ? 'Phao' : 'Hạt đỏ';
-  const d2 = sc.deep ? `${ai}: quay vòng Ø ${fmt(dH, 1)} m` : `${ai}: quay elip ${fmt(dH, 1)} × ${fmt(dV, 1)} m`;
-  const d3 = 'Dịch chuyển thực ≈ 0 m (lý thuyết tuyến tính)';
-  c.font = font(400, 36);
-  const rong = Math.max(...[d1, d2, d3].map((d) => c.measureText(d).width)) + 40;
-  const xb = W - 20 - rong, yb = 200;
-  rrect(c, xb, yb, rong, 150, 12); c.fillStyle = 'rgba(255,255,255,0.95)'; c.fill();
+  // Bộ đếm (vị trí theo bố cục BT: ngay dưới phụ đề, nền trắng đặc)
+  const { d: [d1, d2, d3], xb, yb, rong } = BT;
+  rrect(c, xb, yb, rong, CAO_BANG, 12); c.fillStyle = '#FFFFFF'; c.fill();
   c.lineWidth = 2; c.strokeStyle = '#D5E1F0'; c.stroke();
-  c.fillStyle = MAU.orange; c.fillRect(xb, yb + 10, 7, 130);
-  c.fillStyle = MAU.ink; c.fillText(d1, xb + 24, yb + 44);
-  c.fillStyle = MAU.red; c.font = font(600, 36); c.fillText(d2, xb + 24, yb + 90);
-  c.fillStyle = MAU.ink; c.font = font(400, 36); c.fillText(d3, xb + 24, yb + 136);
+  c.fillStyle = MAU.orange; c.fillRect(xb, yb + 10, 7, CAO_BANG - 20);
+  c.font = font(400, 36);
+  c.fillStyle = MAU.ink; c.fillText(d1, xb + 24, yb + 42);
+  c.fillStyle = MAU.red; c.font = font(600, 36); c.fillText(d2, xb + 24, yb + 86);
+  c.fillStyle = MAU.ink; c.font = font(400, 36); c.fillText(d3, xb + 24, yb + 130);
 
   // Dòng thông số
   const hL = sc.h / sc.L;
@@ -362,6 +384,7 @@ HMO.dangKy({
   ve(t, id) {
     const st = trangThaiTai(t, id), a = st.H / 2;
     const sau = deepScene(a), nong = shallowScene(a, st.ramp);
+    BT = boTri(ctx, st, st.blend >= 0.5 ? nong : sau);
     // Ngoài khoảng hoà chỉ vẽ một cảnh (S-15)
     if (st.blend <= 0) veNuoc(ctx, sau, st);
     else if (st.blend >= 1) veNuoc(ctx, nong, st);
