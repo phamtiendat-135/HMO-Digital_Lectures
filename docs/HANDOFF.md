@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 5b5a98a (đã push) | ≈ 641 KB | chưa chạy lại | Lần 1 và 2 KHÔNG ĐẠT (chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2; còn đặt nhãn). `anim-3d` đã viết lại nhãn theo STANDARDS mục 4 cho **cả 7 cảnh và bản 2D** (a5a184b…5b5a98a; hàm dò chỗ `chuTranh` đã bỏ). Worker chạm hạn mức lần 4 lúc ~17:10 UTC giữa lúc chỉnh nhãn cảnh 3 bản 3D (WIP 5b5a98a); 20:52 UTC đã gửi tiếp, dặn làm xong rồi chỉ kiểm, không viết lại nhãn; chưa chạy quét nhảy nhãn, 3 lệnh build/test và đếm tam giác. Worktree có `index.html` và `manifest.json` sửa chưa commit: đó chỉ là sản phẩm build, build lại là ra. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 52652d6 (đã push, worktree sạch) | 625 KB | 18/18 luc; toàn bộ 105 đạt, 12 bỏ qua | Lần 1 và 2 KHÔNG ĐẠT. `anim-3d` đã viết lại nhãn cả 7 cảnh và bản 2D, **tự kiểm xong** (21:25 UTC): 0 nhảy chỗ vi phạm; 1 chồng cấm còn lại (cảnh 3 bản 3D, góc ban đầu, nhãn "Trái Đất" đè đĩa Mặt Trăng 12,2 px trong 0,2 s quanh t ≈ 3,07; worker giữ vì hai cách sửa khác gây lỗi lớn hơn); tương phản nhỏ nhất 4,86; `ve(t)` thuần; tam giác tối đa 14.482. **Nghiệm thu lần 3 đang chạy** (reviewer mới, scratchpad `review-luc-3/ghichu.md`). |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -83,16 +83,16 @@ git log --oneline -5 origin/anim/luc-tao-trieu    # 5b5a98a trở lên
 ```
 Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay đổi ở `src/` chưa commit thì xem diff; hợp lý thì commit WIP rồi push. Nếu worktree mất: tạo lại theo mục 11.
 
-**Bước 1. Hoàn tất tự kiểm (agent `anim-3d` mới).** Chỉ cần nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi "đã quét"/"tự kiểm xong". Giao việc: *không viết lại nhãn nữa*; chỉ kiểm và sửa lỗi nhỏ nếu có:
+**Bước 1. Hoàn tất tự kiểm: ĐÃ XONG (52652d6), bỏ qua bước này.** (Chỉ cần nếu commit cuối trên `origin/anim/luc-tao-trieu` chưa ghi "đã quét"/"tự kiểm xong". Giao việc: *không viết lại nhãn nữa*; chỉ kiểm và sửa lỗi nhỏ nếu có:
 - quét nhảy nhãn ở 1/30 s, cả 7 cảnh và bản 2D, 3 khung, 2 mức nhãn (≤ 1 lần nhảy/ẩn mỗi 2 s; 0 lần lật A→B→A trong 1 s);
 - quét chồng cấm (chữ–chữ, chữ trên vật chính, điểm có tên, đầu mũi tên; bảng/tiêu đề/dải đáy che vật chính);
 - tương phản p5 ≥ 4,5:1 cho mọi chữ không có viền sáng ≥ 4 px;
 - `ve(t)` thuần: tua ≥ 5 lần ở cảnh 3, t = 6,1, ảnh giống hệt;
 - 3 lệnh: `node tools/build.mjs luc-tao-trieu`, `npx playwright test -g "luc-tao-trieu"`, `node tools/build.mjs --test && npx playwright test`;
 - đếm tam giác; chụp ảnh khung mở đầu và giữa mỗi cảnh.
-Commit, push, báo cáo theo STANDARDS mục 8.
+Commit, push, báo cáo theo STANDARDS mục 8.)
 
-**Bước 2. Nghiệm thu lần 3 (agent `anim-reviewer` MỚI, không dùng lại reviewer cũ).** Prompt gồm:
+**Bước 2. Nghiệm thu lần 3 (agent `anim-reviewer` MỚI, không dùng lại reviewer cũ).** Đã giao lúc 21:27 UTC ngày 18/11. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
 - slug `luc-tao-trieu`, nhánh `anim/luc-tao-trieu`, worktree `../wt/luc-tao-trieu`;
 - kiểm lại 2 mục trượt lần 2 (nhảy nhãn; chồng cấm) theo đúng STANDARDS mục 4 bản mới, **và** toàn bộ S-01…S-26, checklist 10 mục, `ve(t)`, dự phòng 2D, số tam giác, mọi số khoa học;
 - quyết định đã chốt: màu Ft #8A5D0B; dòng nguồn chờ TS. Đạt; cảnh 5 mức tối giản không cần nhãn "Trái Đất"; chiều Mặt Trăng cùng chiều tự quay Trái Đất;
