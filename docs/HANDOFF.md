@@ -50,7 +50,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 | Slug | Tầng | Nhánh / commit cuối | Dung lượng | Test | Tình trạng |
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
-| `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 7de817b | 115 KB | 87 passed / 12 skipped (toàn bộ) | Lần 1 KHÔNG ĐẠT (tương phản chữ cảnh 5 + 3 chỗ chữ bị che). `anim-2d` đã sửa đủ 4 mục (1a5be74…941223f; tương phản nhỏ nhất worker đo được 5,01:1). **Đang nghiệm thu lần 2** bằng `anim-reviewer` mới. |
+| `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 8f98afd | 117.506 B | 87 passed / 12 skipped (toàn bộ) | Lần 1 KHÔNG ĐẠT (tương phản cảnh 5 + 3 chỗ che). Lần 2 KHÔNG ĐẠT (4 mục lần 1 đạt; còn nhãn "4%" che dấu nặng chữ "Độ"). `anim-2d` sửa ở 8f98afd: 0 hình đè, tương phản p5 nhỏ nhất 5,01:1. **Đang nghiệm thu lần 3.** Chấp nhận: điểm ảnh tối thiểu 3,64:1 ở t 48,25–48,4 s do hạt mờ nằm DƯỚI chữ (p5 6,03:1). |
 | `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 slug; 90 passed / 9 skipped toàn bộ | `anim-3d` xong 26/26 S-xx + 2 việc thêm (Giải thích ≤ 67 tiếng; nút Phóng to/Thu nhỏ ×1,25, giới hạn 3–14). Tam giác tối đa 14.482. **Đang nghiệm thu lần 1** bằng `anim-reviewer` mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
@@ -77,7 +77,7 @@ Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 
 1. **`luc-tao-trieu`:** nút thu phóng xong (82d996d).
 2. **Nghiệm thu `luc-tao-trieu` lần 1** bằng `anim-reviewer` mới. Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
-3. **`hat-nuoc-quay-vong`:** đọc báo cáo nghiệm thu lần 2. Nếu ĐẠT thì merge.
+3. **`hat-nuoc-quay-vong`:** đọc báo cáo nghiệm thu lần 3. Nếu ĐẠT thì merge.
 4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
    - `manifest.json` có thể xung đột: giải bằng `node tools/build.mjs` (build lại toàn bộ);
    - cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`;
@@ -106,7 +106,7 @@ Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 - Bốn agent giữ nguyên vai trò. `anim-3d` và `anim-reviewer` đổi sang cùng model với `anim-2d` (alias trong frontmatter), bỏ hẳn model cũ vì model đó đòi usage credits và làm cả 3 agent dừng ngay lúc khởi động. `anim-label` giữ nguyên.
 - Nếu `subagent_type: anim-*` báo không tìm thấy (phiên khởi động trước khi có `.claude/agents/`), dùng `general-purpose`, chép nguyên văn phần thân file định nghĩa agent vào đầu prompt và đặt `model` đúng như frontmatter.
 
-**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên này đã chạm hạn mức 5 giờ một lần (05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
+**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên này đã chạm hạn mức 5 giờ một lần (05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Container cũng đã khởi động lại một lần và làm mất 2 reviewer đang chạy: dặn reviewer ghi kết quả dở vào `ghichu.md` trong thư mục scratchpad của nó sau mỗi bước. Worktree `../wt/*` và scratchpad vẫn còn sau khi container khởi động lại. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
 
 ## 7. Các chặng sau G2
 
