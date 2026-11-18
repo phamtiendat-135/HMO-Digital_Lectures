@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 4c582c5 | 641.207 B | 18/18 | Lần 1 và 2 KHÔNG ĐẠT. Mục chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2. Còn: nhãn nhảy chỗ (bộ dò `chuTranh` theo từng khung) và vài chỗ chồng loại cấm. Trưởng nhóm chốt **quy tắc đặt nhãn mới ở STANDARDS mục 4** (ổn định, cấm/được chồng, halo) và giao `anim-3d` viết lại cách đặt nhãn. Xong thì nghiệm thu lần 3 bằng reviewer mới, dùng bộ quét `review-luc-2/r2-quet.cjs` làm tham khảo. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ d423072 (WIP) | ≈ 641 KB | chưa chạy lại | Lần 1 và 2 KHÔNG ĐẠT (chiều Mặt Trăng và `ve(t)` cảnh 3D đã ĐẠT ở lần 2; còn đặt nhãn). `anim-3d` đang viết lại cách đặt nhãn theo STANDARDS mục 4: xong WIP cảnh 1, 4, 5, 6, 7 (a5a184b…846fd3a); còn bản 2D, cảnh 2, cảnh 3 (phần dở lưu ở d423072). Worker đã chạm hạn mức 5 giờ 3 lần; mỗi lần trưởng nhóm lưu WIP rồi gửi tiếp bằng SendMessage. Xong thì nghiệm thu lần 3 bằng reviewer mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
