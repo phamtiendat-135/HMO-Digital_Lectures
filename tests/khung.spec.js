@@ -7,6 +7,19 @@ const MAU = path.join(GOC, 'dist-test/_mau/index.html');
 const mo = async (page, truyVan = '') => { await page.goto(url(MAU, truyVan)); await page.waitForFunction(() => window.HMO && window.HMO.trangThai().idCanh); };
 const denCuoi = (page) => page.evaluate(() => window.HMO.denCanh(2));
 
+for (const cheDo of ['tu-hoc', 'trinh-chieu']) {
+  test(`mở trang ở trạng thái dừng (${cheDo})`, async ({ page }) => {
+    await canhGac(page); await mo(page, '?che-do=' + cheDo);
+    await page.waitForTimeout(300);
+    expect((await trangThai(page)).dangPhat).toBe(false);
+    const a1 = await page.locator('#hmo-san-khau').screenshot();
+    await page.waitForTimeout(800);
+    const a2 = await page.locator('#hmo-san-khau').screenshot();
+    expect(a1.equals(a2), 'chưa bấm phát mà khung hình đã đổi').toBe(true);
+    expect((await trangThai(page)).t).toBe(0);
+  });
+}
+
 test('tự dừng cuối cảnh có giờ, phát tiếp thì sang cảnh sau', async ({ page }) => {
   await canhGac(page); await mo(page, '?che-do=tu-hoc');
   await page.evaluate(() => { window.HMO.phat(false); window.HMO.tua(3.7); window.HMO.phat(true); });
@@ -172,4 +185,32 @@ test('vuốt ngang trên sân khấu đổi cảnh', async ({ page }, info) => {
   expect((await trangThai(page)).iCanh).toBe(1);
   await vuot(b.x + b.width * 0.2, b.x + b.width * 0.8);
   expect((await trangThai(page)).iCanh).toBe(0);
+});
+
+test('nút bấm một lần: dừng đồng hồ và đổi hình; thanh trượt hiện số theo thapPhan', async ({ page }) => {
+  await canhGac(page); await mo(page, '?che-do=tu-hoc');
+  await denCuoi(page); await page.evaluate(() => window.HMO.phat(true)); await page.waitForTimeout(200);
+  await expect(page.locator('label[for="hmo-dk-ban-kinh"]')).toContainText('60,0 px');
+  await page.locator('#hmo-dk-buoc').click();
+  expect((await trangThai(page)).dangPhat).toBe(false);
+  await page.waitForTimeout(150);
+  const a1 = await page.locator('#hmo-san-khau').screenshot();
+  await page.locator('#hmo-dk-buoc').click(); await page.waitForTimeout(150);
+  const a2 = await page.locator('#hmo-san-khau').screenshot();
+  expect(a1.equals(a2)).toBe(false);
+});
+
+test('bảng số của cảnh: dựng <table> bằng textContent, không tràn ngang', async ({ page }) => {
+  await canhGac(page); await mo(page, '?che-do=tu-hoc');
+  await expect(page.locator('#hmo-bang-so table')).toHaveCount(0);
+  await page.evaluate(() => window.HMO.denCanh(1));
+  const bang = page.locator('#hmo-bang-so table');
+  await expect(bang).toHaveCount(1);
+  await expect(bang.locator('th')).toHaveText(['Giây', 'Vị trí y (px)']);
+  await expect(bang.locator('tbody tr')).toHaveCount(3);
+  await expect(bang.locator('tbody tr').nth(2).locator('td').nth(1)).toHaveText('<b>880</b>');
+  await expect(bang.locator('b'), 'ô bảng không được hiểu là HTML').toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+  await page.evaluate(() => window.HMO.denCanh(2));
+  await expect(page.locator('#hmo-bang-so table')).toHaveCount(0);
 });
