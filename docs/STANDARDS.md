@@ -88,6 +88,7 @@ Mẫu chạy được: `src/_mau/main.js` và `noidung/_mau.json`.
   - `tat`: không chữ nào trên hình.
 - Màu HMO: Navy `#0A2E5C`, Ocean `#1B4E8F`, Sky `#60C0F0`, Orange `#F07800` (điểm nhấn), Ink `#0F1E3A`, Slate `#546E8F`. Tương phản chữ ≥ 4,5:1.
 - Font: `"Be Vietnam Pro","Segoe UI",Arial,sans-serif`. Bộ khung đã nhúng Be Vietnam Pro 400/600/700 (Latin + tiếng Việt); không nhúng thêm font. Chỉ dùng ba độ đậm đó. Ký hiệu toán như √ ≈ → λ rơi về font hệ thống, chấp nhận được.
+- Ở bản dự phòng 2D (T3), bộ khung hiện dòng thông báo "…đang hiển thị bản 2D" đè dải đáy trong 6 giây rồi tự ẩn; dòng nguồn ở đáy sẽ lộ ra sau đó.
 - Hình phóng đại phải ghi rõ, ví dụ "Không theo tỉ lệ: độ sâu phóng đại 25 lần".
 - **Cảnh có `dieuKhien`**: ở chế độ Trình chiếu, khối điều khiển riêng nổi trên sân khấu có thể che tới khoảng y = 900 trong 3 giây khi hiện (ví dụ 3 thanh trượt che tới y ≈ 925). Ở cảnh đó, phần từ y = 900 trở xuống cũng chỉ đặt nội dung hiện suốt cảnh.
 - **Dải đáy 130 px của sân khấu** (y từ 950 đến 1080) có thể bị thanh điều khiển nổi che trong 3 giây ở chế độ Trình chiếu. Chỉ đặt ở đó nội dung hiện suốt cảnh (dòng nguồn, ghi chú tỉ lệ); chú thích hiện thoáng qua phải nằm trên y = 950.
