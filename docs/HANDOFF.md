@@ -44,7 +44,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 
 ## 4. Trạng thái 3 pilot
 
-> ⚠️ Ba nhánh `anim/*` hiện **chỉ có trong container cũ** (worktree ở `/home/user/wt/`), chưa push. Xem mục 11.
+> Ba nhánh `anim/*` đã push lên origin. Cách tạo lại worktree: xem mục 11.
 
 | Slug | Tầng | Nhánh / commit cuối | Dung lượng | Test | Tình trạng |
 |---|---|---|---|---|---|
@@ -70,7 +70,7 @@ Phiên mới **làm theo khuyến nghị dưới đây**, trừ khi TS. Đạt n
 
 ## 6. Việc tiếp theo, theo thứ tự (chặng 3 → G2)
 
-1. **Khôi phục nhánh `anim/*`** (xem mục 11). Nếu mất, phải làm lại từ spec.
+1. Tạo lại worktree cho 3 nhánh `anim/*` (mục 11) và chạy `npm install`.
 2. Sửa khung theo (a)–(e), mỗi việc một commit. Chạy `node tools/build.mjs --test && npx playwright test`.
 3. Merge nhánh chính vào `anim/hat-nuoc-quay-vong` và `anim/kenh-sofar`, rồi build lại từng slug.
 4. Nghiệm thu `hat-nuoc-quay-vong` bằng `subagent_type: anim-reviewer` (agent mới, không dùng lại worker cũ).
@@ -121,7 +121,7 @@ Số nào còn thiếu nguồn thì **không hiển thị** và phải ghi vào 
   - Mỗi commit một việc, message tiếng Việt, kết thúc bằng 2 dòng trailer (`Co-Authored-By: …` và `Claude-Session: …`) theo hướng dẫn của phiên.
   - Không ghi tên model trong commit, PR hay mã.
   - Không đưa email của TS. Đạt ra dịch vụ ngoài.
-- Chỉ push lên `claude/relaxed-meitner-q01202`. Push nhánh khác phải được TS. Đạt cho phép rõ ràng.
+- Chỉ push lên `claude/relaxed-meitner-q01202` và 3 nhánh `anim/*` của pilot (đã được cho phép). Push nhánh khác phải được TS. Đạt cho phép rõ ràng.
 
 ## 10. Lệnh hay dùng
 
@@ -135,17 +135,18 @@ node tools/audit/tach-bundle.cjs <file.html> <thu-muc-ra>   # bung bundle Claude
 git worktree add ../wt/<slug> -b anim/<slug> # tạo worktree cho worker (symlink node_modules)
 ```
 
-## 11. Lưu ý về container: nhánh `anim/*` có thể bị mất
+## 11. Khôi phục nhánh pilot trong container mới
 
-Worktree `/home/user/wt/*` và thư mục scratchpad chỉ tồn tại trong container hiện tại. Ba nhánh `anim/hat-nuoc-quay-vong`, `anim/kenh-sofar` và `anim/luc-tao-trieu` **chưa push**. Nếu phiên mới chạy trên container mới mà các nhánh này chưa được đẩy lên GitHub, toàn bộ công việc của 3 pilot sẽ mất.
-
-Cách giữ lại, chọn một:
-
-- **(Khuyến nghị)** TS. Đạt cho phép push 3 nhánh `anim/*` lên origin. Phiên mới chỉ cần `git fetch origin anim/<slug>`.
-- Hoặc merge cả 3 nhánh vào `claude/relaxed-meitner-q01202` ngay, dù chưa nghiệm thu, và ghi rõ trong STATUS là `in-review`.
-
-Phiên mới kiểm tra trước tiên:
+Ba nhánh `anim/hat-nuoc-quay-vong`, `anim/kenh-sofar` và `anim/luc-tao-trieu` đã được **push lên origin ngày 18/11/2026**, có sự đồng ý của TS. Đạt. Worktree cũ ở `/home/user/wt/` không còn, nên phải tạo lại:
 
 ```bash
-git fetch origin && git branch -r | grep anim/
+git fetch origin anim/hat-nuoc-quay-vong anim/kenh-sofar anim/luc-tao-trieu
+mkdir -p ../wt
+for s in hat-nuoc-quay-vong kenh-sofar luc-tao-trieu; do
+  git worktree add ../wt/$s -B anim/$s origin/anim/$s
+  ln -s "$PWD/node_modules" ../wt/$s/node_modules
+done
+echo node_modules >> .git/info/exclude
 ```
+
+Push các nhánh `anim/*` này khi có commit mới là được phép. Mọi nhánh khác vẫn cần xin phép.
