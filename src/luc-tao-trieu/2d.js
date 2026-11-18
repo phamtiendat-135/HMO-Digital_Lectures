@@ -1,9 +1,9 @@
 // Bản dự phòng 2D của cảnh 3 khi thiết bị không có WebGL2: lát cắt qua trục Trái Đất – Mặt Trăng, nhìn từ cực Bắc.
-import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, tt, baLuc, nen, chu, viTriNgoai, xepNhan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
-import { LAP3, st3, DIEU_KHIEN_2D, khiDoiChung, soDoc, veBang, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
+import { W, H, MAU, TI_SO_CM, PHONG_DAI_FT, TAU, tt, baLuc, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { LAP3, st3, DIEU_KHIEN_2D, khiDoiChung, soDoc, veBang, veChuGiai, GHI_CHU_3, MO_TA_3 } from './canh3-chung.js';
 
 // Hình thu gọn để Mặt Trăng và nhãn của nó không chạm bảng số (góc trên phải) và dải đáy
-const CX = 560, CY = 570, R = 125, K = TI_SO_CM * R, DM = 2.0 * R, DAI = 0.9 * R, RMT = 26;
+const CX = 500, CY = 560, R = 125, K = TI_SO_CM * R, DM = 300, DAI = 0.9 * R, RMT = 26;
 let sk = null, dangHien = false, tamX = CX - K, tamY = CY;
 const gocCam = () => Math.atan2(st3.huong[1], st3.huong[0]);
 
@@ -76,25 +76,15 @@ export default {
     ve1('ft', MAU.ft, PHONG_DAI_FT, -nx, -ny);
     tron(g, px, py, 13, MAU.cam, '#FFFFFF', 3);
 
-    // Nhãn: điểm neo theo quy tắc cố định, rồi đẩy mềm khỏi vật chính và khỏi nhau (xepNhan, hàm liên tục của hình).
-    const toiGian = tt.muc === 'toi-gian', ds = [], vat = [];
-    vat.push({ x: px, y: py, r: 17 }, { x: CX, y: CY, r: 13 }, { x: mx, y: my, r: RMT + 4 });
-    if (!toiGian) vat.push([1000, 172, 1392, 416]);   // bảng số
-    for (const [k, ten, mauChu] of [['fc', 'Fc', MAU.luc], ['fg', 'Fg', MAU.do], ['ft', 'Ft', MAU.ftChu]]) {
-      if (!dinh[k]) continue;
-      const [x, y, dx, dy] = dinh[k], L = Math.hypot(dx, dy) || 1, o = { co: 30, dam: 700, mau: mauChu, khoa: true };
-      vat.push({ x: x - dx / L * 9, y: y - dy / L * 9, r: 14 });   // đầu mũi tên
-      const p0 = viTriNgoai(g, ten, x, y, 0, dx / L, dy / L, 10, o);
-      if (p0) ds.push({ s: ten, x: p0[0], y: p0[1], o });
-    }
-    const oCM = { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true };
-    const pCM = viTriNgoai(g, 'CM', CX, CY, 9, 0, 1, 8, oCM);
-    if (pCM) ds.push({ s: 'CM', x: pCM[0], y: pCM[1], o: oCM });
+    // Tên ba lực và CM nằm trong bảng số (mức đầy đủ) hoặc khối chú giải cố định ở góc trên phải (mức tối giản).
+    // Trên hình chỉ còn nhãn thiên thể, đặt theo quy tắc cố định.
+    const toiGian = tt.muc === 'toi-gian';
+    veChuGiai(g, 1236, 196);
     const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true };
-    const pMT = toiGian ? viTriNgoai(g, 'Mặt Trăng', mx, my, RMT, 0, my <= CY ? -1 : 1, 8, oMT) : viTriNgoai(g, 'Mặt Trăng', mx, my, RMT, u[0], -u[1], 8, oMT);
-    if (pMT) ds.push({ s: 'Mặt Trăng', x: pMT[0], y: pMT[1], o: oMT });
-    const pTD = viTriNgoai(g, 'Trái Đất', ex, ey, R, -p[0], p[1], 12, oMT);
-    if (pTD) ds.push({ s: 'Trái Đất', x: pTD[0], y: pTD[1], o: oMT });
-    xepNhan(g, ds, vat);
+    // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ CM; mức tối giản (chữ to gấp đôi): ngay trên/dưới đĩa
+    if (toiGian) nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, 0, my <= CY ? -1 : 1, 8, oMT);
+    else nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, u[0], -u[1], 8, oMT);
+    // Trái Đất (mức đầy đủ): ngoài đĩa, phía đối diện điểm cam (các mũi tên tại điểm cam không vươn tới đó)
+    if (!toiGian) nhanNgoai(g, 'Trái Đất', ex, ey, R, -p[0], p[1], 12, { co: 30, dam: 700, mau: MAU.navy });
   },
 };
