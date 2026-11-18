@@ -103,8 +103,18 @@ function datDiem(ev, batBuoc) {
   return true;
 }
 function ganChuot() {
-  let dangKeo = false, cham = null;
+  let dangKeo = false, cham = null, keo = null, gia = false;
   cvGL.addEventListener('pointerdown', (ev) => {
+    if (gia) return;   // sự kiện bù cho OrbitControls (xem dưới), không xử lí lại
+    if (!ev.isPrimary && dangKeo) {
+      // Ngón thứ hai chạm khi ngón đầu đang kéo điểm cam: đây là chụm/dịch hai ngón. Trả điểm cam về chỗ cũ, bật lại
+      // OrbitControls và báo cho nó ngón đầu (nó đã bỏ qua lúc bị tắt) trước khi nó nhận ngón thứ hai.
+      st3.huong = keo.huong; dangKeo = false; controls.enabled = true; cham = null; yeuCau();
+      gia = true;
+      cvGL.dispatchEvent(new PointerEvent('pointerdown', { pointerId: keo.id, pointerType: ev.pointerType, isPrimary: true, clientX: keo.x, clientY: keo.y, button: 0, buttons: 1, bubbles: true, cancelable: true }));
+      gia = false;
+      return;
+    }
     if (!ev.isPrimary || ev.button > 0) { cham = null; return; }
     const r = cvGL.getBoundingClientRect();
     v1.copy(diemCam.position).project(camera);
@@ -116,10 +126,13 @@ function ganChuot() {
     // nên chạm ở tâm Trái Đất (hoặc gần tâm hơn gần điểm cam) luôn là xoay camera, kể cả khi hai điểm chiếu sát nhau.
     v1.copy(tamTD).project(camera);
     const kTam = Math.hypot(r.left + (v1.x + 1) / 2 * r.width - ev.clientX - dx, r.top + (1 - v1.y) / 2 * r.height - ev.clientY - dy);
-    if (thay && Math.hypot(dx, dy) <= Math.min(44, 0.45 * kTam)) { dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null; }
+    if (thay && Math.hypot(dx, dy) <= Math.min(44, 0.45 * kTam)) {
+      dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null;
+      keo = { id: ev.pointerId, x: ev.clientX, y: ev.clientY, huong: st3.huong.slice() };
+    }
     else cham = { x: ev.clientX, y: ev.clientY, t: ev.timeStamp };
   });
-  cvGL.addEventListener('pointermove', (ev) => { if (dangKeo && ev.isPrimary) datDiem(ev, true); });
+  cvGL.addEventListener('pointermove', (ev) => { if (dangKeo && ev.isPrimary) { keo.x = ev.clientX; keo.y = ev.clientY; datDiem(ev, true); } });
   const thoi = (ev) => {
     if (dangKeo) { dangKeo = false; controls.enabled = true; }
     else if (cham && ev.type === 'pointerup' && Math.hypot(ev.clientX - cham.x, ev.clientY - cham.y) < 8 && ev.timeStamp - cham.t < 400) datDiem(ev, false);
