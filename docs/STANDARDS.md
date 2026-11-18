@@ -13,6 +13,8 @@ Worker nhận ba thứ: file này, `specs/<slug>.md`, và file nguồn trong `_n
 
 Không sửa `lib/`, `tools/`, `tests/`, `config.js`, `_nguon/`, hay file của animation khác. Nếu bộ khung thiếu thứ bạn cần, dừng lại và báo `NEEDS_ESCALATION` kèm mô tả, không tự vá.
 
+**Dùng Preact + JSX (`main.jsx`)**: được phép (`preact` đã có trong `package.json`, build biên dịch JSX sẵn). Preact **không** đổi tên thuộc tính SVG dạng camelCase như React: `strokeWidth`, `textAnchor`, `fontSize`, `dominantBaseline` sẽ bị bỏ qua lặng lẽ. Trong JSX luôn viết đúng tên thuộc tính SVG dạng kebab-case: `stroke-width`, `text-anchor`, `font-size`, `font-weight`, `stroke-dasharray`, `fill-opacity`, `dominant-baseline`. Ngoại lệ là các tên vốn camelCase trong SVG: `viewBox`, `preserveAspectRatio`, `gradientUnits`. Riêng `class` viết là `class`.
+
 Bản phát hành là **một file HTML tự chứa**, mở được bằng `file://` khi không có mạng: không CDN, không tải font, ảnh hay script từ ngoài. Ngưỡng: 2D ≤ 500 KB, 3D ≤ 1,5 MB (bộ khung và font đã chiếm khoảng 96 KB).
 
 ## 2. Hợp đồng với bộ khung (`lib/khung.js`)
