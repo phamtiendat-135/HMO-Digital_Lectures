@@ -1,0 +1,17 @@
+{
+  "slug": "_mau",
+  "ten": "Animation mẫu",
+  "moTa": "Dùng để thử bộ khung.",
+  "loai": "2D",
+  "nguon": "Nguồn: dữ liệu mẫu.",
+  "canh": [
+    { "id": "di-ngang", "ten": "Đi ngang", "giaiThich": "Chấm tròn đi từ trái sang phải trong 4 giây." },
+    { "id": "di-doc", "ten": "Đi dọc", "giaiThich": "Chấm tròn đi từ trên xuống dưới trong 4 giây.",
+      "bang": { "cot": ["Giây", "Vị trí y (px)"], "dong": [["0", "200"], ["2", "540"], ["4", "<b>880</b>"]] } },
+    { "id": "quay-vong", "ten": "Quay vòng", "giaiThich": "Chấm tròn quay vòng, mỗi vòng 3 giây. Đổi bán kính bằng thanh trượt." }
+  ],
+  "cauHoi": [
+    { "id": "_mau-q1", "hoi": "Một cộng một bằng mấy?", "phuongAn": ["1", "2", "3", "4"], "dapAn": 1, "giaiThich": "1 + 1 = 2." },
+    { "id": "_mau-q2", "hoi": "Hai nhân ba bằng mấy?", "phuongAn": ["6", "5", "8", "9"], "dapAn": 0, "giaiThich": "2 × 3 = 6." }
+  ]
+}

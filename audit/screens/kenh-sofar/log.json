@@ -1,0 +1,21 @@
+{
+  "slug": "kenh-sofar",
+  "file": "Kenh SOFAR.html",
+  "khung": {
+    "laptop": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    },
+    "doc": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    },
+    "ngang": {
+      "consoleErrors": [],
+      "pageErrors": [],
+      "blocked": []
+    }
+  }
+}

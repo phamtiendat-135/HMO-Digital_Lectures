@@ -1,0 +1,17 @@
+{
+  "name": "hmo-digital-lectures",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "test": "node tools/build.mjs --test && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2"
+  },
+  "dependencies": {
+    "preact": "10.29.8",
+    "three": "0.160.0"
+  }
+}

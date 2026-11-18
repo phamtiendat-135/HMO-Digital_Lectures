@@ -1,0 +1,39 @@
+{
+  "slug": "luc-tao-trieu",
+  "file": "Luc tao trieu - offline.html",
+  "khung": {
+    "laptop": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+      ]
+    },
+    "doc": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+      ]
+    },
+    "ngang": {
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: net::ERR_FAILED"
+      ],
+      "pageErrors": [],
+      "blocked": [
+        "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+      ]
+    }
+  }
+}
