@@ -1,6 +1,6 @@
 # HANDOFF: Kho học liệu số HMO (chuyển sang phiên mới)
 
-Cập nhật: 18/11/2026. Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
+Cập nhật: 18/11/2026 (chiều, phiên điều phối thứ hai). Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
 
 Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **Không hỏi lại những gì đã chốt ở mục 3.**
 
@@ -14,7 +14,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
   - Sinh viên năm 1–3 tự học trên điện thoại Android tầm trung (màn dọc 360–430 px, mạng 4G).
   - Giảng viên trình chiếu trên máy chiếu 4:3 (1024×768).
 - Quy trình gồm 4 cổng bắt buộc dừng lại chờ duyệt: G0 (thiết kế) → G1 (spec + phân tầng) → **G2 (3 pilot)** → G3 (trang kho + sổ điểm). Ngoài 4 cổng này thì làm tiếp, không hỏi lặt vặt.
-- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.**
+- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.** 1/3 pilot đã approved (`kenh-sofar`).
 
 ## 2. Tài liệu phải đọc trước khi làm
 
@@ -43,49 +43,72 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
    - `chu-ky-trieu-mat-trang` đổi slug thành `chu-ky-trieu-18-6-nam`, tên hiển thị "Chu kỳ triều 18,6 năm và 4,4 năm", tag "nâng cao".
 7. Không phát hành `_nguon/Chu ky trieu Mat Trang.html`, vì đó là bản cũ đã có bản `-latest`.
 
-## 4. Trạng thái 3 pilot
+## 4. Trạng thái 3 pilot (cập nhật phiên 18/11/2026, buổi chiều)
 
-> Ba nhánh `anim/*` đã push lên origin. Cách tạo lại worktree: xem mục 11.
+> Ba nhánh `anim/*` đã push lên origin. Cách tạo lại worktree: xem mục 11. Mọi commit của phiên này đã push.
 
 | Slug | Tầng | Nhánh / commit cuối | Dung lượng | Test | Tình trạng |
 |---|---|---|---|---|---|
-| `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 524e0da | 112 KB | 15/15 | Worker báo `DONE`. **Chưa nghiệm thu**: reviewer trước bị dừng giữa chừng vì hết hạn mức. `canhThumb` 2, `giayThumb` 12. |
-| `kenh-sofar` | T2 | `anim/kenh-sofar` @ e533b0b | 134 KB (137.105 B) | 15/15 | Worker báo `DONE_WITH_CONCERNS`. Có 7 điểm chờ quyết định, xem mục 5. Dùng Preact (`main.jsx`, `du-lieu.js`). `canhThumb` 4, `giayThumb` 70. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ e6570dd | ≈ 620 KB (ngưỡng 1,5 MB) | chưa chạy đủ | Còn dở. Đã có đủ 7 cảnh, cảnh 3 là three.js kèm bản dự phòng 2D. Worker bị dừng vì hết hạn mức; e6570dd là commit WIP lưu lúc chuyển phiên. Chưa có báo cáo, chưa biết các mục S-xx còn thiếu. |
+| `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
+| `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 7de817b | 115 KB | 87 passed / 12 skipped (toàn bộ) | Lần 1 KHÔNG ĐẠT (tương phản chữ cảnh 5 + 3 chỗ chữ bị che). `anim-2d` đã sửa đủ 4 mục (1a5be74…941223f; tương phản nhỏ nhất worker đo được 5,01:1). **Đang nghiệm thu lần 2** bằng `anim-reviewer` mới. |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 32ba88b (WIP) | 636 KB (ngưỡng 1,5 MB) | 18/18 slug (trước WIP) | `anim-3d` báo đủ 26/26 S-xx, 14.482 tam giác tối đa, dự phòng 2D chạy đủ 7 cảnh. Sau đó trưởng nhóm giao thêm 2 việc: (1) rút Giải thích cảnh 3 và 5 về ≤ 67 tiếng: **xong** (881bce1); (2) nút "Phóng to"/"Thu nhỏ" cho cảnh 3: **đang làm**, phần dở lưu ở WIP 32ba88b. Chưa nghiệm thu lần nào. |
 
-Trên nhánh chính (HEAD b99d29b) đã có: bộ khung `lib/`, `tools/build.mjs`, test Playwright, `docs/STANDARDS.md`, 4 agent, mẫu `src/_mau`.
+## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
-## 5. Bảy điểm chờ quyết định (từ báo cáo `kenh-sofar`)
-
-Phiên mới **làm theo khuyến nghị dưới đây**, trừ khi TS. Đạt nói khác. Các điểm (a)–(e) sửa ở nhánh chính trước, rồi merge vào các nhánh `anim/*`.
-
-| # | Vấn đề | Khuyến nghị |
+| # | Đã làm | Commit |
 |---|---|---|
-| (a) | Khung tự phát ở chế độ Tự học (`if (!giam && S.cheDo === 'tu-hoc') datPhat(true)` trong `lib/khung.js`), trái với spec S-05 "mở ở trạng thái dừng". | **Mọi chế độ đều mở ở trạng thái dừng.** Sinh viên bấm phát khi đã sẵn sàng; như vậy cũng đỡ tốn pin và 4G. Sửa khung, cập nhật test và STANDARDS. |
-| (b) | Font nhúng không có ρ, →, ≈. | **Chấp nhận rơi về font hệ thống** như STANDARDS mục 4 đã cho phép. Sửa câu "không rơi font" trong spec S-02 của `kenh-sofar`. |
-| (c) | Khung giải thích chỉ hiện chữ thuần (textContent), không dựng được bảng. Hệ quả: bảng 13 mức làm Giải thích cảnh 1 vượt 40–60 từ. | Thêm trường tuỳ chọn `bang: {cot:[…], dong:[[…]]}` cho mỗi cảnh trong noidung. Khung dựng `<table>` an toàn bằng `textContent`, **không dùng innerHTML**. Ghi vào STANDARDS mục 3. |
-| (d) | Preact không tự đổi tên thuộc tính SVG camelCase. | Ghi vào STANDARDS: trong JSX dùng Preact, viết thuộc tính SVG dạng kebab-case (`stroke-width`, `text-anchor`…). |
-| (e) | Móc gỡ lỗi `window.__sofar` còn trong bản phát hành. | Xoá trước khi merge. Thêm một test quét bản phát hành để chặn `window.__`. |
-| (f) | Góc tia ở 1.300 m hiện 3,7° (công thức cho 3,654°), spec ghi 3,6°. | Chấp nhận 3,7°, vì làm tròn đúng là 3,7. Sửa spec cho khớp. |
-| (g) | Tua 60 → 30 → 60 s cho DOM giống hệt nhưng ảnh lệch 6 điểm ảnh, do khử răng cưa. | Chấp nhận, không phải lỗi `ve(t)` thuần. Ghi chú vào REVIEW_LOG. |
+| (a) | Mọi chế độ mở ở trạng thái dừng; test + STANDARDS mục 2 | 4548519 |
+| (b) | Spec S-02: ρ, →, ≈ rơi font hệ thống được chấp nhận ("°", "³" vẫn trong font nhúng) | d984fd9 |
+| (c) | Trường `bang` cho cảnh, dựng `<table>` bằng textContent, build kiểm cấu trúc; kenh-sofar chuyển bảng 13 mức sang `bang` | a88e69c, dc96df9 |
+| (d) | STANDARDS: thuộc tính SVG trong JSX viết kebab-case | 240aab9 |
+| (e) | Test chặn `window.__` (trừ `__THREE__`); xoá `window.__sofar` | e1dbbaf, bc42819 |
+| (f) | Spec: 3,7° ở 1.300 m | 3bf59c1 |
+| (g) | Ghi chú vào REVIEW_LOG | 07e8a36 |
+
+**Thay đổi khung và chuẩn khác trong phiên này:**
+- Thông báo "đang hiển thị bản 2D" tự ẩn sau 6 s; có test tự động chạy bản dự phòng 2D cho mọi animation 3D (5c60c96).
+- STANDARDS mục 3: "40–60 từ" = **tối đa 67 tiếng** theo `split(/\s+/)` (db254d1).
+- STANDARDS mục 4: cảnh có `dieuKhien` thì từ y = 900 trở xuống chỉ đặt nội dung hiện suốt cảnh.
+- Spec kenh-sofar câu 2: 87 bar, không phải 86 (759aa9d).
 
 ## 6. Việc tiếp theo, theo thứ tự (chặng 3 → G2)
 
-1. Tạo lại worktree cho 3 nhánh `anim/*` (mục 11) và chạy `npm install`.
-2. Sửa khung theo (a)–(e), mỗi việc một commit. Chạy `node tools/build.mjs --test && npx playwright test`.
-3. Merge nhánh chính vào `anim/hat-nuoc-quay-vong` và `anim/kenh-sofar`, rồi build lại từng slug.
-4. Nghiệm thu `hat-nuoc-quay-vong` bằng `subagent_type: anim-reviewer` (agent mới, không dùng lại worker cũ).
-5. Nghiệm thu `kenh-sofar` bằng `anim-reviewer`.
-6. Làm xong `luc-tao-trieu` bằng `anim-3d`. Trước hết cho agent đọc `git log` và diff so với spec để lập bảng S-xx còn thiếu. Kiểm: ≤ 1,5 MB; bản dự phòng 2D chạy khi không có WebGL2; số tam giác; mức nhãn `toi-gian` trên điện thoại. Sau đó nghiệm thu bằng `anim-reviewer`.
-7. Pilot nào được duyệt thì merge vào `claude/relaxed-meitner-q01202`, cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`, rồi chạy toàn bộ `npm test`.
-8. Viết tóm tắt G2 cho TS. Đạt gồm: dung lượng từng file, số tam giác của cảnh 3D, các mục cần kiểm tay (fps trên máy thật, font ρ/→/≈ trên Windows và Android), cách mở trên điện thoại. Push, rồi **DỪNG ở G2**.
+Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
+
+1. **`luc-tao-trieu`:** chờ `anim-3d` báo xong nút thu phóng (việc 2). Nếu phiên mới không liên lạc được với worker cũ, tạo `anim-3d` mới:
+   - giao đọc `git show 32ba88b` và làm nốt: 2 nút `loai: 'nut'` trong `dieuKhien` cảnh 3, mỗi lần bấm đổi khoảng cách camera một bậc trong giới hạn OrbitControls, rồi gọi `HMO.yeuCauVe()`; `ve(t)` vẫn thuần; nút ≥ 44 px;
+   - kiểm bằng 3 lệnh build/test, chụp ảnh, đo số tam giác ở mức phóng gần nhất.
+2. **Nghiệm thu `luc-tao-trieu` lần 1** bằng `anim-reviewer` mới. Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
+3. **`hat-nuoc-quay-vong`:** đọc báo cáo nghiệm thu lần 2. Nếu ĐẠT thì merge.
+4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
+   - `manifest.json` có thể xung đột: giải bằng `node tools/build.mjs` (build lại toàn bộ);
+   - cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`;
+   - chạy `npm test`, push.
+5. Viết tóm tắt G2 cho TS. Đạt gồm:
+   - dung lượng từng file;
+   - số tam giác cảnh 3D;
+   - các mục kiểm tay: fps máy thật, máy chiếu, ρ/→/≈/√ trên Windows và Android;
+   - cách mở trên điện thoại;
+   - các điểm chờ quyết ở mục 6b.
+
+   Push, rồi **DỪNG ở G2**.
+
+## 6b. Điểm chờ TS. Đạt quyết ở G2
+
+1. **Dòng nguồn `luc-tao-trieu`:** "NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science". Spec chỉ đề xuất NASA; Pugh & Woodworth do worker tự thêm.
+2. **Hằng số `luc-tao-trieu` gắn `[CẦN NGUỒN]` nhưng checklist bắt buộc hiển thị:** 384.400 km, 6.371 km, 81,3, 27,32 ngày, 29,53 ngày, 24 h 50 ph, 0,46. Tất cả có trong NASA Moon Fact Sheet.
+3. **Thuật ngữ `luc-tao-trieu`** (phương án đề xuất của spec, chưa duyệt): "nước lớn / nước ròng", "bất đẳng nhật triều", nhìn từ cực Bắc, quay ngược chiều kim đồng hồ.
+4. **Màu Ft `luc-tao-trieu`:** #8A5D0B (5,5:1) thay cho #B07A1C (3,6:1, trượt tiêu chí tương phản). Trưởng nhóm đã chấp nhận tạm.
+5. **Kết hợp Codex/ChatGPT (gói Business), dự kiến sau G2:**
+   - Codex review chéo PR, hoặc làm một slug riêng ở chặng 4, kèm `AGENTS.md` trỏ tới STANDARDS;
+   - ChatGPT dùng cho phác cảnh và ảnh truyền thông; không dùng cho số liệu hay bản đồ.
 
 **Phân vai (TS. Đạt chốt ngày 18/11/2026):**
 - Phiên chính chạy [mô hình bậc 1] ở mức effort **high**, giữ vai trưởng nhóm: chỉ huy, điều phối, giao việc, đọc báo cáo, merge, push, ghi STATUS/REVIEW_LOG. Việc dựng animation và nghiệm thu giao cho agent.
 - Bốn agent giữ nguyên vai trò. `anim-3d` và `anim-reviewer` đổi sang cùng model với `anim-2d` (alias trong frontmatter), bỏ hẳn model cũ vì model đó đòi usage credits và làm cả 3 agent dừng ngay lúc khởi động. `anim-label` giữ nguyên.
 - Nếu `subagent_type: anim-*` báo không tìm thấy (phiên khởi động trước khi có `.claude/agents/`), dùng `general-purpose`, chép nguyên văn phần thân file định nghĩa agent vào đầu prompt và đặt `model` đúng như frontmatter.
 
-**Quy tắc chạy agent:** tối đa 3 agent song song. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
+**Quy tắc chạy agent:** tối đa 3 agent song song. Phiên này đã chạm hạn mức 5 giờ một lần (05:53 UTC); worker bị dừng thì trưởng nhóm lưu phần dở thành commit WIP rồi gửi tiếp bằng SendMessage. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
 
 ## 7. Các chặng sau G2
 
