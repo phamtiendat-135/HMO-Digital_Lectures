@@ -105,7 +105,10 @@ function ganChuot() {
     const r = cvGL.getBoundingClientRect();
     v1.copy(diemCam.position).project(camera);
     const dx = r.left + (v1.x + 1) / 2 * r.width - ev.clientX, dy = r.top + (1 - v1.y) / 2 * r.height - ev.clientY;
-    if (Math.hypot(dx, dy) <= 44) { dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null; }
+    // chỉ bắt điểm cam khi nó ở nửa cầu quay về phía camera, cho lố qua mép khoảng 17° (điểm ở mặt khuất trùng hình với tâm Trái Đất)
+    v2.copy(camera.position).sub(diemCam.position).normalize();
+    const thay = v2.dot(v1.copy(diemCam.position).sub(tamTD)) > -0.3;
+    if (thay && Math.hypot(dx, dy) <= 44) { dangKeo = true; controls.enabled = false; cvGL.setPointerCapture(ev.pointerId); cham = null; }
     else cham = { x: ev.clientX, y: ev.clientY, t: ev.timeStamp };
   });
   cvGL.addEventListener('pointermove', (ev) => { if (dangKeo && ev.isPrimary) datDiem(ev, true); });
