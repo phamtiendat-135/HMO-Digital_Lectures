@@ -80,6 +80,11 @@ Phiên mới **làm theo khuyến nghị dưới đây**, trừ khi TS. Đạt n
 7. Pilot nào được duyệt thì merge vào `claude/relaxed-meitner-q01202`, cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`, rồi chạy toàn bộ `npm test`.
 8. Viết tóm tắt G2 cho TS. Đạt gồm: dung lượng từng file, số tam giác của cảnh 3D, các mục cần kiểm tay (fps trên máy thật, font ρ/→/≈ trên Windows và Android), cách mở trên điện thoại. Push, rồi **DỪNG ở G2**.
 
+**Phân vai (TS. Đạt chốt ngày 18/11/2026):**
+- Phiên chính chạy [mô hình bậc 1] ở mức effort **high**, giữ vai trưởng nhóm: chỉ huy, điều phối, giao việc, đọc báo cáo, merge, push, ghi STATUS/REVIEW_LOG. Việc dựng animation và nghiệm thu giao cho agent.
+- Bốn agent giữ nguyên vai trò. `anim-3d` và `anim-reviewer` đổi sang cùng model với `anim-2d` (alias trong frontmatter), bỏ hẳn model cũ vì model đó đòi usage credits và làm cả 3 agent dừng ngay lúc khởi động. `anim-label` giữ nguyên.
+- Nếu `subagent_type: anim-*` báo không tìm thấy (phiên khởi động trước khi có `.claude/agents/`), dùng `general-purpose`, chép nguyên văn phần thân file định nghĩa agent vào đầu prompt và đặt `model` đúng như frontmatter.
+
 **Quy tắc chạy agent:** tối đa 3 agent song song. Dặn mỗi agent commit WIP sau từng nhóm S-xx, vì hạn mức 5 giờ và hạn mức tuần đã nhiều lần cắt ngang worker. Nếu một agent bị dừng, gửi tiếp bằng SendMessage sau khi hạn mức hồi lại, không tạo agent mới.
 
 ## 7. Các chặng sau G2

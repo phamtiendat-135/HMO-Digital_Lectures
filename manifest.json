@@ -1,6 +1,26 @@
 {
   "animations": [
     {
+      "slug": "kenh-sofar",
+      "ten": "Kênh SOFAR hình thành như thế nào?",
+      "hocPhan": "",
+      "bai": "",
+      "moTa": "Profile tốc độ âm ở Biển Đông và cách tia âm bị giữ quanh trục SOFAR theo định luật Snell.",
+      "tags": [
+        "âm học biển",
+        "kênh SOFAR",
+        "tốc độ âm",
+        "định luật Snell",
+        "Biển Đông"
+      ],
+      "loai": "2D",
+      "ngayCapNhat": "2026-11-18",
+      "phienBan": "1.0.0",
+      "dungLuong": 137906,
+      "giayThumb": 15,
+      "canhThumb": 4
+    },
+    {
       "slug": "luc-tao-trieu",
       "ten": "Lực tạo triều: vì sao có hai múi triều",
       "hocPhan": "",
@@ -17,7 +37,7 @@
       "loai": "3D",
       "ngayCapNhat": "2026-11-15",
       "phienBan": "1.0.0",
-      "dungLuong": 636231,
+      "dungLuong": 636282,
       "giayThumb": 2,
       "canhThumb": 2
     }
