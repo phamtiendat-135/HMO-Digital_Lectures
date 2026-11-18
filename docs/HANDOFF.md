@@ -14,7 +14,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
   - Sinh viên năm 1–3 tự học trên điện thoại Android tầm trung (màn dọc 360–430 px, mạng 4G).
   - Giảng viên trình chiếu trên máy chiếu 4:3 (1024×768).
 - Quy trình gồm 4 cổng bắt buộc dừng lại chờ duyệt: G0 (thiết kế) → G1 (spec + phân tầng) → **G2 (3 pilot)** → G3 (trang kho + sổ điểm). Ngoài 4 cổng này thì làm tiếp, không hỏi lặt vặt.
-- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.** 1/3 pilot đã approved (`kenh-sofar`).
+- **Đang ở chặng 3: hoàn tất 3 pilot rồi dừng ở G2.** 2/3 pilot đã approved (`kenh-sofar`, `hat-nuoc-quay-vong`); `luc-tao-trieu` đang nghiệm thu lần 1.
 
 ## 2. Tài liệu phải đọc trước khi làm
 
@@ -50,7 +50,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 | Slug | Tầng | Nhánh / commit cuối | Dung lượng | Test | Tình trạng |
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
-| `hat-nuoc-quay-vong` | T2 | `anim/hat-nuoc-quay-vong` @ 8f98afd | 117.506 B | 87 passed / 12 skipped (toàn bộ) | Lần 1 KHÔNG ĐẠT (tương phản cảnh 5 + 3 chỗ che). Lần 2 KHÔNG ĐẠT (4 mục lần 1 đạt; còn nhãn "4%" che dấu nặng chữ "Độ"). `anim-2d` sửa ở 8f98afd: 0 hình đè, tương phản p5 nhỏ nhất 5,01:1. **Đang nghiệm thu lần 3.** Chấp nhận: điểm ảnh tối thiểu 3,64:1 ở t 48,25–48,4 s do hạt mờ nằm DƯỚI chữ (p5 6,03:1). |
+| `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
 | `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ 82d996d | 636.686 B (ngưỡng 1,5 MB) | 18/18 slug; 90 passed / 9 skipped toàn bộ | `anim-3d` xong 26/26 S-xx + 2 việc thêm (Giải thích ≤ 67 tiếng; nút Phóng to/Thu nhỏ ×1,25, giới hạn 3–14). Tam giác tối đa 14.482. **Đang nghiệm thu lần 1** bằng `anim-reviewer` mới. |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
@@ -77,7 +77,7 @@ Bước 1–5 của bản HANDOFF trước đã xong. Còn lại:
 
 1. **`luc-tao-trieu`:** nút thu phóng xong (82d996d).
 2. **Nghiệm thu `luc-tao-trieu` lần 1** bằng `anim-reviewer` mới. Phải thử dự phòng 2D và ghi số tam giác. Báo cho reviewer biết 2 quyết định đã chốt: màu Ft là #8A5D0B, và dòng nguồn chờ TS. Đạt.
-3. **`hat-nuoc-quay-vong`:** đọc báo cáo nghiệm thu lần 3. Nếu ĐẠT thì merge.
+3. **`hat-nuoc-quay-vong`:** ĐẠT lần 3, đã merge.
 4. Pilot nào ĐẠT thì merge vào `claude/relaxed-meitner-q01202`:
    - `manifest.json` có thể xung đột: giải bằng `node tools/build.mjs` (build lại toàn bộ);
    - cập nhật `audit/STATUS.md` (approved) và `audit/REVIEW_LOG.md`;
