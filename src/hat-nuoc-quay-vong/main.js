@@ -269,7 +269,8 @@ function veNuoc(c, sc, st) {
       pill(c, sc.rowNames[r], 14, Y, ly.depth);
       const Xl = (x0r + sc.Ah(z0)) * s + 16;
       if (sc.deep) pill(c, Math.round(100 * Math.exp(sc.k * z0)) + '%', Xl, Y, ly.depth);
-      else if (r === 0) pill(c, 'elip ' + fmt(2 * sc.Ah(0) / sc.E, 1) + ' × ' + fmt(2 * sc.Av(0) / sc.E, 1) + ' m', Xl, Y - 2, ly.depth);
+      // Nhãn elip đặt bên trái quỹ đạo hạt đỏ: đường đi của phao (bên phải) không bao giờ tới đây
+      else if (r === 0) pill(c, 'elip ' + fmt(2 * sc.Ah(0) / sc.E, 1) + ' × ' + fmt(2 * sc.Av(0) / sc.E, 1) + ' m', (x0r - sc.Ah(0)) * s - 16, Y - 2, ly.depth, 'right');
       else if (r === sc.rows.length - 1) pill(c, 'sát đáy: chỉ tới – lui ' + fmt(2 * sc.Ah(z0) / sc.E, 1) + ' m', Xl, Y - 30, ly.depth);
     }
   }
