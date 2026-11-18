@@ -72,7 +72,8 @@ export default {
     tron(g, mx, my, RMT, '#8A93A3');
     g.beginPath(); g.arc(mx, my, RMT, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fillStyle = '#EDF3F8'; g.fill();
     tron(g, mx, my, RMT, null, MAU.slate, 2);
-    chu(g, 'Mặt Trăng', mx, my + RMT + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'top', khoa: true, vien: MAU.nen });
+    const tren = my < EY - RQ * 0.5;   // Mặt Trăng ở phía trên: nhãn đặt bên trên để không đè bao triều
+    chu(g, 'Mặt Trăng', mx, tren ? my - RMT - 8 : my + RMT + 8, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: tren ? 'bottom' : 'top', khoa: true, vien: MAU.nen });
 
     // số đọc và ba thanh biên độ tương đối
     const loai = bd / (1 + TI_SO_MT) > 0.86 ? 'Triều cường' : bd / (1 + TI_SO_MT) < 0.64 ? 'Triều kém' : 'Trung gian';
@@ -80,9 +81,9 @@ export default {
     chu(g, loai, 1392, 268, { co: 40, dam: 700, mau: loai === 'Triều cường' ? MAU.camChu : loai === 'Triều kém' ? MAU.ocean : MAU.ftChu, can: 'right', khoa: true });
     if (st.thanh && tt.muc === 'day-du') {
       const xb = 1130, wb = 170, hang = [['Mặt Trăng', 1, MAU.ocean, MAU.ocean], ['Mặt Trời', TI_SO_MT, MAU.ft, MAU.ftChu], ['Tổng', bd, MAU.cam, MAU.camChu]];
-      chu(g, 'Biên độ triều tương đối', 1392, 490, { co: 30, mau: MAU.navy, can: 'right' });
+      chu(g, 'Biên độ triều tương đối', 1392, 590, { co: 30, mau: MAU.navy, can: 'right' });
       hang.forEach(([ten, v, mau, mauChu], i) => {
-        const y = 548 + i * 62;
+        const y = 644 + i * 56;
         chu(g, `${ten} ${vn(v, 2)}`, 1392, y, { co: 30, dam: 700, mau: mauChu, can: 'right' });
         g.fillStyle = mau; g.fillRect(xb + (262 - wb * v), y + 8, wb * v, 12);
       });

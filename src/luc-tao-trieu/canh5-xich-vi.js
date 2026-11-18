@@ -74,7 +74,8 @@ export default {
     doan(g, CX + R, CY, CX + R * 2.3, CY, MAU.vien, 2, [4, 6]);
     matTrang(g, mx, my, 26);
     chu(g, 'phía Mặt Trăng', mx + 40, my + 6, { co: 30, mau: MAU.navy, goc: 'middle', vien: MAU.nen });
-    chu(g, 'Mặt Trăng', mx, my - 36, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: 'bottom', khoa: true, vien: MAU.nen });
+    // nhãn ở phía xa Trái Đất: trên đĩa khi Mặt Trăng ở bắc xích đạo, dưới đĩa khi ở nam
+    chu(g, 'Mặt Trăng', mx, xv >= 0 ? my - 36 : my + 36, { co: 30, dam: 700, mau: MAU.navy, can: 'center', goc: xv >= 0 ? 'bottom' : 'top', khoa: true, vien: MAU.nen });
     g.strokeStyle = MAU.cam; g.lineWidth = 4; g.beginPath(); g.arc(CX, CY, R * 1.66, Math.min(0, -xv * D2R), Math.max(0, -xv * D2R)); g.stroke();
     chu(g, `δ = ${vn(Math.abs(xv), 1)}° ${xv >= 0 ? 'B' : 'N'}`, CX + R * 1.72, CY + (xv >= 0 ? 44 : -40), { co: 36, dam: 700, mau: MAU.camChu, goc: 'middle', khoa: true });
 
