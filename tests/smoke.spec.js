@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import { danhSach, url, canhGac, trangThai, chupSanKhau, tiLeKhacNen, TU_CAM } from './chung.js';
 
 const NGUONG = { '2D': 500 * 1024, '3D': 1536 * 1024 };
+// three.js tự đặt window.__THREE__ để cảnh báo khi bị nạp hai lần; không phải móc của ta.
+const MOC_THU_VIEN = ['__THREE__'];
 
 for (const a of danhSach()) {
   test.describe(a.slug, () => {
@@ -86,7 +88,7 @@ for (const a of danhSach()) {
       }
     });
 
-    test('không có từ cấm trong DOM và mã nguồn; dung lượng trong ngưỡng', async ({ page }) => {
+    test('không có từ cấm, không còn móc gỡ lỗi window.__; dung lượng trong ngưỡng', async ({ page }) => {
       const ma = fs.readFileSync(a.tep, 'utf8');
       await canhGac(page);
       await page.goto(url(a.tep));
@@ -97,6 +99,9 @@ for (const a of danhSach()) {
         expect(dom.toLowerCase().includes(tu.toLowerCase()), `DOM chứa "${tu}"`).toBe(false);
       }
       expect(fs.statSync(a.tep).size).toBeLessThanOrEqual(NGUONG[a.loai]);
+      // Móc gỡ lỗi (window.__xxx) không được nằm trong bản phát hành. Ngoại lệ: biến của thư viện ngoài.
+      const moc = [...ma.matchAll(/\b(?:window|globalThis|self)\.(__[A-Za-z0-9_$]+)/g)].map((m) => m[1]).filter((ten) => !MOC_THU_VIEN.includes(ten));
+      expect([...new Set(moc)], 'móc gỡ lỗi window.__ còn trong bản phát hành').toEqual([]);
       expect(await page.locator('html').getAttribute('lang')).toBe('vi');
     });
   });
