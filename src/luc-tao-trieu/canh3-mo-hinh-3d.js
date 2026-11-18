@@ -75,21 +75,15 @@ function vongTron(r, mau, doMo, matPhang) {
 
 function datGocNhin(ten) {
   const [vt, dich] = GOC_NHIN[ten] || GOC_NHIN['ban-dau'];
-  const giamChan = controls.enableDamping;
-  controls.enableDamping = false; controls.update();   // xoá quán tính còn lại của lần kéo trước
   camera.position.set(vt[0], vt[1], vt[2]); controls.target.set(dich[0], dich[1], dich[2]); controls.update();
-  controls.enableDamping = giamChan;
 }
 
 /** Đổi khoảng cách camera tới điểm nhìn theo hệ số k (một bậc), trong giới hạn min/max của OrbitControls. */
 const BAC_THU_PHONG = 1.25;
 function thuPhong(k) {
-  const giamChan = controls.enableDamping;
-  controls.enableDamping = false; controls.update();   // xoá quán tính còn lại trước khi đặt khoảng cách
   v1.copy(camera.position).sub(controls.target);
   v1.setLength(kep(v1.length() * k, controls.minDistance, controls.maxDistance));
   camera.position.copy(controls.target).add(v1); controls.update();
-  controls.enableDamping = giamChan;
   yeuCau();
 }
 
@@ -151,7 +145,9 @@ export default {
     camera = new PerspectiveCamera(40, W / H, 0.1, 200);
     ganChuot();   // gắn trước OrbitControls để kéo điểm cam được ưu tiên
     controls = new OrbitControls(camera, cvGL);
-    controls.enableDamping = !mt.giamChuyenDong; controls.minDistance = 3; controls.maxDistance = 14;
+    // Không giảm chấn: giảm chấn buộc gọi controls.update() mỗi lần vẽ, làm camera trôi và ve(t) mất tính thuần.
+    // Không giảm chấn thì OrbitControls tự cập nhật camera ngay trong sự kiện kéo/lăn/chụm; ve() không đụng tới camera.
+    controls.enableDamping = false; controls.minDistance = 3; controls.maxDistance = 14;
     controls.addEventListener('change', yeuCau);
     datGocNhin('ban-dau');
 
@@ -188,7 +184,8 @@ export default {
     // Ba vòng tròn quỹ đạo bán kính 0,733 R (của điểm cam, tâm Trái Đất và cực Bắc) và hai chấm chạy trên đó.
     vetNhom = new Group(); scene.add(vetNhom);
     for (let i = 0; i < 3; i++) { const l = vongTron(K, 0xF07800, 0.8, 'xz'); vet.push(l); vetNhom.add(l); }
-    for (let i = 0; i < 2; i++) { const c = new Mesh(hinhCham, new MeshBasicMaterial({ color: 0xF2C14E, depthTest: false, transparent: true })); c.renderOrder = 20; c.scale.setScalar(1.6); chamVet.push(c); vetNhom.add(c); }
+    // renderOrder 22: chấm vết ở cực Bắc trùng chỗ với chấm vành mẫu (renderOrder 20), cần thứ tự vẽ xác định
+    for (let i = 0; i < 2; i++) { const c = new Mesh(hinhCham, new MeshBasicMaterial({ color: 0xF2C14E, depthTest: false, transparent: true })); c.renderOrder = 22; c.scale.setScalar(1.6); chamVet.push(c); vetNhom.add(c); }
 
   },
   vao() { cvGL.style.display = 'block'; },
@@ -231,7 +228,6 @@ export default {
       vet.forEach((l, i) => l.position.set(K + lechDiem[i][0], lechDiem[i][1], lechDiem[i][2]));  // tâm vòng = CM + độ lệch của điểm
       chamVet[0].position.copy(tamTD); chamVet[1].position.set(tamTD.x, 1, tamTD.z);
     }
-    controls.update();
     renderer.render(scene, camera);
 
     // lớp chữ 2D phía trên
