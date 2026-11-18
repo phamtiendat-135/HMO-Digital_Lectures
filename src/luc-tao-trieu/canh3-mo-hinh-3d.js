@@ -15,7 +15,7 @@ const DAI = 1.15;         // độ dài mũi tên ứng với |Fc|
 const CM = new Vector3(K, 0, 0);
 const GOC_NHIN = {
   'ban-dau': [[0.97, 2.81, 7.93], [1.65, 0.2, 0]],
-  'cuc-bac': [[1.6, 10.5, 0.01], [1.6, 0, 0]],
+  'cuc-bac': [[0.73, 13.9, -0.59], [0.73, 0, -0.6]],   // nhìn xuống CM, đủ xa để Mặt Trăng còn trong khung khi bật hoạt hoạ
   'doc-truc': [[-6, 0.6, 0], [1.6, 0, 0]],
 };
 const TRUC_Y = new Vector3(0, 1, 0);
@@ -220,10 +220,12 @@ export default {
     // lớp chữ 2D phía trên
     g.clearRect(0, 0, W, H);
     const nhan = (s, v, o) => { const [x, y, truoc] = mauTrenStage(v); if (truoc) chu(g, s, x, y, o); };
-    nhan('Trái Đất', v2.set(tamTD.x, 1.22, tamTD.z), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: 'bottom', khoa: true });
-    nhan('Mặt Trăng', v2.copy(moon.position).setY(0.42), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: 'bottom', khoa: true });
+    const len = v1.set(0, 1, 0).applyQuaternion(camera.quaternion).clone();   // hướng "lên" của màn hình, trong không gian cảnh
+    nhan('Trái Đất', v2.copy(tamTD).addScaledVector(len, 1.22), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: 'bottom', khoa: true });
+    const trangCao = mauTrenStage(moon.position)[1] < 330;   // Mặt Trăng sát mép trên: nhãn đặt bên dưới để không đè tiêu đề
+    nhan('Mặt Trăng', v2.copy(moon.position).addScaledVector(len, trangCao ? -0.42 : 0.42), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: trangCao ? 'top' : 'bottom', khoa: true });
     nhan('CM', v2.set(K, -0.16, 0), { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'top', khoa: true });
-    if (st3.vanh) nhan('vành đai θ = 90°', v2.set(0, -1.1, 0).applyAxisAngle(TRUC_Y, a).add(tamTD), { co: 30, mau: MAU.slate, vien: '#FFFFFF', can: 'center', goc: 'top' });
+    if (st3.vanh) nhan('vành đai θ = 90°', v2.copy(tamTD).addScaledVector(len, -1.1), { co: 30, mau: MAU.slate, vien: '#FFFFFF', can: 'center', goc: 'top' });
     const mauChu = { fc: MAU.luc, fg: MAU.do, ft: MAU.ftChu }, ten = { fc: 'Fc', fg: 'Fg', ft: 'Ft' };
     for (const k of ['fc', 'fg', 'ft']) if (st3[k]) nhan(ten[k], dinh[k], { co: 30, dam: 700, mau: mauChu[k], vien: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
     veBang(g, sd);
