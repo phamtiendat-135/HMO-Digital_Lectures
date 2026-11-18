@@ -17,6 +17,9 @@ export const DIEU_KHIEN_3D = CHUNG.concat([
   { id: 'c3-trong', loai: 'bat-tat', nhan: 'Trái Đất bán trong suốt', giaTri: false },
   { id: 'c3-goc-nhin', loai: 'chon', nhan: 'Góc nhìn', giaTri: 'ban-dau', luaChon: [
     { giaTri: 'ban-dau', nhan: 'Về góc nhìn ban đầu' }, { giaTri: 'cuc-bac', nhan: 'Nhìn từ cực Bắc' }, { giaTri: 'doc-truc', nhan: 'Nhìn dọc trục' }] },
+  // thay cho chụm hai ngón / lăn chuột
+  { id: 'c3-phong-to', loai: 'nut', nhan: 'Phóng to' },
+  { id: 'c3-thu-nho', loai: 'nut', nhan: 'Thu nhỏ' },
 ]);
 export const DIEU_KHIEN_2D = CHUNG;
 

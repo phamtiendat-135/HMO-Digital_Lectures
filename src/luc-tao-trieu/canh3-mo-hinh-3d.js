@@ -81,6 +81,18 @@ function datGocNhin(ten) {
   controls.enableDamping = giamChan;
 }
 
+/** Đổi khoảng cách camera tới điểm nhìn theo hệ số k (một bậc), trong giới hạn min/max của OrbitControls. */
+const BAC_THU_PHONG = 1.25;
+function thuPhong(k) {
+  const giamChan = controls.enableDamping;
+  controls.enableDamping = false; controls.update();   // xoá quán tính còn lại trước khi đặt khoảng cách
+  v1.copy(camera.position).sub(controls.target);
+  v1.setLength(kep(v1.length() * k, controls.minDistance, controls.maxDistance));
+  camera.position.copy(controls.target).add(v1); controls.update();
+  controls.enableDamping = giamChan;
+  yeuCau();
+}
+
 const mauTrenStage = (v) => { v1.copy(v).project(camera); return [(v1.x + 1) / 2 * W, (1 - v1.y) / 2 * H, v1.z < 1]; };
 function tiaTu(ev) {
   const r = cvGL.getBoundingClientRect();
@@ -182,7 +194,12 @@ export default {
   vao() { cvGL.style.display = 'block'; },
   ra() { cvGL.style.display = 'none'; },
   doiCo(tiLe) { if (controls) { controls.rotateSpeed = kep(1 / tiLe, 0.5, 2); } },
-  khiDoi(id, v) { if (!khiDoiChung(id, v) && id === 'c3-goc-nhin') datGocNhin(v); },
+  khiDoi(id, v) {
+    if (khiDoiChung(id, v)) return;
+    if (id === 'c3-goc-nhin') datGocNhin(v);
+    else if (id === 'c3-phong-to') thuPhong(1 / BAC_THU_PHONG);
+    else if (id === 'c3-thu-nho') thuPhong(BAC_THU_PHONG);
+  },
   huy() { if (controls) controls.dispose(); if (renderer) { renderer.dispose(); cvGL.remove(); } },
 
   ve(g, t) {
@@ -219,7 +236,8 @@ export default {
 
     // lớp chữ 2D phía trên
     g.clearRect(0, 0, W, H);
-    const nhan = (s, v, o) => { const [x, y, truoc] = mauTrenStage(v); if (truoc) chu(g, s, x, y, o); };
+    // nhãn chỉ vẽ khi điểm neo nằm trong khung (khi phóng gần, vật ra ngoài khung thì nhãn cũng ẩn) và trên dải đáy
+    const nhan = (s, v, o) => { const [x, y, truoc] = mauTrenStage(v); if (truoc && x >= 0 && x <= W && y >= 0 && y <= 950) chu(g, s, x, y, o); };
     const len = v1.set(0, 1, 0).applyQuaternion(camera.quaternion).clone();   // hướng "lên" của màn hình, trong không gian cảnh
     nhan('Trái Đất', v2.copy(tamTD).addScaledVector(len, 1.22), { co: 30, dam: 700, mau: MAU.navy, vien: '#FFFFFF', can: 'center', goc: 'bottom', khoa: true });
     const trangCao = mauTrenStage(moon.position)[1] < 330;   // Mặt Trăng sát mép trên: nhãn đặt bên dưới để không đè tiêu đề
