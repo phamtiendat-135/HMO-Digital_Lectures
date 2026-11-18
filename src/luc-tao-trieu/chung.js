@@ -70,7 +70,8 @@ export function hopChu(g, s, x, y, o = {}) {
   let trai = can === 'center' ? x - rong / 2 : can === 'right' ? x - rong : x;
   trai += Math.max(0, 12 - trai) - Math.max(0, trai + rong - (W - 12));
   const goc = o.goc || 'alphabetic', tren = goc === 'top' ? y : goc === 'middle' ? y - co * 0.5 : goc === 'bottom' ? y - co : y - co * 0.78;
-  return [trai, tren - co * 0.06, trai + rong, tren + co * 1.02];   // cả dấu thanh tiếng Việt phía trên và chân chữ g, y phía dưới
+  const v = o.vien ? co * 0.1 : 0;   // nét viền quanh chữ
+  return [trai - v, tren - co * 0.06 - v, trai + rong + v, tren + co * 1.02 + v];   // cả dấu thanh tiếng Việt phía trên và chân chữ g, y phía dưới
 }
 const chong = (a, b) => Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
 
@@ -86,7 +87,7 @@ export function chuTranh(g, s, ds, o = {}) {
     const oo = rieng ? { ...o, ...rieng } : o, h0 = hopChu(g, s, x, y, oo);
     if (!h0) return;
     // điểm phạt: chồng thật (nặng) + chồng vào vùng lề quanh chữ (nhẹ, để nhãn không dính sát nhau)
-    const h = [h0[0] - 10, h0[1] - 6, h0[2] + 10, h0[3] + 6];
+    const h = [h0[0] - 14, h0[1] - 6, h0[2] + 14, h0[3] + 6];
     let d = 0;
     for (const k of KE) d += 1000 * chong(h0, k) + 20 * chong(h, k);
     d += 1000 * (Math.max(0, h0[3] - day) + Math.max(0, -h0[1])) * (h0[2] - h0[0]);
@@ -129,10 +130,9 @@ export function chu(g, s, x, y, o = {}) {
   g.fillStyle = o.mau || MAU.ink; g.fillText(s, x, y);
   const tren = g.textBaseline === 'top' ? y : g.textBaseline === 'middle' ? y - co * 0.5 : g.textBaseline === 'bottom' ? y - co : y - co * 0.78;
   const trai2 = g.textAlign === 'center' ? x - rong / 2 : g.textAlign === 'right' ? x - rong : x;
-  KE.push([trai2, tren - co * 0.06, trai2 + rong, tren + co * 1.02]);
+  const v = o.vien ? co * 0.1 : 0;
+  KE.push([trai2 - v, tren - co * 0.06 - v, trai2 + rong + v, tren + co * 1.02 + v]);
 }
-/** Hệ số phóng nhãn then chốt ở mức tối giản, để tính khoảng cách đặt nhãn. */
-export const heSoNhan = () => (tt.muc === 'toi-gian' ? 2 : 1);
 
 /** Tiêu đề cảnh (≥ 44 px) và tối đa 2 dòng chú thích (36 px). */
 export function tieuDe(g, ten, ...dong) {
