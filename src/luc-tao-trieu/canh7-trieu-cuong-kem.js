@@ -81,13 +81,14 @@ export default {
     // Loại triều chỉ hai trạng thái, theo pha gần hơn: mỗi trạng thái kéo dài nửa chu kỳ (4 s), không nhấp nháy.
     const cuong = Math.cos(2 * TAU * d / TUAN_TRANG) >= 0;
     const loai = cuong ? 'Kỳ triều cường' : 'Kỳ triều kém';
-    chu(g, `Ngày ${vn(d, 1)}`, 48, 536, { co: 30, mau: MAU.slate });
-    chu(g, loai, 48, toiGian ? 950 : 592, { co: 40, dam: 700, mau: cuong ? MAU.camChu : MAU.ocean, khoa: true });
+    // "Ngày": hộp chữ kể cả viền cách đáy đĩa Mặt Trời (y = 518) hơn 4 px
+    chu(g, `Ngày ${vn(d, 1)}`, 48, 553, { co: 30, mau: MAU.slate });
+    chu(g, loai, 48, toiGian ? 950 : 608, { co: 40, dam: 700, mau: cuong ? MAU.camChu : MAU.ocean, khoa: true });
     if (st.thanh && !toiGian) {
       const wb = 170, hang = [['Mặt Trăng', 1, MAU.ocean, MAU.ocean], ['Mặt Trời', TI_SO_MT, MAU.ft, MAU.ftChu], ['Tổng', bd, MAU.cam, MAU.camChu]];
-      chu(g, 'Biên độ triều tương đối', 48, 642, { co: 30, mau: MAU.navy, vien: null });
+      chu(g, 'Biên độ triều tương đối', 48, 652, { co: 30, mau: MAU.navy, vien: null });
       hang.forEach(([ten, v, mau, mauChu], i) => {
-        const y = 686 + i * 42;
+        const y = 692 + i * 40;
         chu(g, `${ten} ${vn(v, 2)}`, 48, y, { co: 30, dam: 700, mau: mauChu, vien: null });
         g.fillStyle = mau; g.fillRect(290, y - 18, wb * v, 10);   // thanh nằm bên phải chữ, không chạm chữ
       });
