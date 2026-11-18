@@ -13,19 +13,20 @@ const DIEM = [
 ];
 const L = 88;   // chiều dài mũi tên Fc
 
-// Chú giải cố định: mẫu mũi tên Fc và chấm CM, chữ 30 px. Mức đầy đủ: góc dưới trái, mỗi mục một dòng (vùng này nằm ngoài
-// quỹ đạo của nhãn Mặt Trăng và mũi tên Fc); mức tối giản: một hàng ở dải trên cùng (mức này không có tiêu đề).
+// Chú giải cố định: mẫu mũi tên Fc và chấm CM, chữ 30 px. Mức đầy đủ: góc trên phải dưới tiêu đề, tên và giải thích hai
+// dòng (vùng này nằm ngoài tầm của nhãn Mặt Trăng, mũi tên Fc và đĩa Trái Đất). Mức tối giản: chỉ mẫu Fc ở dải trên cùng
+// (mức này không có tiêu đề; giữ tối đa 6 chữ: Fc, A, B, C, Mặt Trăng, Trái Đất).
 function chuGiai(g) {
   const toiGian = tt.muc === 'toi-gian';
   const muc = [];
   if (st.fc) muc.push(['fc', 'Fc', 'lực ly tâm']);
-  muc.push(['cm', 'CM', 'khối tâm chung']);
+  if (!toiGian) muc.push(['cm', 'CM', 'khối tâm chung']);
   muc.forEach(([k, ten, giai], i) => {
-    const x = toiGian ? 48 + i * 200 : 48, y = toiGian ? 60 : 878 + i * 44;
+    const x = toiGian ? 48 : 1135, y = toiGian ? 60 : 214 + i * 76;
     if (k === 'fc') muiTen(g, x, y, x + 56, y, MAU.cam, 6, 18);
     else tron(g, x + 28, y, 9, MAU.navy, '#FFFFFF', 2.5);
     chu(g, ten, x + 70, y, { co: 30, dam: 700, mau: k === 'fc' ? MAU.camChu : MAU.navy, goc: 'middle', khoa: true, vien: null });
-    chu(g, giai, x + 132, y, { co: 30, dam: 400, mau: MAU.ink, goc: 'middle', vien: null });   // mức tối giản: ẩn
+    chu(g, giai, x + 70, y + 34, { co: 30, dam: 400, mau: MAU.ink, goc: 'middle', vien: null });   // mức tối giản: ẩn
   });
 }
 
