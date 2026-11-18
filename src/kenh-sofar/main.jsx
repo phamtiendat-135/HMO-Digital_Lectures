@@ -85,7 +85,7 @@ function BendArrow({ ray, x, op }) {
 const lo = (a, b) => (a <= 0 ? `${b.toFixed(1)} 99999` : `0 ${a.toFixed(1)} ${(b - a).toFixed(1)} 99999`);
 const SVGT = (props) => <text font-family={FONT} {...props} />;
 
-function Piece({ T }) {
+function Piece({ T, idCanh }) {
   const du = st.muc === 'day-du', coChu = st.muc !== 'tat', giam = st.giam;
 
   // ---- Lớp nước / profile
@@ -157,7 +157,8 @@ function Piece({ T }) {
 
   const p4Dot = rayVis && xp4 < 89.5 ? MOTION.pop(T, R + 0.3) * (1 - MOTION.enter(T, B + 5.0, 0.4) * (xp4 >= 89 ? 1 : 0)) : 0;
   const cDai = zMax > 0 ? DUONG_C.dai(zMax) : 0;
-  const tenCanh = st.tenCanh[T >= Z ? 'tong-ket' : T >= E ? 'tia-thoat' : T >= B ? 'bo-tia' : T >= R ? 'tia-4' : T >= S ? 'nguon-am' : T >= P ? 'profile' : 'lop-nuoc'] || '';
+  // Tên cảnh theo idCanh bộ khung truyền vào: ở t = ketThuc (khung tự dừng) vẫn là cảnh đang xem, không phải cảnh sau.
+  const tenCanh = st.tenCanh[idCanh] || '';
 
   return (
     <div style={{ position: 'absolute', left: 0, top: 0, width: W + 'px', height: H + 'px', background: '#FFFFFF', fontFamily: FONT, color: MAU.ink, overflow: 'hidden' }}>
@@ -346,7 +347,7 @@ HMO.dangKy({
     goc.style.cssText = 'position:absolute;left:0;top:0;width:1440px;height:1080px';
     sanKhau.append(goc);
   },
-  ve(t) { render(<Piece T={t} />, goc); },
+  ve(t, idCanh) { render(<Piece T={t} idCanh={idCanh} />, goc); },
   datNhan(muc) { st.muc = muc; },
   huy() { render(null, goc); goc.remove(); },
 });
