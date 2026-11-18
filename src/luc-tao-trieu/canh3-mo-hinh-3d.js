@@ -247,7 +247,7 @@ export default {
     const mauChu = { fc: MAU.luc, fg: MAU.do, ft: MAU.ftChu }, ten = { fc: 'Fc', fg: 'Fg', ft: 'Ft' };
     for (const k of ['fc', 'fg', 'ft']) if (st3[k]) nhan(ten[k], dinh[k], { co: 30, dam: 700, mau: mauChu[k], vien: '#FFFFFF', can: 'center', goc: 'middle', khoa: true });
     veBang(g, sd);
-    tieuDe(g, 'Mô hình 3D: ba lực tại một điểm', 'Kéo để xoay · chụm hoặc lăn để phóng · chạm Trái Đất để đặt điểm cam.');
+    tieuDe(g, 'Mô hình 3D: ba lực tại một điểm', 'Kéo để xoay · chụm, lăn hoặc nút để phóng · chạm Trái Đất đặt điểm cam.');
     chanTrang(g, GHI_CHU_3);
   },
 };
