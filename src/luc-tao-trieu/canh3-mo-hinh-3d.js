@@ -75,7 +75,10 @@ function vongTron(r, mau, doMo, matPhang) {
 
 function datGocNhin(ten) {
   const [vt, dich] = GOC_NHIN[ten] || GOC_NHIN['ban-dau'];
+  const giamChan = controls.enableDamping;
+  controls.enableDamping = false; controls.update();   // xoá quán tính còn lại của lần kéo trước
   camera.position.set(vt[0], vt[1], vt[2]); controls.target.set(dich[0], dich[1], dich[2]); controls.update();
+  controls.enableDamping = giamChan;
 }
 
 const mauTrenStage = (v) => { v1.copy(v).project(camera); return [(v1.x + 1) / 2 * W, (1 - v1.y) / 2 * H, v1.z < 1]; };
@@ -180,7 +183,7 @@ export default {
   },
   vao() { cvGL.style.display = 'block'; },
   ra() { cvGL.style.display = 'none'; },
-  doiCo(tiLe) { if (controls) { controls.rotateSpeed = kep(1 / tiLe, 0.5, 4); } },
+  doiCo(tiLe) { if (controls) { controls.rotateSpeed = kep(1 / tiLe, 0.5, 2); } },
   khiDoi(id, v) { if (!khiDoiChung(id, v) && id === 'c3-goc-nhin') datGocNhin(v); },
   huy() { if (controls) controls.dispose(); if (renderer) { renderer.dispose(); cvGL.remove(); } delete window.HMO_LUC_TAO_TRIEU; },
 

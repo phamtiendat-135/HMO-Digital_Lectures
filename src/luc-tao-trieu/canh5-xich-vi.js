@@ -21,7 +21,7 @@ export const tiSoNhat = (vd, xv) => 4 * Math.abs(Math.tan(vd * D2R) * Math.tan(x
 export function cheDo(vd, xv) {
   const r = tiSoNhat(vd, xv);
   if (r < 0.25) return 'bán nhật triều đều';
-  if (r >= 4) return 'nhật triều';
+  if (r >= 4 - 1e-9) return 'nhật triều';   // φ + δ = 90° cho đúng 4 (trừ sai số dấu phẩy động)
   return r >= 1 ? 'hỗn hợp, thiên về nhật triều' : 'hỗn hợp, thiên về bán nhật triều';
 }
 /** Xích vĩ tại giờ h: bắt đầu ở cực đại bắc, chu kỳ một tháng sao. */
