@@ -79,11 +79,11 @@ export default {
     // Tên ba lực và CM nằm trong bảng số (mức đầy đủ) hoặc khối chú giải cố định ở góc trên phải (mức tối giản).
     // Trên hình chỉ còn nhãn thiên thể, đặt theo quy tắc cố định.
     const toiGian = tt.muc === 'toi-gian';
-    veChuGiai(g, 1236, 196);
+    veChuGiai(g, 48, 60, true, true);   // mức tối giản: hàng chú giải ở dải trên cùng, cùng chỗ với bản 3D
     const oMT = { co: 30, dam: 700, mau: MAU.navy, khoa: true };
-    // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ CM; mức tối giản (chữ to gấp đôi): ngay trên/dưới đĩa
-    if (toiGian) nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, 0, my <= CY ? -1 : 1, 8, oMT);
-    else nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, u[0], -u[1], 8, oMT);
+    // Mặt Trăng (mức đầy đủ): phía ngoài đĩa theo hướng bán kính từ CM. Mức tối giản dùng mẫu trong hàng chú giải:
+    // chữ 60 px không có chỗ cố định quanh đĩa (ở hai đầu quỹ đạo phải đổi phía trên/dưới, tức là nhảy chỗ).
+    if (!toiGian) nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, u[0], -u[1], 8, oMT);
     // Trái Đất (mức đầy đủ): ngoài đĩa, phía đối diện điểm cam (các mũi tên tại điểm cam không vươn tới đó)
     if (!toiGian) nhanNgoai(g, 'Trái Đất', ex, ey, R, -p[0], p[1], 12, { co: 30, dam: 700, mau: MAU.navy });
   },
