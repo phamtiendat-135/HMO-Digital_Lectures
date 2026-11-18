@@ -1,11 +1,11 @@
 // Cảnh 4: một ngày có hai lần nước lớn. Nhìn từ cực Bắc: Mặt Trăng và điểm P đều quay ngược chiều kim đồng hồ.
-import { tt, MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, vn, gioPhut, nen, chu, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { MAU, A_KM, R_KM, T_THANG_SAO, T_SAO, T_TRIEU, PHONG_DAI_FT, TAU, gioPhut, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
 
 export const GIO_MOI_GIAY = 2;                 // 1 giây hoạt hình = 2 giờ
 const LAP = T_THANG_SAO / GIO_MOI_GIAY;        // một tháng sao
 const CUA_SO = 50;                             // giờ trên một màn đồ thị
 const st = { bao: true };
-const CX = 720, CY = 448, RE = 105, RO = 245, RMT = 24;
+const CX = 720, CY = 427, RE = 105, RO = 205, RMT = 24;
 
 /** Ft tại điểm trên xích đạo ở góc phi khi Mặt Trăng ở góc alpha (rad, trong mặt phẳng quỹ đạo), đơn vị |Fc|. */
 export function ftPhang(phi, alpha) {
@@ -54,7 +54,6 @@ export default {
       const sx = X(Math.cos(phi) * RE), sy = Y(Math.sin(phi) * RE);
       muiTen(g, sx, sy, sx + fx * K, sy - fy * K, MAU.ft, 4, 14);
       tron(g, sx, sy, 4, MAU.navy);
-      vatCan(sx, sy, 6); vatCanDoan(sx, sy, sx + fx * K, sy - fy * K, 5);
     }
 
     const px = X(Math.cos(be) * RE), py = Y(Math.sin(be) * RE);
@@ -65,16 +64,16 @@ export default {
 
     // số đọc hai bên hình
     const dung = ftDung(h);
-    chu(g, 'Ngày triều', 48, 250, { co: 30, mau: MAU.slate });
-    chu(g, gioPhut(T_TRIEU), 48, 296, { co: 40, dam: 700, mau: MAU.navy });
-    chu(g, 'Hai lần nước lớn', 48, 590, { co: 30, mau: MAU.slate });
-    chu(g, 'cách nhau', 48, 628, { co: 30, mau: MAU.slate });
-    chu(g, gioPhut(T_TRIEU / 2), 48, 674, { co: 40, dam: 700, mau: MAU.navy });
-    chu(g, 'Thời gian', 1392, 250, { co: 30, mau: MAU.slate, can: 'right' });
-    chu(g, gioPhut(h), 1392, 296, { co: 40, dam: 700, mau: MAU.navy, can: 'right' });
-    chu(g, 'Tại P', 1392, 590, { co: 30, mau: MAU.slate, can: 'right' });
-    chu(g, dung > 0 ? 'Nước lớn' : 'Nước ròng', 1392, 636, { co: 40, dam: 700, mau: dung > 0 ? MAU.camChu : MAU.ocean, can: 'right' });
-    chu(g, dung > 0 ? '(Ft hướng lên)' : '(Ft hướng xuống)', 1392, 676, { co: 30, mau: MAU.slate, can: 'right' });
+    chu(g, 'Ngày triều', 48, 250, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, gioPhut(T_TRIEU), 48, 296, { co: 40, dam: 700, mau: MAU.navy, vien: null });
+    chu(g, 'Hai lần nước lớn', 48, 590, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, 'cách nhau', 48, 628, { co: 30, mau: MAU.slate, vien: null });
+    chu(g, gioPhut(T_TRIEU / 2), 48, 674, { co: 40, dam: 700, mau: MAU.navy, vien: null });
+    chu(g, 'Thời gian', 1392, 250, { co: 30, mau: MAU.slate, can: 'right', vien: null });
+    chu(g, gioPhut(h), 1392, 296, { co: 40, dam: 700, mau: MAU.navy, can: 'right', vien: null });
+    chu(g, 'Tại P', 1392, 590, { co: 30, mau: MAU.slate, can: 'right', vien: null });
+    chu(g, dung > 0 ? 'Nước lớn' : 'Nước ròng', 1392, 636, { co: 40, dam: 700, mau: dung > 0 ? MAU.camChu : MAU.ocean, can: 'right', vien: null });
+    chu(g, dung > 0 ? '(Ft hướng lên)' : '(Ft hướng xuống)', 1392, 676, { co: 30, mau: MAU.slate, can: 'right', vien: null });
 
     // dải đồ thị
     const x0 = 100, x1 = 1392, y0 = 772, y1 = 944, DINH = 0.034;
@@ -89,21 +88,21 @@ export default {
     const xp = x0 + (x1 - x0) * (h - goc) / CUA_SO;
     doan(g, xp, y0, xp, y1, MAU.navy, 3);
     tron(g, xp, yV(dung), 9, MAU.cam, '#FFFFFF', 3);
-    chu(g, 'Ft theo phương thẳng đứng tại P (dương = hướng lên)', 48, 754, { co: 30, mau: MAU.navy });
-    chu(g, '0', x0 - 12, yV(0), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle' });
-    [0, 12, 24, 36, 48].forEach((hh) => chu(g, vn(goc + hh) + ' h', x0 + (x1 - x0) * hh / CUA_SO, y1 + 6, { co: 30, mau: MAU.slate, can: hh ? 'center' : 'left', goc: 'top' }));
+    chu(g, 'Ft theo phương thẳng đứng tại P (dương = hướng lên)', 48, 754, { co: 30, mau: MAU.navy, vien: null });
+    chu(g, '0', x0 - 12, yV(0), { co: 30, mau: MAU.slate, can: 'right', goc: 'middle', vien: null });
+    // trục giờ tính từ đầu cửa sổ 50 h đang xem (nhãn đứng yên; giờ tuyệt đối ở ô "Thời gian")
+    [0, 12, 24, 36, 48].forEach((hh) => chu(g, hh + ' h', x0 + (x1 - x0) * hh / CUA_SO, y1 + 6, { co: 30, mau: MAU.slate, can: hh ? 'center' : 'left', goc: 'top', vien: null }));
 
     tieuDe(g, 'Một ngày có hai lần nước lớn', 'Điểm P quay theo Trái Đất, lần lượt đi qua hai múi triều.');
     chanTrang(g, `Nhìn từ cực Bắc. Không theo tỉ lệ: khoảng cách Trái Đất – Mặt Trăng thu ngắn; vector Ft phóng đại ${PHONG_DAI_FT} lần.`);
 
-    // nhãn di động vẽ sau cùng, chọn chỗ trống: chấm, mũi tên Ft, đĩa Mặt Trăng và chữ đã vẽ là vùng cấm
-    vatCan(px, py, 14); vatCanDoan(px, py, px + pfx * K, py - pfy * K, 7); vatCan(mx, my, RMT + 2);
-    const ra = (r, d) => [px + Math.cos(be + d) * r, py - Math.sin(be + d) * r, { can: 'center', goc: 'middle' }];
-    chuTranh(g, 'P', [ra(40, 0), ra(44, 0.5), ra(44, -0.5), ra(64, 0), ra(60, 0.8), ra(60, -0.8)], { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true });
-    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, '32014567'), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
-    const uvTD = [[CX, CY, { can: 'center', goc: 'middle' }]];
-    for (const r of [1.65, 2.1]) for (let i = 0; i < 12; i++) { const b = i * TAU / 12; uvTD.push([CX + Math.cos(b) * RE * r, CY + Math.sin(b) * RE * r, { can: 'center', goc: 'middle' }]); }
-    chuTranh(g, 'Trái Đất', uvTD,
-      { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true, tuyChon: tt.muc === 'toi-gian' });
+    // Nhãn đặt theo quy tắc cố định:
+    // P: phía ngược với mũi tên Ft của P (hướng nhãn đổi liên tục theo Ft, không bao giờ trùng mũi tên)
+    const oP = { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true };
+    nhanNgoai(g, 'P', px, py, 12, -pfx, pfy, 6, oP);
+    // Mặt Trăng: phía ngoài đĩa theo hướng bán kính từ tâm Trái Đất
+    nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, mx - CX, my - CY, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
+    // Trái Đất (mức đầy đủ): giữa đĩa, lệch 30 px về phía xa P để tránh đầu mũi tên Ft khi Ft hướng vào tâm
+    chu(g, 'Trái Đất', CX - Math.cos(be) * 30, CY + Math.sin(be) * 30, { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle' });
   },
 };
