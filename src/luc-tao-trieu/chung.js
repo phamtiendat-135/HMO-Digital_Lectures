@@ -86,43 +86,6 @@ export function viTriNgoai(g, s, cx, cy, r, ux, uy, khe, o = {}) {
   const l = Math.hypot(ux, uy) || 1;
   return dat(ux / l, uy / l + LECH * Math.min(gan, 1.6));
 }
-/**
- * Xếp một nhóm nhãn chuyển động bằng phép đẩy mềm có số vòng cố định: mỗi nhãn có điểm neo (hàm của hình), bị kéo về neo
- * như lò xo và bị đẩy khỏi nhãn khác, khỏi chấm/đĩa ({x, y, r}) và hộp ([x0, y0, x1, y1]) trong `vat`. Lực đẩy đổi liên tục
- * theo vị trí nên kết quả là hàm liên tục, xác định của hình: không có bước dò chỗ trống hay nhảy giữa các phương án.
- * ds: [{ s, x, y, o }] (x, y: tâm nhãn mong muốn). Vẽ luôn các nhãn.
- */
-export function xepNhan(g, ds, vat = [], lan = 40) {
-  const L = [];
-  for (const d of ds) {
-    const k = kichThuoc(g, d.s, d.o);
-    if (k) L.push({ d, w: k[0] + 12, h: k[1] * 1.12 + 12, x: d.x, y: d.y });
-  }
-  for (let it = 0; it < lan; it++) {
-    for (const a of L) {
-      let fx = (a.d.x - a.x) * 0.12, fy = (a.d.y - a.y) * 0.12;
-      for (const b of L) {
-        if (b === a) continue;
-        const dx = a.x - b.x, dy = a.y - b.y, ox = (a.w + b.w) / 2 - Math.abs(dx), oy = (a.h + b.h) / 2 - Math.abs(dy);
-        if (ox > 0 && oy > 0) { const l = Math.hypot(dx, dy) || 1, m = Math.min(ox, oy) * 0.5; fx += dx / l * m; fy += dy / l * m; }
-      }
-      for (const v of vat) {
-        if (Array.isArray(v)) {
-          const cx = (v[0] + v[2]) / 2, cy = (v[1] + v[3]) / 2, dx = a.x - cx, dy = a.y - cy;
-          const ox = (a.w + v[2] - v[0]) / 2 - Math.abs(dx), oy = (a.h + v[3] - v[1]) / 2 - Math.abs(dy);
-          if (ox > 0 && oy > 0) { const l = Math.hypot(dx, dy) || 1, m = Math.min(ox, oy) * 0.6; fx += dx / l * m; fy += dy / l * m; }
-        } else {
-          const nx = kep(v.x, a.x - a.w / 2, a.x + a.w / 2), ny = kep(v.y, a.y - a.h / 2, a.y + a.h / 2);
-          const sau = v.r - Math.hypot(v.x - nx, v.y - ny);
-          if (sau > 0) { const dx = a.x - v.x, dy = a.y - v.y, l = Math.hypot(dx, dy) || 1; fx += dx / l * sau * 0.6; fy += dy / l * sau * 0.6; }
-        }
-      }
-      a.x = kep(a.x + fx, 12 + a.w / 2, W - 12 - a.w / 2);
-      a.y = kep(a.y + fy, 140 + a.h / 2, 950 - a.h / 2);
-    }
-  }
-  for (const a of L) chu(g, a.d.s, a.x, a.y, { ...a.d.o, can: 'center', goc: 'middle' });
-}
 /** Góc a (rad, mọi giá trị) có nằm trong cung [tu, den) (độ, đi theo chiều tăng) không. */
 export function trongCung(a, tu, den) {
   const x = (((a / D2R - tu) % 360) + 360) % 360, dai = (((den - tu) % 360) + 360) % 360;
@@ -183,12 +146,3 @@ export function doan(g, x1, y1, x2, y2, mau, day = 2, net = null) {
 }
 /** Mặt Trăng: đĩa xám có viền. */
 export function matTrang(g, x, y, r) { tron(g, x, y, r, MAU.trang, MAU.slate, 2.5); }
-
-/* TẠM trong lúc chuyển các cảnh sang quy tắc cố định; xoá khi xong. */
-export const vatCan = () => {}, vatCanDoan = () => {}, moiKhung = () => {};
-export function quanh(x, y, r, thuTu = '01234567') {
-  const d = [[x + r, y, { can: 'left', goc: 'middle' }], [x - r, y, { can: 'right', goc: 'middle' }], [x, y + r, { can: 'center', goc: 'top' }], [x, y - r, { can: 'center', goc: 'bottom' }],
-    [x + r * 0.75, y + r * 0.75, { can: 'left', goc: 'top' }], [x - r * 0.75, y + r * 0.75, { can: 'right', goc: 'top' }], [x + r * 0.75, y - r * 0.75, { can: 'left', goc: 'bottom' }], [x - r * 0.75, y - r * 0.75, { can: 'right', goc: 'bottom' }]];
-  return [...thuTu].map((c) => d[+c]);
-}
-export function chuTranh(g, s, ds, o = {}) { const [x, y, r] = ds[0]; if (!o.tuyChon) chu(g, s, x, y, r ? { ...o, ...r } : o); }

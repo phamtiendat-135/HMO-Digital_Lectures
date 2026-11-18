@@ -1,14 +1,35 @@
 // Cảnh 2: vì sao lực ly tâm Fc bằng nhau và song song tại mọi điểm.
-import { tt, MAU, TI_SO_CM, TAU, D2R, CM_KM, nghin, nen, chuTranh, quanh, vatCan, vatCanDoan, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
+import { tt, MAU, TI_SO_CM, TAU, D2R, CM_KM, nghin, nen, chu, nhanNgoai, tieuDe, chanTrang, tron, doan, matTrang, muiTen } from './chung.js';
 
 const LAP = 9, GOC0 = 35;
 const st = { duong: true, fc: true };
 const CX = 720, CY = 590, R = 195, RC = R * TI_SO_CM, DM = 300, RMT = 36;
+// A và B cách tâm 0,9 R: đường tròn của chúng cách CM ít nhất 0,9 R − RC ≈ 33 px, không đi qua chấm CM như bản cũ.
+// C là tâm Trái Đất. B ở góc 150° (trên trái): đầu mũi tên của B không vươn tới dải tiêu đề.
 const DIEM = [
-  { ten: 'A', lech: [1, 0], mau: '#C0392B' },
+  { ten: 'A', lech: [0.9, 0], mau: '#C0392B' },
   { ten: 'C', lech: [0, 0], mau: '#B8860B' },
-  { ten: 'B', lech: [-0.62, -0.62], mau: MAU.luc },
+  { ten: 'B', lech: [-0.9 * Math.cos(30 * D2R), -0.9 * Math.sin(30 * D2R)], mau: MAU.luc },
 ];
+const L = 88;   // chiều dài mũi tên Fc
+
+// Chú giải cố định: mẫu mũi tên Fc và chấm CM. Mức đầy đủ: góc trên trái dưới tiêu đề (hai dòng mỗi mục, hẹp để nhãn
+// Mặt Trăng đi qua phía phải); mức tối giản: một hàng ở dải trên cùng (mức này không có tiêu đề).
+function chuGiai(g) {
+  const toiGian = tt.muc === 'toi-gian';
+  const muc = [];
+  if (st.fc) muc.push(['fc', 'Fc', 'lực ly tâm']);
+  muc.push(['cm', 'CM', 'khối tâm chung']);
+  muc.forEach(([k, ten, giai], i) => {
+    const x = toiGian ? 48 + i * 200 : 48, y = toiGian ? 60 : 214 + i * 70;
+    if (k === 'fc') muiTen(g, x, y, x + 56, y, MAU.cam, 6, 18);
+    else tron(g, x + 28, y, 9, MAU.navy, '#FFFFFF', 2.5);
+    chu(g, ten, x + 70, y, { co: 30, dam: 700, mau: k === 'fc' ? MAU.camChu : MAU.navy, goc: 'middle', khoa: true, vien: null });
+    chu(g, giai, x + 70, y + 30, { co: 24, dam: 400, mau: MAU.ink, goc: 'middle', vien: null });
+  });
+}
+
+
 
 export default {
   id: 'ly-tam', lap: LAP,
@@ -28,19 +49,19 @@ export default {
     const ex = CX + RC * ux, ey = CY + RC * uy;      // tâm Trái Đất
     const nx = -uy, ny = ux;
     const mx = CX - DM * ux, my = CY - DM * uy;      // Mặt Trăng luôn đối diện Trái Đất qua CM
-    const L = R * 0.62;
     nen(g);
     tieuDe(g, 'Vì sao lực ly tâm chỉ có một hướng',
       'Ba mũi tên Fc luôn song song, bằng nhau và chỉ ra xa Mặt Trăng.',
       `Fc = ω²·d, với d = ${nghin(CM_KM)} km là bán kính chung của ba đường tròn.`);
-    chanTrang(g, 'Nhìn từ cực Bắc. Không theo tỉ lệ: khoảng cách Trái Đất – Mặt Trăng thu ngắn.');
+    chanTrang(g, 'Nhìn từ cực Bắc. C là tâm Trái Đất. Không theo tỉ lệ: khoảng cách Trái Đất – Mặt Trăng thu ngắn.');
+    chuGiai(g);
 
     doan(g, ex, ey, mx, my, MAU.slate, 2, [9, 7]);
     matTrang(g, mx, my, RMT);
     tron(g, ex, ey, R, 'rgba(27,78,143,0.88)', MAU.sky, 3);
     tron(g, CX, CY, 9, MAU.navy, '#FFFFFF', 2.5);
 
-    const vt = DIEM.map((p) => [ex + p.lech[0] * R * 0.78, ey + p.lech[1] * R * 0.78]);
+    const vt = DIEM.map((p) => [ex + p.lech[0] * R, ey + p.lech[1] * R]);
     DIEM.forEach((p, i) => {
       const [ox, oy] = vt[i];
       const kx = ox - RC * ux, ky = oy - RC * uy;                             // tâm đường tròn của điểm đó
@@ -48,28 +69,16 @@ export default {
         g.globalAlpha = 0.6; g.setLineDash([7, 7]); tron(g, kx, ky, RC, null, p.mau, 2.5); g.globalAlpha = 1;
         doan(g, kx, ky, ox, oy, p.mau, 3);
         tron(g, kx, ky, 5, p.mau);
-        vatCan(kx, ky, 7);
       }
       tron(g, ox, oy, 11, p.mau, '#FFFFFF', 2.5);
       if (st.fc) muiTen(g, ox, oy, ox + ux * L, oy + uy * L, MAU.cam, 6, 22);
     });
 
-    // nhãn: chấm, mũi tên và đĩa là vùng cấm; mỗi nhãn chọn chỗ trống gần vật của nó
-    vt.forEach(([ox, oy]) => { vatCan(ox, oy, 14); if (st.fc) vatCanDoan(ox, oy, ox + ux * L, oy + uy * L, 8); });
-    vatCan(CX, CY, 11); vatCan(mx, my, RMT + 2);
+    // Nhãn. Trái Đất tịnh tiến nên A, B, C giữ nguyên vị trí tương đối với nhau; nhãn mỗi điểm nằm phía ngược mũi tên Fc của
+    // nó, lệch khỏi bán kính một chút (hướng −u + 1,4·n quay cùng u), nên không bao giờ chạm mũi tên của chính nó, các điểm
+    // kia hay CM. Tên Fc và CM ở chú giải cố định. Trái Đất không ghi tên: chân trang ghi C là tâm Trái Đất.
     const oDiem = { co: 32, dam: 700, mau: '#FFFFFF', vien: MAU.navy, khoa: true };
-    DIEM.forEach((p, i) => chuTranh(g, p.ten, quanh(vt[i][0], vt[i][1], 22, '57461302'), oDiem));
-    chuTranh(g, 'CM', quanh(CX, CY, 18, '25417063').concat(quanh(CX, CY, 50, '25417063')), oDiem);
-    chuTranh(g, 'Mặt Trăng', quanh(mx, my, RMT + 8, '23014567'), { co: 30, dam: 700, mau: MAU.navy, khoa: true, vien: MAU.nen });
-    if (st.fc) vt.forEach(([ox, oy]) => {
-      const gx = ox + ux * L * 0.62, gy = oy + uy * L * 0.62;
-      chuTranh(g, 'Fc', [[gx + nx * 16, gy + ny * 16, { can: 'center', goc: 'middle' }], [gx - nx * 16, gy - ny * 16, { can: 'center', goc: 'middle' }],
-        [gx + nx * 26, gy + ny * 26, { can: 'center', goc: 'middle' }], [gx - nx * 26, gy - ny * 26, { can: 'center', goc: 'middle' }]],
-      { co: 30, dam: 700, mau: MAU.camChu, vien: '#FFFFFF' });
-    });
-    const uvTD = [[ex - R * 0.1, ey + R * 0.66]];
-    for (const r of [0.62, 0.35, 1.18]) for (let i = 0; i < 12; i++) { const b = i * TAU / 12; uvTD.push([ex + Math.cos(b) * R * r, ey + Math.sin(b) * R * r]); }
-    chuTranh(g, 'Trái Đất', uvTD,
-    { co: 30, dam: 700, mau: '#FFFFFF', vien: MAU.navy, can: 'center', goc: 'middle', khoa: true, tuyChon: tt.muc === 'toi-gian' });
+    DIEM.forEach((p, i) => nhanNgoai(g, p.ten, vt[i][0], vt[i][1], 11, -ux + 1.4 * nx, -uy + 1.4 * ny, 5, oDiem));
+    nhanNgoai(g, 'Mặt Trăng', mx, my, RMT, -ux, -uy, 8, { co: 30, dam: 700, mau: MAU.navy, khoa: true });
   },
 };
