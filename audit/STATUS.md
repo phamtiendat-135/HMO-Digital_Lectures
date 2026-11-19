@@ -8,8 +8,8 @@ Trạng thái: audited → spec-approved → in-progress → in-review → appro
 | `bien-dang-song-vo` | T2 | spec-approved | |
 | `khuc-xa-song` | T2 | spec-approved | |
 | `hat-nuoc-quay-vong` | T2 | approved | pilot; đạt nghiệm thu lần 3 ngày 18/11/2026; 117.506 byte |
-| `kenh-sofar` | T2 | approved | pilot; đạt nghiệm thu lần 2 ngày 18/11/2026; 137.855 byte |
-| `luc-tao-trieu` | T3 | in-progress | pilot |
+| `kenh-sofar` | T2 | approved | pilot; đạt nghiệm thu lần 2 ngày 18/11/2026; 137.906 byte |
+| `luc-tao-trieu` | T3 | approved | pilot; đạt nghiệm thu lần 5 ngày 19/11/2026; 638.724 byte; tam giác tối đa 14.482 |
 | `chu-ky-trieu-18-6-nam` | T2 | spec-approved | slug cũ: chu-ky-trieu-mat-trang; tag "nâng cao" |
 | `su-hinh-thanh-bao` | T2 | spec-approved | dựng lại, xếp cuối hàng |
 
