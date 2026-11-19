@@ -80,6 +80,7 @@ Phiên mới:
 1. **Không làm gì thêm cho tới khi TS. Đạt trả lời G2.** Nếu TS. Đạt hỏi, trình `docs/G2_TOM_TAT.md`: cách bật GitHub Pages (mục 3), 5 mục kiểm tay (mục 4), 9 điểm chờ quyết (mục 5).
 2. Khi TS. Đạt duyệt G2: ghi quyết định của từng điểm ở mục 5 tóm tắt vào spec và STANDARDS tương ứng (mỗi việc một commit), rồi sang chặng 4 (mục 7).
 3. Nếu TS. Đạt yêu cầu sửa pilot nào: giao agent đúng tầng, nghiệm thu bằng reviewer mới, merge lại.
+4. **Đang làm (19/11, TS. Đạt đồng ý):** đưa bộ quét nhãn vào test chung. Agent `general-purpose` làm trong worktree `../wt/quet-nhan`, nhánh cục bộ `tools/quet-nhan` (không push nhánh này). Đo từ bên ngoài bằng cách bọc `fillText`/`strokeText` và đọc `<text>` SVG, không móc vào animation: nhảy chỗ, chữ đè chữ, chữ ra ngoài, cỡ chữ, tương phản. `npm test` giữ ≤ 4 phút; thêm `npm run quet-nhan` chạy đầy đủ. Tiến độ: scratchpad `quet-nhan/ghichu.md`. Xong: trưởng nhóm kiểm `npm test` + `npm run quet-nhan`, merge vào nhánh chính, push. Việc này không phải chặng 4, vẫn dừng ở G2.
 
 **Bài học cho chặng 4** (5 animation T2):
 - Giao worker kèm quy tắc nhãn STANDARDS mục 4 (quy tắc 1–6) ngay từ đầu; yêu cầu nộp kết quả quét nhảy nhãn, chồng chữ và tương phản cùng bản đầu tiên.
