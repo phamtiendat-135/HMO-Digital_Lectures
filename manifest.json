@@ -37,6 +37,27 @@
       "dungLuong": 137906,
       "giayThumb": 15,
       "canhThumb": 4
+    },
+    {
+      "slug": "luc-tao-trieu",
+      "ten": "Lực tạo triều: vì sao có hai múi triều",
+      "hocPhan": "",
+      "bai": "",
+      "moTa": "Bảy cảnh tương tác, trong đó có một mô hình 3D, giải thích lực ly tâm, lực hấp dẫn của Mặt Trăng và lực tạo triều sinh ra hai múi triều.",
+      "tags": [
+        "thủy triều",
+        "lực tạo triều",
+        "Mặt Trăng",
+        "triều cường",
+        "triều kém",
+        "3D"
+      ],
+      "loai": "3D",
+      "ngayCapNhat": "2026-11-15",
+      "phienBan": "1.0.0",
+      "dungLuong": 638724,
+      "giayThumb": 2,
+      "canhThumb": 2
     }
   ]
 }
