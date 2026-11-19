@@ -163,3 +163,7 @@ Mọi hình còn lại (sóng, hạt, phao, đáy cát) vẽ bằng Canvas trong
 3. **Mũi tên năng lượng (KH-2).** Đề xuất cho mũi tên đứng yên, chỉ hướng. Thầy có muốn thêm một câu về tốc độ nhóm (C_g = C/2 ở nước sâu) trong đoạn Giải thích không, hay để dành cho bài sau?
 4. **Dòng nguồn (S-05).** Thầy muốn ghi giáo trình nào (ví dụ Segar, chương sóng) `[CẦN NGUỒN]`?
 5. **Trôi Stokes (KH-3).** Đề xuất chỉ thêm chữ "gần như"; có nên nêu con số 0,25 m mỗi chu kỳ cho sinh viên năm 1 không?
+
+## Quyết định ở G2 (TS. Đạt duyệt ngày 19/11/2026)
+
+Duyệt phương án đang dùng: chưa có tên giáo trình cho Bài 5, nên dòng nguồn **không ghi tên giáo trình**. Khi TS. Đạt cung cấp tên, thêm vào dòng nguồn bằng một thay đổi T1 (`anim-label`).
