@@ -76,10 +76,10 @@ export function veBang(g, sd) {
   chu(g, '/', x + 210, y + 274, { co: 30, dam: 400, mau: MAU.slate, vien: null });
   chu(g, 'vào tâm', x + 232, y + 274, { co: 30, dam: sd.raNgoai ? 400 : 700, mau: sd.raNgoai ? MAU.slate : MAU.ink, vien: null });
 }
-/** Chú giải cho mức tối giản (không có bảng số): ba mẫu mũi tên với tên lực tại (x, y), xếp ngang hoặc dọc, chữ to gấp đôi. */
+/** Chú giải cho mức tối giản (không có bảng số): ba mẫu mũi tên với tên lực và chấm CM tại (x, y), xếp ngang hoặc dọc, chữ to gấp đôi. */
 export function veChuGiai(g, x, y, ngang = false) {
   if (tt.muc !== 'toi-gian') return;
-  [['fc', 'Fc', MAU.luc], ['fg', 'Fg', MAU.do], ['ft', 'Ft', MAU.ftChu]].forEach(([k, ten, mau], i) => {
+  [['fc', 'Fc', MAU.luc], ['fg', 'Fg', MAU.do], ['ft', 'Ft', MAU.ftChu], ['cm', 'CM', MAU.navy]].forEach(([k, ten, mau], i) => {
     const xx = ngang ? x + i * 190 : x, yy = ngang ? y : y + i * 74;
     mauMau(g, k, xx, yy, 56);
     chu(g, ten, xx + 70, yy, { co: 30, dam: 700, mau, goc: 'middle', khoa: true, vien: null });

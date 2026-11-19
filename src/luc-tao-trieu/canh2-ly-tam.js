@@ -14,13 +14,13 @@ const DIEM = [
 const L = 88;   // chiều dài mũi tên Fc
 
 // Chú giải cố định: mẫu mũi tên Fc và chấm CM, chữ 30 px. Mức đầy đủ: góc trên phải dưới tiêu đề, tên và giải thích hai
-// dòng (vùng này nằm ngoài tầm của nhãn Mặt Trăng, mũi tên Fc và đĩa Trái Đất). Mức tối giản: chỉ mẫu Fc ở dải trên cùng
-// (mức này không có tiêu đề; giữ tối đa 6 chữ: Fc, A, B, C, Mặt Trăng, Trái Đất).
+// dòng (vùng này nằm ngoài tầm của nhãn Mặt Trăng, mũi tên Fc và đĩa Trái Đất). Mức tối giản: chỉ mẫu CM ở dải trên cùng
+// (mức này không có tiêu đề; 6 chữ theo S-17: A, B, C, CM, Mặt Trăng, Trái Đất; Fc không thuộc danh sách đó).
 function chuGiai(g) {
   const toiGian = tt.muc === 'toi-gian';
   const muc = [];
-  if (st.fc) muc.push(['fc', 'Fc', 'lực ly tâm']);
-  if (!toiGian) muc.push(['cm', 'CM', 'khối tâm chung']);
+  if (st.fc && !toiGian) muc.push(['fc', 'Fc', 'lực ly tâm']);
+  muc.push(['cm', 'CM', 'khối tâm chung']);
   muc.forEach(([k, ten, giai], i) => {
     const x = toiGian ? 48 : 1135, y = toiGian ? 60 : 214 + i * 76;
     if (k === 'fc') muiTen(g, x, y, x + 56, y, MAU.cam, 6, 18);
