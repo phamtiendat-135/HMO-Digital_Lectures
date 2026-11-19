@@ -178,3 +178,7 @@ Không áp dụng (T2).
 - **C-2 (K-2).** Độ sâu đáy tại 12,0°N, 114,5°E là bao nhiêu `[CẦN NGUỒN]`? Nếu khoảng 4.000 m thì kênh ở đây bị giới hạn bởi đáy trước khi tới độ sâu liên hợp của mặt (nơi c = 1.542,4 m/s). Đề xuất: không nêu số, chỉ ghi "kênh thực rộng hơn dải này".
 - **C-3.** Bảng không có cột độ muối. Giá trị suy ngược từ ρ và T là 33,3 (mặt) đến 34,4–34,6 (dưới 100 m). Thầy có muốn thêm cột S vào bảng trong khung Giải thích không? Đề xuất: có, lấy từ file phao gốc `[CẦN NGUỒN]`.
 - **C-4.** Câu trích dẫn dữ liệu Argo thầy muốn dùng (mục 7b).
+
+## Quyết định ở G2 (TS. Đạt duyệt ngày 19/11/2026)
+
+Duyệt phương án đang dùng: C-2 (độ sâu đáy tại 12,0°N 114,5°E), C-3 (cột độ muối của phao 2902696) và C-4 (câu trích dẫn Argo, DOI GDAC) chưa có nguồn nên **không hiển thị**. Khi có nguồn: C-2, C-4 là thay đổi T1; C-3 thêm cột S vào bảng 13 mức (`bang`).
