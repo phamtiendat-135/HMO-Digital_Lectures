@@ -68,6 +68,8 @@ Hệ quả: agent `anim-label` (Sonnet) không có việc ở đợt đầu. Nó
 
 ## 7. Câu hỏi khoa học và `[CẦN NGUỒN]`
 
+**Quyết định ở G2 (19/11/2026):** TS. Đạt duyệt **toàn bộ phương án đề xuất** trong bảng dưới và ở cuối từng spec. Hàng nào đề xuất là "Thầy xác nhận" hay "Thầy cho số" mà chưa có số: con số đó vẫn là `[CẦN NGUỒN]`, không hiển thị; worker ghi vào báo cáo.
+
 Chi tiết và phương án đề xuất nằm ở cuối từng spec. Tóm tắt những câu thay đổi nội dung hiển thị:
 
 | Slug | Câu hỏi | Đề xuất |

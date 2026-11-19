@@ -2,7 +2,7 @@
 
 Ngày: 18/11/2026. Gửi: TS. Phạm Tiến Đạt. Nhánh: `claude/relaxed-meitner-q01202`.
 
-> **Trạng thái: HOÀN TẤT, chờ Thầy duyệt.** Cả 3 pilot đã approved và đã merge vào nhánh `claude/relaxed-meitner-q01202` (19/11/2026).
+> **Trạng thái: ĐÃ DUYỆT ngày 19/11/2026.** TS. Đạt duyệt G2 và cả 9 điểm ở mục 5 theo phương án đang dùng; chuyển sang chặng 4. Cả 3 pilot đã approved và đã merge vào nhánh `claude/relaxed-meitner-q01202` (19/11/2026).
 
 ## 1. Thầy cần làm gì ở G2
 
