@@ -1,6 +1,6 @@
 # HANDOFF: Kho học liệu số HMO (chuyển sang phiên mới)
 
-Cập nhật: 19/11/2026, khoảng 08:00 UTC. **Chặng 3 XONG, đang DỪNG ở G2 chờ TS. Đạt duyệt.** Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
+Cập nhật: 19/11/2026. **G2 ĐÃ DUYỆT (19/11). Đang ở chặng 4.** Người phụ trách: TS. Phạm Tiến Đạt (Phó Chủ nhiệm Khoa KTTV&HDH, HUS-VNU).
 
 Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **Không hỏi lại những gì đã chốt ở mục 3.**
 
@@ -14,7 +14,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
   - Sinh viên năm 1–3 tự học trên điện thoại Android tầm trung (màn dọc 360–430 px, mạng 4G).
   - Giảng viên trình chiếu trên máy chiếu 4:3 (1024×768).
 - Quy trình gồm 4 cổng bắt buộc dừng lại chờ duyệt: G0 (thiết kế) → G1 (spec + phân tầng) → **G2 (3 pilot)** → G3 (trang kho + sổ điểm). Ngoài 4 cổng này thì làm tiếp, không hỏi lặt vặt.
-- **Chặng 3 đã xong: cả 3 pilot approved và đã merge (19/11/2026). Đang DỪNG ở G2.** Tóm tắt gửi TS. Đạt: `docs/G2_TOM_TAT.md`. Không làm chặng 4 trước khi TS. Đạt duyệt G2.
+- **G2 đã duyệt ngày 19/11/2026** (cả 9 điểm theo phương án đang dùng; đã ghi vào spec 3 pilot và TRIAGE mục 7, commit 52e8868…effd378). **Đang ở chặng 4:** 5 animation T2 còn lại. Sau chặng 4 là chặng 5 rồi dừng ở G3.
 
 ## 2. Tài liệu phải đọc trước khi làm
 
@@ -72,32 +72,36 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 - STANDARDS mục 4: **quy tắc đặt nhãn trên hình động** (1519f8d): nhãn gắn ổn định theo hình học, không dò chỗ theo khung; cấm chồng chữ và vật chính; được chồng nét phụ nếu có viền sáng ≥ 4 px.
 - Spec kenh-sofar câu 2: 87 bar, không phải 86 (759aa9d).
 
-## 6. Việc tiếp theo: DỪNG ở G2
+## 6. Việc tiếp theo: chặng 4
 
-Chặng 3 xong ngày 19/11/2026: cả 3 pilot approved, đã merge vào `claude/relaxed-meitner-q01202`, `npm test` 109 đạt, 14 bỏ qua.
+**Trạng thái các luồng việc (19/11/2026, khoảng 09:00 UTC).** Tối đa 3 agent song song; đang chạy đủ 3:
 
-Phiên mới:
-1. **Không làm gì thêm cho tới khi TS. Đạt trả lời G2.** Nếu TS. Đạt hỏi, trình `docs/G2_TOM_TAT.md`: cách bật GitHub Pages (mục 3), 5 mục kiểm tay (mục 4), 9 điểm chờ quyết (mục 5).
-2. Khi TS. Đạt duyệt G2: ghi quyết định của từng điểm ở mục 5 tóm tắt vào spec và STANDARDS tương ứng (mỗi việc một commit), rồi sang chặng 4 (mục 7).
-3. Nếu TS. Đạt yêu cầu sửa pilot nào: giao agent đúng tầng, nghiệm thu bằng reviewer mới, merge lại.
-4. **Đang làm (19/11, TS. Đạt đồng ý):** đưa bộ quét nhãn vào test chung. Agent `general-purpose` làm trong worktree `../wt/quet-nhan`, nhánh cục bộ `tools/quet-nhan` (không push nhánh này). Đo từ bên ngoài bằng cách bọc `fillText`/`strokeText` và đọc `<text>` SVG, không móc vào animation: nhảy chỗ, chữ đè chữ, chữ ra ngoài, cỡ chữ, tương phản. `npm test` giữ ≤ 4 phút; thêm `npm run quet-nhan` chạy đầy đủ. Tiến độ: scratchpad `quet-nhan/ghichu.md`. Xong: trưởng nhóm kiểm `npm test` + `npm run quet-nhan`, merge vào nhánh chính, push. Việc này không phải chặng 4, vẫn dừng ở G2.
+| Luồng | Agent | Worktree / nhánh cục bộ | Ghi tiến độ (scratchpad) | Tình trạng |
+|---|---|---|---|---|
+| Bộ quét nhãn chung | general-purpose | `../wt/quet-nhan`, `tools/quet-nhan` | `quet-nhan/ghichu.md` | đang làm |
+| `song-than-hut-chim` (1/5) | anim-2d | `../wt/song-than-hut-chim`, `anim/song-than-hut-chim` | `lam-song-than-hut-chim/ghichu.md` | đang làm |
+| `bien-dang-song-vo` (2/5) | anim-2d | `../wt/bien-dang-song-vo`, `anim/bien-dang-song-vo` | `lam-bien-dang-song-vo/ghichu.md` | đang làm |
 
-**Bài học cho chặng 4** (5 animation T2):
-- Giao worker kèm quy tắc nhãn STANDARDS mục 4 (quy tắc 1–6) ngay từ đầu; yêu cầu nộp kết quả quét nhảy nhãn, chồng chữ và tương phản cùng bản đầu tiên.
-- Bộ quét của reviewer (`review-luc-5/r5-l1.cjs`, `chung3.cjs`, `r4-quet.cjs` trong scratchpad, có thể mất khi container bị thu hồi) nên được đưa vào `tests/` thành công cụ chung trước chặng 4. Đề xuất này đã trình TS. Đạt, chưa có trả lời.
-- Reviewer phải quét phóng ở **mọi** góc đặt sẵn, không chỉ góc ban đầu (lần 3 sót lỗi vì vậy).
-- `luc-tao-trieu` mất 5 vòng nghiệm thu, khoảng 4 ngày: 2 vòng vì quy tắc nhãn chốt muộn, 1 vòng vì nhãn bám vật trong 3D, 1 vòng vì lỗi nhỏ còn sót.
+Các nhánh `anim/*` của chặng 4 và `tools/quet-nhan` **chưa được phép push** (chỉ 3 nhánh pilot và nhánh chính được phép); chỉ nằm trong worktree. Nếu container bị thu hồi thì mất phần chưa merge: đã hỏi TS. Đạt cho push các nhánh này.
 
-## 6b. Điểm chờ TS. Đạt quyết ở G2
+**Thứ tự việc:**
+1. Bộ quét xong: trưởng nhóm chạy `npm test` (≤ 4 phút) và `npm run quet-nhan` trên nhánh `tools/quet-nhan`, kiểm 3 trang mẫu lỗi làm test trượt đúng; merge vào nhánh chính, push; báo 2 worker merge nhánh chính vào nhánh của họ và chạy `npm run quet-nhan -- <slug>`.
+2. Mỗi worker xong: nghiệm thu bằng `anim-reviewer` MỚI (prompt theo mẫu các lần nghiệm thu luc-tao-trieu: spec, STANDARDS mục 4 quy tắc 1–6, bộ quét chung, quét chữ đè vật chính bằng tay, tính lại số, ve(t), 3 lệnh). ĐẠT thì merge vào nhánh chính (manifest xung đột: `git checkout --theirs manifest.json && node tools/build.mjs`), STATUS approved, REVIEW_LOG, `npm test`, push.
+3. Khi có chỗ trống: `khuc-xa-song` (3/5), rồi `chu-ky-trieu-18-6-nam` (4/5), cuối cùng `su-hinh-thanh-bao` (5/5, dựng lại). Prompt worker: theo mẫu đã giao cho `song-than-hut-chim` (quy tắc nhãn từ đầu, tự quét, commit WIP, ghichu.md).
+4. Xong 5/5: sang chặng 5 (mục 7), rồi **DỪNG ở G3**.
 
-1. **Dòng nguồn `luc-tao-trieu`:** "NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science". Spec chỉ đề xuất NASA; Pugh & Woodworth do worker tự thêm.
-2. **Hằng số `luc-tao-trieu` gắn `[CẦN NGUỒN]` nhưng checklist bắt buộc hiển thị:** 384.400 km, 6.371 km, 81,3, 27,32 ngày, 29,53 ngày, 24 h 50 ph, 0,46. Tất cả có trong NASA Moon Fact Sheet.
-3. **Thuật ngữ `luc-tao-trieu`** (phương án đề xuất của spec, chưa duyệt): "nước lớn / nước ròng", "bất đẳng nhật triều", nhìn từ cực Bắc, quay ngược chiều kim đồng hồ.
-4. **Chiều quay Mặt Trăng ở cảnh 6 `luc-tao-trieu`:** bản gốc vẽ ngược chiều tự quay Trái Đất; đang sửa cho cùng chiều (ngược chiều kim đồng hồ nhìn từ cực Bắc). Báo TS. Đạt vì là sửa so với bài giảng gốc.
-5. **Màu Ft `luc-tao-trieu`:** #8A5D0B (5,5:1) thay cho #B07A1C (3,6:1, trượt tiêu chí tương phản). Trưởng nhóm đã chấp nhận tạm.
-6. **Kết hợp Codex/ChatGPT (gói Business), dự kiến sau G2:**
-   - Codex review chéo PR, hoặc làm một slug riêng ở chặng 4, kèm `AGENTS.md` trỏ tới STANDARDS;
-   - ChatGPT dùng cho phác cảnh và ảnh truyền thông; không dùng cho số liệu hay bản đồ.
+**Bài học từ chặng 3** (đã đưa vào prompt worker):
+- Quy tắc nhãn STANDARDS mục 4 (1–6) áp dụng từ bản đầu; worker nộp kết quả quét nhãn cùng bản đầu tiên.
+- Reviewer phải quét phóng/điều khiển ở **mọi** trạng thái đặt sẵn, không chỉ trạng thái ban đầu.
+- `luc-tao-trieu` mất 5 vòng nghiệm thu: 2 vòng vì quy tắc nhãn chốt muộn, 1 vòng vì nhãn bám vật trong 3D, 1 vòng vì lỗi nhỏ còn sót.
+
+## 6b. G2: ĐÃ DUYỆT (19/11/2026)
+
+TS. Đạt duyệt cả 9 điểm theo phương án đang dùng (xem `docs/G2_TOM_TAT.md` mục 5). Đã ghi vào: `specs/luc-tao-trieu.md`, `specs/hat-nuoc-quay-vong.md`, `specs/kenh-sofar.md` (mục "Quyết định ở G2") và `audit/TRIAGE.md` mục 7 (mọi phương án đề xuất được duyệt; số còn chờ "Thầy xác nhận/cho số" vẫn là `[CẦN NGUỒN]`, không hiển thị).
+
+Việc TS. Đạt tự làm: bật GitHub Pages từ nhánh `claude/relaxed-meitner-q01202` (hướng dẫn ở tóm tắt G2 mục 3) để cho sinh viên xem 3 pilot. Từ container không kiểm được Pages (github.io bị chặn).
+
+Kết hợp Codex/ChatGPT (gói Business), dự kiến sau: Codex review chéo PR hoặc làm một slug riêng, kèm `AGENTS.md` trỏ tới STANDARDS; ChatGPT cho phác cảnh, ảnh truyền thông, không cho số liệu hay bản đồ.
 
 **Phân vai (TS. Đạt chốt ngày 18/11/2026):**
 - Phiên chính chạy [mô hình bậc 1] ở mức effort **high**, giữ vai trưởng nhóm: chỉ huy, điều phối, giao việc, đọc báo cáo, merge, push, ghi STATUS/REVIEW_LOG. Việc dựng animation và nghiệm thu giao cho agent.
