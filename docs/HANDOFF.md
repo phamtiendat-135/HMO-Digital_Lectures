@@ -51,7 +51,7 @@ Phiên mới đọc file này trước tiên, rồi làm tiếp từ mục 6. **
 |---|---|---|---|---|---|
 | `kenh-sofar` | T2 | đã merge vào nhánh chính (94484e6) | 137.906 B | 15/15 | **approved**. Lần 1 KHÔNG ĐẠT (4 mục), lần 2 ĐẠT. |
 | `hat-nuoc-quay-vong` | T2 | đã merge vào nhánh chính | 117.506 B | 15/15 | **approved**. Lần 1 và 2 KHÔNG ĐẠT, lần 3 ĐẠT. |
-| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ c106bdf (đã push) | ≈ 624 KB | 22 đạt + 2 bỏ qua (luc); toàn bộ 109 đạt, 14 bỏ qua | Lần 1, 2, 3 KHÔNG ĐẠT. Sau lần 3, `anim-3d` đã sửa đủ 5 mục (6153a6a…40d1976) và lỗi thật chụm 2 ngón khi ngón đầu rơi vào điểm cam (c106bdf, có test chụm ở dọc và ngang). **Nghiệm thu lần 4 đang chạy** (giao 22:50 UTC 18/11, reviewer mới, ghi dở vào scratchpad `review-luc-4/ghichu.md`). |
+| `luc-tao-trieu` | T3 | `anim/luc-tao-trieu` @ c106bdf (đã push) | 638.674 B | 22 đạt + 2 bỏ qua (luc); toàn bộ 109 đạt, 14 bỏ qua | Lần 1–4 KHÔNG ĐẠT. Lần 4 (19/11): mọi mục cũ đã đạt; còn 2 lỗi nhỏ: (L1) góc cực Bắc + Phóng to + hoạt hoạ: Mặt Trăng vào dải đáy tới 87,6 px, chữ chú giải và ghi chú tỉ lệ đè đĩa Mặt Trăng; (L2) S-17: cảnh 2 và 3 mức tối giản không gọi tên CM. **Đang chờ TS. Đạt quyết** (sửa 2 lỗi rồi nghiệm thu lần 5, hay chấp nhận và ghi vào G2). |
 
 ## 5. Bảy điểm (a)–(g) từ báo cáo `kenh-sofar`: ĐÃ XỬ LÝ XONG
 
@@ -92,7 +92,7 @@ Nếu `../wt/luc-tao-trieu` còn: `git -C ../wt/luc-tao-trieu status`. Có thay 
 - đếm tam giác; chụp ảnh khung mở đầu và giữa mỗi cảnh.
 Commit, push, báo cáo theo STANDARDS mục 8.)
 
-**Bước 2. Nghiệm thu lần 4 (agent `anim-reviewer` MỚI).** Đã giao 22:50 UTC 18/11. Phiên mới không thấy kết quả thì đọc `review-luc-4/ghichu.md` (scratchpad cũ, nếu còn); không có thì giao lại. Dùng prompt lần 3 làm mẫu, thêm: kiểm theo STANDARDS mục 4 quy tắc 4–6, kiểm lại đúng 5 mục trượt lần 3, test cảm ứng S-21 ở khung dọc. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
+**Bước 2. Nghiệm thu lần 4: ĐÃ XONG, KHÔNG ĐẠT (2 lỗi L1, L2, xem REVIEW_LOG).** Hỏi TS. Đạt trước khi chạy lần 5. Nếu Thầy chọn sửa: giao `anim-3d` mới đúng L1 (góc cực Bắc: mọi mức phóng có nút, đĩa Mặt Trăng trên y = 950 và không chạm chữ; ví dụ dời điểm nhìn hoặc giới hạn phóng riêng cho góc này) và L2 (CM có tên ở tối giản cảnh 2, 3; ≤ 6 chữ, bỏ Fc nếu cần); rồi nghiệm thu lần 5 chỉ kiểm L1, L2 và hồi quy, quét phóng ở **mọi** góc đặt sẵn. Dùng prompt lần 3 làm mẫu, thêm: kiểm theo STANDARDS mục 4 quy tắc 4–6, kiểm lại đúng 5 mục trượt lần 3, test cảm ứng S-21 ở khung dọc. Nếu phiên mới không thấy kết quả: đọc `review-luc-3/ghichu.md` trong scratchpad cũ (nếu còn); không có thì giao reviewer mới với nội dung dưới đây. Reviewer được dặn: nếu vi phạm duy nhất còn lại là nhãn "Trái Đất" 12,2 px thì kết luận "ĐẠT có điều kiện" để trưởng nhóm quyết; khi đó đề nghị chấp nhận và ghi vào điểm chờ G2. Prompt gồm:
 - slug `luc-tao-trieu`, nhánh `anim/luc-tao-trieu`, worktree `../wt/luc-tao-trieu`;
 - kiểm lại 2 mục trượt lần 2 (nhảy nhãn; chồng cấm) theo đúng STANDARDS mục 4 bản mới, **và** toàn bộ S-01…S-26, checklist 10 mục, `ve(t)`, dự phòng 2D, số tam giác, mọi số khoa học;
 - quyết định đã chốt: màu Ft #8A5D0B; dòng nguồn chờ TS. Đạt; cảnh 5 mức tối giản không cần nhãn "Trái Đất"; chiều Mặt Trăng cùng chiều tự quay Trái Đất;
