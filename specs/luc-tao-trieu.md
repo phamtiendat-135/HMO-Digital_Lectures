@@ -279,3 +279,14 @@ Không có hình chụp từ sách. Không có bản đồ Biển Đông.
 4. **Thành phần nằm ngang của Ft:** bài chỉ nói Ft "hướng ra ngoài / vào tâm". Thực tế nước dồn về hai múi là do thành phần nằm ngang (lực kéo), vì thành phần thẳng đứng chỉ bằng khoảng 10⁻⁷ g. Đề xuất thêm một câu vào Giải thích cảnh 3 và không đổi hình. Thầy có muốn thêm không, hay để cho học phần Thủy triều?
 5. **Logo HMO:** có đưa logo vào khung chung của kho không? Nếu có, xin thầy cấp file gốc (SVG hoặc PNG) để dùng một bản duy nhất.
 6. **Tiêu đề animation:** đề xuất "Lực tạo triều: vì sao có hai múi triều". Thầy sửa nếu muốn.
+
+## Quyết định ở G2 (TS. Đạt duyệt ngày 19/11/2026)
+
+TS. Đạt duyệt toàn bộ phương án đang dùng trong bản phát hành (merge 524b472). Các điểm sau thay cho phần tương ứng ở trên:
+
+1. **Dòng nguồn:** "NASA Moon Fact Sheet; Pugh & Woodworth (2014), Sea-Level Science".
+2. **Hằng số** 384.400 km, 6.371 km, 81,3, 27,32 ngày, 29,53 ngày, 24 h 50 ph, 0,46: hết `[CẦN NGUỒN]`, nguồn là NASA Moon Fact Sheet; được hiển thị.
+3. **Thuật ngữ:** "nước lớn / nước ròng", "bất đẳng nhật triều"; quy ước nhìn từ cực Bắc, quay ngược chiều kim đồng hồ.
+4. **Chiều quay Mặt Trăng ở cảnh 6:** cùng chiều tự quay Trái Đất (ngược chiều kim đồng hồ nhìn từ cực Bắc), khớp cảnh 1, 4, 7. Đây là sửa so với bài giảng gốc.
+5. **Màu chữ Ft:** #8A5D0B (tương phản 5,5:1), thay #B07A1C ở S-16; mũi tên giữ vàng.
+6. **Cách trình bày** (thay phần tương ứng của S-xx): cảnh 1 bỏ số 1–8 trên vòng mờ, thay bằng ghi chú "Vòng mờ: tám thời điểm trong một vòng"; cảnh 2 và 3 tên Fc, Fg, Ft, CM (và Trái Đất, Mặt Trăng ở cảnh 3D) nằm trong chú giải cố định; cảnh 2 mức tối giản bỏ mẫu Fc để giữ ≤ 6 chữ; cảnh 7 loại triều chỉ còn "Kỳ triều cường" / "Kỳ triều kém"; cảnh 3 góc nhìn cực Bắc phóng gần nhất dừng ở khoảng cách 12 (các góc khác 10).
