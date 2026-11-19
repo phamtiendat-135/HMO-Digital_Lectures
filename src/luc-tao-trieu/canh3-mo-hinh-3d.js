@@ -13,10 +13,14 @@ const D_TRANG = 3.3;      // khoảng cách vẽ Trái Đất – Mặt Trăng (
 const K = TI_SO_CM;       // CM cách tâm Trái Đất 0,733 bán kính
 const DAI = 1.15;         // độ dài mũi tên ứng với |Fc|
 const CM = new Vector3(K, 0, 0);
+// [vị trí camera, điểm nhìn, khoảng cách gần nhất cho phép khi đang ở góc này (nút Phóng to, chụm, lăn chuột)]
 const GOC_NHIN = {
-  'ban-dau': [[1.0, 6.9, 11.4], [1.6, 0.55, 0.3]],
-  'cuc-bac': [[2.22, 13.9, -0.46], [2.22, 0, -0.47]],   // nhìn xuống, CM lệch trái-dưới để quỹ đạo Mặt Trăng (khi bật hoạt hoạ) tránh bảng số
-  'doc-truc': [[-9, 0.9, 1.2], [1.3, 0.2, 1.2]],
+  'ban-dau': [[1.0, 6.9, 11.4], [1.6, 0.55, 0.3], 10],
+  // Nhìn xuống: quỹ đạo Mặt Trăng chiếu thành đường tròn trọn vẹn, nên điểm nhìn đặt cho tâm quỹ đạo (CM) nằm giữa vùng an
+  // toàn (dưới hàng chú giải, trái bảng số, trên y = 950) và không cho phóng gần hơn 12: ở khoảng cách 12, đĩa Mặt Trăng đi
+  // trong khoảng y ≈ 230–939, x ≈ 205–914.
+  'cuc-bac': [[2.03, 13.9, -0.35], [2.03, 0, -0.36], 12],
+  'doc-truc': [[-9, 0.9, 1.2], [1.3, 0.2, 1.2], 10],
 };
 const TRUC_Y = new Vector3(0, 1, 0);
 
@@ -73,7 +77,8 @@ function vongTron(r, mau, doMo, matPhang) {
 }
 
 function datGocNhin(ten) {
-  const [vt, dich] = GOC_NHIN[ten] || GOC_NHIN['ban-dau'];
+  const [vt, dich, gan] = GOC_NHIN[ten] || GOC_NHIN['ban-dau'];
+  controls.minDistance = gan;
   camera.position.set(vt[0], vt[1], vt[2]); controls.target.set(dich[0], dich[1], dich[2]); controls.update();
 }
 
